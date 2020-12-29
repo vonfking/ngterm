@@ -1,0 +1,7 @@
+
+<app-filelist listType='Local'  [path]='localPath' [isSpinning]="isLocalSpinning" [files]="localFiles" (pathChange)='onLocalPathChange($event)'> 
+</app-filelist>
+
+
+<app-filelist listType='Remote' [path]='remotePath' [isSpinning]="isRemoteSpinning" [files]="remoteFiles" (pathChange)='onRemotePathChange($event)'>    
+</app-filelist>

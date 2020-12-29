@@ -1,0 +1,83 @@
+<nz-layout style='height:400px'>
+    <nz-sider style='background-color: #1f1f1f; border: 1px solid #303030;'>
+        <nz-input-group [nzSuffix]="suffixIcon">
+            <input type="text" nz-input placeholder="Search" [(ngModel)]="searchValue" />
+        </nz-input-group>
+        <ng-template #suffixIcon>
+            <i nz-icon nzType="search"></i>
+        </ng-template>
+        <nz-tree #nzTreeComponent [nzData]="hostlist" nzMultiple=false nzVirtualHeight='366px' nzExpandAll=true [nzSearchValue]="searchValue" (nzClick)="nzEvent($event)" [nzTreeTemplate]="nzTreeTemplate" >
+            <ng-template #nzTreeTemplate let-node let-origin="origin">
+                <span class="custom-node">
+                    <span *ngIf="origin.type == 'root'" (contextmenu)="contextMenu($event, rootMenu)">
+                        <i nz-icon nzType="folder"></i>
+                        <span class="folder-name">{{ node.title }}</span>
+                    </span>
+                    <span *ngIf="origin.type == 'group'" (contextmenu)="contextMenu($event, groupMenu)">
+                      <i nz-icon>
+                        <svg t="1606140340240" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5167" width="16" height="16"><path d="M374.290103 196.769502l0 259.901355L114.388748 456.670857 114.388748 196.769502 374.290103 196.769502M419.315576 151.74403 69.363276 151.74403l0 349.9523 349.9523 0L419.315576 151.74403 419.315576 151.74403z" p-id="5168" fill="#2c2c2c"></path><path d="M374.290103 641.887232l0 259.901355L114.388748 901.788587 114.388748 641.887232 374.290103 641.887232M419.315576 596.86176 69.363276 596.86176l0 349.9523 349.9523 0L419.315576 596.86176 419.315576 596.86176z" p-id="5169" fill="#2c2c2c"></path><path d="M842.42813 641.887232l0 259.901355L582.526775 901.788587 582.526775 641.887232 842.42813 641.887232M887.453602 596.86176 537.501302 596.86176l0 349.9523 349.9523 0L887.453602 596.86176 887.453602 596.86176z" p-id="5170" fill="#2c2c2c"></path><path d="M712.478476 135.803989 896.256082 319.581596 712.478476 503.360226 528.698822 319.581596 712.478476 135.803989M712.478476 72.128761 465.024617 319.581596l247.453858 247.454882L959.932334 319.581596 712.478476 72.128761 712.478476 72.128761z" p-id="5171" fill="#2c2c2c"></path></svg>
+                      </i>
+                      <span class="folder-name">{{ node.title }}</span>
+                    </span>
+                    <span *ngIf="origin.type == 'host'" (contextmenu)="contextMenu($event, hostMenu)">
+                      <i nz-icon>
+                        <svg t="1606139971288" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1980" width="16" height="16"><path d="M921.261301 91.448732 105.561191 91.448732c-44.595369 0-80.723264 33.869901-80.723264 80.723264l0 561.111356c0 44.595369 33.869901 80.723264 80.723264 80.723264l276.039691 0c0 5.644983-1.693495 10.725469-1.693495 16.370452-1.693495 16.370452-10.725469 33.869901-10.725469 33.869901-1.693495 1.693495-5.644983 7.338479-5.644983 7.338479-7.338479 7.338479-10.725469 16.370452-10.725469 27.095921 0 21.450937 16.370452 33.869901 33.869901 33.869901l257.975744 0c18.063947 0 30.482911-16.370452 30.482911-33.869901 0-10.725469-1.693495-18.063947-10.725469-27.095921 0-1.693495-1.693495-1.693495-1.693495-1.693495-5.644983-5.080485-10.725469-10.725469-16.370452-57.578831l270.394708 0c44.595369 0 80.723264-33.869901 80.723264-80.723264L997.468578 168.785006C1001.984564 127.576626 965.85667 91.448732 921.261301 91.448732zM939.325248 591.594267c0 7.338479-7.338479 16.370452-16.370452 16.370452L105.561191 607.964719c-7.338479 0-16.370452-7.338479-16.370452-16.370452L89.190739 161.446527c0-7.338479 7.338479-16.370452 16.370452-16.370452l819.0871 0c7.338479 0 16.370452 7.338479 16.370452 16.370452l0 430.14774L939.325248 591.594267z" p-id="1981" fill="#2c2c2c"></path></svg>
+                      </i>
+                      <span class="folder-name">{{ node.title }}</span>
+                    </span>
+                    <span *ngIf="origin.type == 'subhost'" (contextmenu)="contextMenu($event, hostMenu)">
+                      <i nz-icon>
+                        <svg t="1606140233002" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3255" width="16" height="16"><path d="M607.934 417.857c-6.18-6.178-12.766-11.747-19.554-16.91l-0.012 0.011c-6.986-6.72-16.472-10.857-26.93-10.857-21.465 0-38.865 17.4-38.865 38.864a38.697 38.697 0 0 0 9.072 24.947h-0.001a39.02 39.02 0 0 0 9.59 8.256c3.665 3.022 7.262 5.998 10.625 9.361l3.204 3.205c40.28 40.23 28.255 109.54-12.025 149.82l-171.88 171.83c-40.279 40.23-105.762 40.23-146.042 0l-3.23-3.232c-40.281-40.278-40.281-105.81 0-145.99l75.936-75.91c9.742-7.734 15.997-19.67 15.997-33.073 0-23.313-18.899-42.211-42.212-42.211a42.01 42.01 0 0 0-23.725 7.297c-0.021-0.045-0.044-0.088-0.066-0.134l-0.81 0.757a42.455 42.455 0 0 0-8.026 7.51l-78.913 73.842c-74.178 74.23-74.178 195.633 0 269.759l3.204 3.203c74.179 74.127 195.53 74.127 269.708 0l171.83-171.88c74.075-74.175 80.356-191.185 6.281-265.312l-3.156-3.153z" p-id="3256" fill="#2c2c2c"></path><path d="M855.62 165.804l-3.204-3.204c-74.178-74.178-195.529-74.178-269.707 0l-171.83 171.88c-74.178 74.178-78.263 181.296-4.085 255.523l3.153 3.104c3.369 3.368 6.866 6.543 10.435 9.589a36.872 36.872 0 0 0 8.993 7.31l0.077 0.062 0.012-0.01a36.508 36.508 0 0 0 18.258 4.87c20.263 0 36.69-16.428 36.69-36.69 0-5.719-1.31-11.132-3.646-15.958-4.85-10.89-13.93-17.52-20.21-23.802l-3.154-3.103c-40.278-40.278-24.983-98.796 15.295-139.074l171.931-171.83c40.18-40.281 105.685-40.281 145.966 0l3.206 3.152c40.279 40.282 40.279 105.839 0 146.068l-75.687 75.738c-10.297 7.629-16.974 19.865-16.974 33.663 0 23.123 18.746 41.87 41.87 41.87a41.668 41.668 0 0 0 21.946-6.211c0.048 0.082 0.093 0.157 0.14 0.24l1.175-1.083a42.09 42.09 0 0 0 9.529-8.793l79.766-73.603c74.233-74.177 74.233-195.53 0.055-269.708z" p-id="3257" fill="#2c2c2c"></path></svg>
+                      </i>
+                      <span class="folder-name">{{ node.title }}</span>
+                    </span>
+                </span>
+                <nz-dropdown-menu #rootMenu="nzDropdownMenu">
+                  <ul nz-menu>
+                      <li nz-menu-item (click)="addNode(node, 'group')">Add Group</li>
+                      <li nz-menu-item (click)="addNode(node, 'host')">Add Host</li>
+                  </ul>
+                </nz-dropdown-menu>
+                        <nz-dropdown-menu #groupMenu="nzDropdownMenu">
+                    <ul nz-menu>
+                      <li nz-menu-item (click)="addNode(node, 'group')">Add Group</li>
+                      <li nz-menu-item (click)="addNode(node, 'host')">Add Host</li>
+                      <li nz-menu-item (click)="deleteNode(node)">Delete</li>
+                    </ul>
+                </nz-dropdown-menu>
+                <nz-dropdown-menu #hostMenu="nzDropdownMenu">
+                    <ul nz-menu>
+                      <li nz-menu-item (click)="addNode(node, 'subhost')">Add SubHost</li>
+                      <li nz-menu-item (click)="deleteNode(node)">Delete</li>
+                    </ul>
+                </nz-dropdown-menu>
+            </ng-template>
+        </nz-tree>
+    </nz-sider>
+    <nz-content style='background-color: #1f1f1f; border: 1px solid #303030;'>
+        <nz-layout style='height: 100%;background-color: #1f1f1f;'>
+            <nz-content>
+                <nz-tabset>
+                    <nz-tab [nzTitle]="titleTemplate1">
+                        <ng-template #titleTemplate1>
+                            <i nz-icon nzType="solution" nzTheme="outline"></i>Basic
+                        </ng-template>
+                        <app-basic-cfg [host]='selectedHost' (titleChange)='onTitleChange($event)'></app-basic-cfg>
+                    </nz-tab>
+                    <nz-tab [nzTitle]="titleTemplate2">
+                        <ng-template #titleTemplate2>
+                            <i nz-icon nzType="profile" nzTheme="outline"></i>Terminal
+                        </ng-template>
+                        <app-term-cfg [host]='selectedHost'></app-term-cfg>
+                    </nz-tab>
+                </nz-tabset>
+            </nz-content>
+            <nz-footer style='text-align:right;background-color: #1f1f1f;'>
+                <nz-divider></nz-divider>
+                <button nz-button nzType="primary" (click)="saveCfg()">Save</button>
+                <button nz-button nzType="primary" [disabled]='selectedHost.type=="root" || selectedHost.type=="group"' (click)="connect('sftp')">SFTP</button>
+                <button nz-button nzType="primary" [disabled]='selectedHost.type=="root" || selectedHost.type=="group"' (click)="connect('ssh')">SSH</button>
+            </nz-footer>
+        </nz-layout>
+    </nz-content>
+</nz-layout>

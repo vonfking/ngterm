@@ -1,0 +1,14 @@
+nz-sider {
+    /*border: 1px solid silver;*/
+}
+nz-content{
+    padding:4px;
+}
+nz-tree{
+    white-space:nowrap;
+}
+[nz-button] {
+    margin-right: 8px;
+    margin-bottom: 12px;
+}
+
