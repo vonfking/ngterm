@@ -1,5 +1,4 @@
-var SSHClient = require('ssh2').Client
-var Tunnel = require('tunnel-ssh')
+var MySSHClient = require('./myssh');
 
 function sshConnectDirect(socket, host, type) {
     console.log("ssh connect:" + JSON.stringify(host));
@@ -112,10 +111,45 @@ function sftpListdir(socket, dir) {
         });
     });
 }
+
+function onClientConnectReq(socket, host, type) {
+    let myClient = new MySSHClient();
+    myClient.debug = console.log;
+    if (type == 'sftp') {
+        myClient.sftpConnect(host).then(() => {
+            myClient.cwd().then((path) => {
+                console.log("cwd:", path)
+                socket.emit('ssh-conn-ack', path);
+                socket.myClient = myClient;
+            })
+        })
+    } else if (type == 'ssh') {
+
+    }
+}
+
+function onClientListDirReq(socket, dir) {
+    let myClient = socket.myClient;
+    myClient.list(dir).then((list) => {
+        let newList = list.map((item) => {
+            return {
+                name: item.name,
+                type: item.type,
+                size: item.size,
+                mtime: item.modifyTime,
+                checked: false
+            }
+        })
+        console.log(newList)
+        socket.emit('read-dir-ack', newList);
+    }, (err) => {
+        console.log(err);
+    })
+}
 module.exports = function ssh(socket) {
     socket.on('ssh-conn-req', function(host, type) {
-        sshConnect(socket, host, type);
+        onClientConnectReq(socket, host, type);
     }).on('read-dir-req', function(dir) {
-        sftpListdir(socket, dir);
+        onClientListDirReq(socket, dir);
     })
 }
