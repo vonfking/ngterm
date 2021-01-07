@@ -11,6 +11,7 @@ import { registerLocaleData } from '@angular/common';
 import en from '@angular/common/locales/en';
 import { TermComponent } from './term/term.component';
 import { NgTerminalModule } from 'ng-terminal';
+import { AngularSplitModule } from 'angular-split';
 
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -31,6 +32,8 @@ import { BasicCfgComponent } from './hostcfg/basic-cfg/basic-cfg.component';
 import { TermCfgComponent } from './hostcfg/term-cfg/term-cfg.component';
 import { SftpComponent } from './sftp/sftp.component';
 import { FilelistComponent } from './sftp/filelist/filelist.component';
+import { ResizeTableColDirective } from './directive/resize-table-col.directive';
+import { ResizeOneColDirective } from './directive/resize-one-col.directive';
 registerLocaleData(en);
 
 @NgModule({
@@ -41,7 +44,9 @@ registerLocaleData(en);
     BasicCfgComponent,
     TermCfgComponent,
     SftpComponent,
-    FilelistComponent
+    FilelistComponent,
+    ResizeTableColDirective,
+    ResizeOneColDirective
   ],
   imports: [
     BrowserModule,
@@ -49,6 +54,7 @@ registerLocaleData(en);
     HttpClientModule,
     BrowserAnimationsModule,
     NgTerminalModule,
+    AngularSplitModule,
     NzLayoutModule, NzIconModule, NzMenuModule, NzTabsModule, NzModalModule, NzTreeModule, NzSpinModule,
     NzFormModule, NzDropDownModule, NzInputModule, NzDividerModule, NzButtonModule, NzTableModule
   ],

@@ -48,8 +48,8 @@ export class TermComponent implements OnInit, AfterViewInit, AfterViewChecked, O
   }
   ngAfterViewInit(): void {
     const theme: ITheme = {
-      foreground: '#6a993e',
-      selection: '#88888888',
+      foreground: '#08cc6f',
+      selection: '#0a714e',
       background: '#000000',
       //cursor: config.terminal.colorScheme.cursor,
     }

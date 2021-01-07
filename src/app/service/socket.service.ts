@@ -11,8 +11,8 @@ export class Socket {
     this.socket = io('ws://127.0.0.1:9527');
     this.socket.on('connect', () => {
       this.socket.emit('ssh-conn-req', host, type);
-    }).once('ssh-conn-ack', () => {
-      if (cb)cb();
+    }).once('ssh-conn-ack', (path) => {
+      if (cb)cb(path);
     });
     return new Observable(observer => {
       this.socket.on('ssh-conn-ack', (msg: any) => {

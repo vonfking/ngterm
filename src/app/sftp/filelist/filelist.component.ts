@@ -41,7 +41,7 @@ export class FilelistComponent implements OnInit, AfterViewChecked {
   }
 
   dblClick(type:string, name:string){
-    if (type == 'dir'){
+    if (type == 'd'){
       console.log('dblclick', type, name);
       this.pathChange.emit({type:'relative', path:name})
     }

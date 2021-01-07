@@ -1,6 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { ElectronService } from '../service/electron.service';
 import { Socket, SocketService } from '../service/socket.service';
+import { FilelistComponent } from './filelist/filelist.component';
 
 @Component({
   selector: 'app-sftp',
@@ -78,8 +79,9 @@ export class SftpComponent implements OnInit {
     this.localPath = this.electonService.app.getAppPath();
     this.getLocalFiles(this.localPath);
     this.socket = this.socketService.newSocket();
-    this.socket.connect(this.host, 'sftp', () =>{
-      this.getRemoteFiles(this.remotePath);
+    this.socket.connect(this.host, 'sftp', (path) =>{
+      this.remotePath = path;
+      this.getRemoteFiles(path);
     });
   }
 
@@ -100,5 +102,9 @@ export class SftpComponent implements OnInit {
       this.remotePath = e.path;
     }
     this.getRemoteFiles(this.remotePath);
+  }
+  @ViewChildren(FilelistComponent) componentChildList: QueryList<FilelistComponent>
+  onSplitterChange(e: any){
+    this.componentChildList.forEach(elementRef => elementRef.setTableSize);
   }
 }
