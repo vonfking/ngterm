@@ -41,6 +41,15 @@ export class Socket {
       cb(progress, error);
     })
   }
+  download(localPath:string, remotePath:string, fileList:any, cb:any){
+    this.socket.emit('download-req', localPath, remotePath, fileList);
+    this.socket.on('download-ack', (progress, error) => {
+      if (error || progress == '100'){
+        this.socket.removeListener('download-ack');
+      }
+      cb(progress, error);
+    })
+  }
   sendMsg(msg: string){
     this.socket.emit('ssh-data', msg);
   }

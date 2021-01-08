@@ -197,7 +197,7 @@ class MySSHClient extends SFTPClient {
             totalTrans = 0;
         for (let item of uploadList) {
             if (item.type === '-') {
-                let name = remotePath + this.remotePathSep + item.name;
+                let name = localPath + this.remotePathSep + item.name;
                 let stat = fs.statSync(name);
                 fileList.push({ localPath: localPath, remotePath: remotePath, name: item.name, size: stat.size });
                 totalSize += stat.size;

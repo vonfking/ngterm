@@ -42,7 +42,7 @@ export class FilelistComponent implements OnInit, AfterViewChecked, AfterViewIni
     })
   }
   ngAfterViewInit(){
-    setTimeout(() => this.setTableSize())
+    setTimeout(() => this.setTableSize());
   }
   ngAfterViewChecked(){    
     //setTimeout(()=>{this.checkCheckBoxChanged()}, 0);
@@ -52,23 +52,24 @@ export class FilelistComponent implements OnInit, AfterViewChecked, AfterViewIni
   dblClick(type:string, name:string){
     if (type == 'd'){
       console.log('dblclick', type, name);
-      this.pathChange.emit({type:'relative', path:name})
+      this.pathChange.emit({type:'relative', path:name});
     }
   }
   onRefresh(){
     console.log('refresh', this.path);
-    this.pathChange.emit({type:'absolute', path:this.path})
+    this.pathChange.emit({type:'absolute', path:this.path});
   }
   onUpdir(){
-    this.pathChange.emit({type:'relative', path:'..'})
+    this.pathChange.emit({type:'relative', path:'..'});
   }
   onFileOper(type){
     let fileList = [];
     this.files.forEach((file) => {
       if (file.checked){
-        fileList.push({type:type, fileList:fileList});
+        fileList.push({type:file.type, name:file.name});
       }
     })
+    this.fileOper.emit({type:type, fileList:fileList});
   }
   inputChanged(e){
     var evt = window.event || e;
@@ -91,8 +92,8 @@ export class FilelistComponent implements OnInit, AfterViewChecked, AfterViewIni
   checkAll(value:boolean):void{
     this.files.forEach(file => {
       file.checked = value;
-      this.checkCheckBoxChanged();
     })
+    this.checkCheckBoxChanged();
   }
   checkOne(file, checked: boolean){
     file.checked = checked;

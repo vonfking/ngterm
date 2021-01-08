@@ -78,7 +78,7 @@ export class SftpComponent implements OnInit {
   }
   @ViewChildren(FilelistComponent) componentChildList: QueryList<FilelistComponent>
   onSplitterChange(e: any){
-    this.componentChildList.forEach(elementRef => elementRef.setTableSize);
+    this.componentChildList.forEach(elementRef => elementRef.setTableSize());
   }
   ngOnInit(): void {
     this.localPath = this.electonService.app.getAppPath();
@@ -120,5 +120,14 @@ export class SftpComponent implements OnInit {
     }
   }
   onRemoteFileOperation(e){
+    this.isSpinning = true;
+    if (e.type == 'updown'){
+      this.socket.download(this.localPath, this.remotePath, e.fileList, (progress, error) => {
+        if (error || progress == '100'){
+          this.isSpinning = false;
+          this.getLocalFiles(this.localPath);
+        }
+      })
+    }
   }
 }

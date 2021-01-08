@@ -124,7 +124,7 @@ function onClientConnectReq(socket, host, type) {
             })
         })
     } else if (type == 'ssh') {
-        myClient.sshConnect(host).then((stream => {
+        myClient.sshConnect(host).then((stream) => {
             socket.on('ssh-data', function(data) { stream.write(data); });
             socket.on('resize', function(rows, cols) { stream.setWindow(rows, cols); });
             socket.on('disconnect', function(reason) { sshconn.end(); });
@@ -133,7 +133,7 @@ function onClientConnectReq(socket, host, type) {
             stream.on('data', function(data) { socket.emit('ssh-data', data.toString('utf-8')); })
             stream.on('close', function(code, signal) { sshconn.end(); })
             socket.emit('ssh-conn-ack');
-        }))
+        })
     }
 }
 
@@ -163,7 +163,18 @@ function onUploadReq(socket, localPath, remotePath, fileList) {
         socket.emit('upload-ack', '100');
     }, (err) => {
         console.log(err);
-        socket.emit('upload-ack', '0', error);
+        socket.emit('upload-ack', '0', err);
+    })
+}
+
+function onDownloadReq(socket, localPath, remotePath, fileList) {
+    let myClient = socket.myClient;
+    myClient.sftpDownload(localPath, remotePath, fileList).then((result) => {
+        console.log('download success')
+        socket.emit('download-ack', '100');
+    }, (err) => {
+        console.log(err);
+        socket.emit('download-ack', '0', err);
     })
 }
 module.exports = function ssh(socket) {
@@ -173,5 +184,7 @@ module.exports = function ssh(socket) {
         onClientListDirReq(socket, dir);
     }).on('upload-req', function(localPath, remotePath, fileList) {
         onUploadReq(socket, localPath, remotePath, fileList);
+    }).on('download-req', function(localPath, remotePath, fileList) {
+        onDownloadReq(socket, localPath, remotePath, fileList);
     })
 }
