@@ -113,6 +113,19 @@ class MySSHClient extends SFTPClient {
             })
         })
     }
+    sshConnect(config) {
+        return new Promise((resolve, reject) => {
+            this._sshConnect(config).then((client) => {
+                this.client.shell({ term: 'xterm-color' }, (err, stream) => {
+                    if (err) {
+                        reject(err)
+                    } else {
+                        resolve(stream);
+                    }
+                })
+            })
+        })
+    }
     end() {
         if (this.firstClient)
             this.firstClient.end();

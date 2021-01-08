@@ -11,5 +11,5 @@ app-filelist {
 }
 
 ::ng-deep .as-split-gutter {
-    background-color: rgb(75, 75, 75);
+    background-color: rgb(75, 75, 75) !important;
 }

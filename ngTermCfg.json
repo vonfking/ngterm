@@ -1,0 +1,49 @@
+{
+    "title": "ROOT",
+    "type": "root",
+    "children": [
+        {
+            "title": "192.168.3.135",
+            "type": "host",
+            "ip": "192.168.3.135",
+            "port": 22,
+            "user": "ubuntu",
+            "pass": "vonf99",
+            "children": [
+                {
+                    "title": "172.17.0.1",
+                    "type": "subhost",
+                    "ip": "172.17.0.1",
+                    "port": 22,
+                    "user": "ubuntu",
+                    "pass": "vonf99",
+                    "children": [],
+                    "expanded": true,
+                    "selected": false,
+                    "key": 2,
+                    "isLeaf": false
+                },
+                {
+                    "title": "172.1.1.2",
+                    "type": "subhost",
+                    "ip": "172.1.1.2",
+                    "port": 22,
+                    "user": "ubuntu2",
+                    "pass": "vonf9912",
+                    "expanded": true,
+                    "key": 4,
+                    "isLeaf": true,
+                    "selected": false
+                }
+            ],
+            "expanded": true,
+            "selected": false,
+            "key": 1,
+            "isLeaf": false
+        }
+    ],
+    "expanded": true,
+    "key": 0,
+    "isLeaf": false,
+    "selected": false
+}

@@ -3,38 +3,36 @@
         <span class='listtype'>{{listType}}</span>
         <input nz-input [(ngModel)]="path" (keydown)="inputChanged($event)" />
         <nz-button-group style='text-align:right;'>
-            <button nz-button nzType="text" (click)="onRefresh()">
-            <i nz-icon><svg t="1607863882526" class="icon" viewBox="0 0 1111 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3166" width="16" height="16"><path d="M1044.527215 618.130152a19.253788 19.253788 0 0 0-23.489621 13.862727A472.87303 472.87303 0 0 1 116.49464 669.345228l120.913788 50.83a19.253788 19.253788 0 0 0 25.029924-10.397046 18.868712 18.868712 0 0 0-10.01197-25.029924L94.545322 618.130152H77.987064a10.01197 10.01197 0 0 0-3.465682 0l-2.310454 2.69553-2.310455 3.080606L0.971913 786.793334a18.868712 18.868712 0 0 0 11.937348 23.874696 15.788106 15.788106 0 0 0 7.316439 0 18.483636 18.483636 0 0 0 19.253788-9.241818l46.594167-110.516742a510.99553 510.99553 0 0 0 973.85659-50.444924 19.253788 19.253788 0 0 0-15.40303-22.334394zM1095.357215 207.254319a19.638864 19.638864 0 0 0-24.259773 12.7075L1040.676457 326.627804A510.99553 510.99553 0 0 0 68.36017 387.084697a19.253788 19.253788 0 0 0 13.862727 23.489622 19.638864 19.638864 0 0 0 23.489622-13.862728 472.487954 472.487954 0 0 1 904.928029-33.886666l-129.77053-38.507576a19.253788 19.253788 0 0 0-11.552273 38.507576l164.812424 50.059848h10.397046a20.409015 20.409015 0 0 0 5.776136-3.080606 18.483636 18.483636 0 0 0 6.161212-8.471666L1108.064715 233.054395a19.253788 19.253788 0 0 0-12.7075-25.800076z" p-id="3167" fill="#ffffff"></path></svg></i>
-        </button>
-            <button nz-button nzType="text" (click)="onUpdir()"><i nz-icon nzType="arrow-up" nzTheme="outline"></i></button>
-            <button nz-button nzType="text">
-            <i *ngIf="listType=='Local'"  nz-icon nzType="cloud-upload" mzTheme="outline"></i>
-            <i *ngIf="listType=='Remote'" nz-icon nzType="cloud-download" mzTheme="outline"></i>
+            <button nz-button nzType="text" (click)="onRefresh()"><i nz-icon nzType="sync" nzTheme="outline"></i></button>
+            <button nz-button nzType="text" (click)="onUpdir()"><i nz-icon nzType="arrow-left" nzTheme="outline"></i></button>
+            <button nz-button nzType="text" (click)="onFileOper('updown')">
+            <i *ngIf=" listType=='Local' "  nz-icon nzType="cloud-upload " mzTheme="outline "></i>
+            <i *ngIf="listType=='Remote' " nz-icon nzType="cloud-download " mzTheme="outline "></i>
         </button>
         </nz-button-group>
     </div>
-    <!--<nz-table #nzTable nzSize="small" [nzData]="files" [nzShowPagination]="false" [nzFrontPagination]="false" [nzScroll]="tableSize">-->
-    <nz-table #nzTable nzSize="small" [(nzData)]="files" [nzShowPagination]="false" [nzPageSize]="10000" [nzScroll]="tableSize">
+    <!--<nz-table #nzTable nzSize="small " [nzData]="files " [nzShowPagination]="false " [nzFrontPagination]="false " [nzScroll]="tableSize ">-->
+    <nz-table #nzTable nzSize="small " [(nzData)]="files " [nzShowPagination]="false " nzTableLayout="fixed" [nzPageSize]="10000 " [nzScroll]="tableSize ">
         <thead>
-            <tr appResizeTableCol>
-                <th [(nzChecked)]="allChecked" [nzIndeterminate]="indeterminate" [nzWidth]="'30px'" (nzCheckedChange)='checkAll($event)'></th>
-                <th [nzSortOrder]="null" [nzSortFn]="typeSortFn" [nzWidth]="'30px'"></th>
-                <th appResizeOneCol [nzSortOrder]="null" [nzSortFn]="nameSortFn">Name</th>
-                <th appResizeOneCol [nzSortOrder]="null" [nzSortFn]="sizeSortFn" [nzWidth]="'100px'">Size</th>
-                <th [nzSortOrder]="null" [nzSortFn]="timeSortFn" [nzWidth]="'200px'">Modify</th>
+            <tr>
+                <th [(nzChecked)]="allChecked " [nzIndeterminate]="indeterminate " [nzWidth]=" '30px' " (nzCheckedChange)='checkAll($event)'></th>
+                <th [nzSortFn]="typeSortFn " [nzWidth]=" '30px' "></th>
+                <th [nzSortFn]="nameSortFn " [nzWidth]="nameWidth">Name</th>
+                <th [nzSortFn]="sizeSortFn " [nzWidth]=" '100px' ">Size</th>
+                <th [nzSortFn]="timeSortFn " [nzWidth]=" '160px' ">Modify</th>
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let file of nzTable.data">
-                <td [(nzChecked)]="file.checked"></td>
+            <tr *ngFor="let file of nzTable.data ">
+                <td [(nzChecked)]="file.checked" (nzCheckedChange)="checkOne(file, $event)"></td>
                 <td>
                     <span (dblclick)='dblClick(file.type, file.name)'>
-                    <i *ngIf="file.type == 'd'"  nz-icon nzType="folder"></i>
-                    <i *ngIf="file.type == '-'" nz-icon nzType="file"></i>
-                    <i *ngIf="file.type == 'l'" nz-icon nzType="link" nzTheme="outline"></i>
+                    <i *ngIf="file.type=='d' "  nz-icon nzType="folder "></i>
+                    <i *ngIf="file.type=='-' " nz-icon nzType="file "></i>
+                    <i *ngIf="file.type=='l' " nz-icon nzType="link " nzTheme="outline "></i>
                 </span>
                 </td>
-                <td>{{ file.name }}</td>
+                <td nzEllipsis>{{ file.name }}</td>
                 <td>{{ file.size }}</td>
                 <td>{{ file.mtime }}</td>
             </tr>

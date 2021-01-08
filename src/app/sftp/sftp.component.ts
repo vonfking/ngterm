@@ -15,6 +15,7 @@ export class SftpComponent implements OnInit {
   remoteFiles=[]
   isLocalSpinning = false
   isRemoteSpinning = false
+  isSpinning = false
   constructor(private socketService: SocketService, private electonService: ElectronService) { }
 
   prefix(n){
@@ -34,10 +35,10 @@ export class SftpComponent implements OnInit {
     const S = t.getSeconds();
     return format.replace('yyyy', this.prefix(y))
     .replace('mm', this.prefix(m + 1))
-    .replace('dd', this.prefix(d + 1))
-    .replace('HH', this.prefix(H + 1))
-    .replace('MM', this.prefix(M + 1))
-    .replace('SS', this.prefix(S + 1))
+    .replace('dd', this.prefix(d))
+    .replace('HH', this.prefix(H))
+    .replace('MM', this.prefix(M))
+    .replace('SS', this.prefix(S))
   }
   getLocalFiles(dir){
     this.isLocalSpinning = true;
@@ -48,7 +49,7 @@ export class SftpComponent implements OnInit {
         var states = this.electonService.fs.statSync(this.electonService.path.join(dir, file.name));
         filelist.push({
           name: file.name,
-          type: states.isDirectory()?'dir':'file',
+          type: states.isDirectory()?'d':'-',
           size: states.size,
           mtime: this.formatTime(states.mtimeMs),
           checked: false
@@ -63,7 +64,7 @@ export class SftpComponent implements OnInit {
     this.isRemoteSpinning = true;
     this.socket.readDir(dir, (list) => {
       list.forEach(file => {
-        file.mtime = this.formatTime(file.mtime*1000);
+        file.mtime = this.formatTime(file.mtime);
       })
       this.remoteFiles = list;
       this.isRemoteSpinning = false;
@@ -74,6 +75,10 @@ export class SftpComponent implements OnInit {
   @Input('hostInfo')
   set _hostInfo(hostinfo: any){
     this.host = hostinfo;
+  }
+  @ViewChildren(FilelistComponent) componentChildList: QueryList<FilelistComponent>
+  onSplitterChange(e: any){
+    this.componentChildList.forEach(elementRef => elementRef.setTableSize);
   }
   ngOnInit(): void {
     this.localPath = this.electonService.app.getAppPath();
@@ -103,8 +108,17 @@ export class SftpComponent implements OnInit {
     }
     this.getRemoteFiles(this.remotePath);
   }
-  @ViewChildren(FilelistComponent) componentChildList: QueryList<FilelistComponent>
-  onSplitterChange(e: any){
-    this.componentChildList.forEach(elementRef => elementRef.setTableSize);
+  onLocalFileOperation(e){
+    this.isSpinning = true;
+    if (e.type == 'updown'){
+      this.socket.upload(this.localPath, this.remotePath, e.fileList, (progress, error) => {
+        if (error || progress == '100'){
+          this.isSpinning = false;
+          this.getRemoteFiles(this.remotePath);
+        }
+      })
+    }
+  }
+  onRemoteFileOperation(e){
   }
 }

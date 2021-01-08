@@ -32,6 +32,15 @@ export class Socket {
       cb(filelist);
     })
   }
+  upload(localPath:string, remotePath:string, fileList:any, cb:any){
+    this.socket.emit('upload-req', localPath, remotePath, fileList);
+    this.socket.on('upload-ack', (progress, error) => {
+      if (error || progress == '100'){
+        this.socket.removeListener('upload-ack');
+      }
+      cb(progress, error);
+    })
+  }
   sendMsg(msg: string){
     this.socket.emit('ssh-data', msg);
   }

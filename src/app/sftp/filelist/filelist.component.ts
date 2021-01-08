@@ -7,25 +7,32 @@ import { fromEvent } from 'rxjs';
   templateUrl: './filelist.component.html',
   styleUrls: ['./filelist.component.css']
 })
-export class FilelistComponent implements OnInit, AfterViewChecked {
+export class FilelistComponent implements OnInit, AfterViewChecked, AfterViewInit {
 
   @Input() listType:string;
   @Input() path:string;
   @Input() files:any[];
   @Input() isSpinning:boolean;
   @Output() pathChange = new EventEmitter<any>();
-  
+  @Output() fileOper = new EventEmitter<any>();
+
   allChecked = false;
   indeterminate = false;
   tableSize: any = {x: '100px', y: '100px'};
+  nameWidth = '300px';
   constructor() { }
 
   //@ViewChild('nzTable') nzTableComponent: any;//NzTableComponent<any>;
   @ViewChild('nzTable') nzTableComponent: any;//NzTableComponent<any>;
   setTableSize(){
+    let tabWidth = this.nzTableComponent.elementRef.nativeElement.parentNode.clientWidth - 4 - 10;//- padding - scoll-bar-width
+    let tabHeight= this.nzTableComponent.elementRef.nativeElement.parentNode.clientHeight- 32- 39;//- filelist-header - table-header
+    let nameWidth= tabWidth - 30 - 30 - 100 - 160;
+    if (nameWidth < 100)nameWidth = 100;
+    this.nameWidth = nameWidth + 'px';
     this.tableSize = {
-      x: (this.nzTableComponent.elementRef.nativeElement.parentNode.clientWidth - 4 - 10)+'px', //- padding - scoll-bar-width
-      y: (this.nzTableComponent.elementRef.nativeElement.parentNode.clientHeight-32-39)+'px'    //- filelist-header - table-header
+      x: (tabWidth)+'px', 
+      y: (tabHeight)+'px'    
     };
   }
   
@@ -33,7 +40,9 @@ export class FilelistComponent implements OnInit, AfterViewChecked {
     fromEvent(window, 'resize').subscribe((event)=>{
       this.setTableSize();
     })
-    
+  }
+  ngAfterViewInit(){
+    setTimeout(() => this.setTableSize())
   }
   ngAfterViewChecked(){    
     //setTimeout(()=>{this.checkCheckBoxChanged()}, 0);
@@ -52,6 +61,14 @@ export class FilelistComponent implements OnInit, AfterViewChecked {
   }
   onUpdir(){
     this.pathChange.emit({type:'relative', path:'..'})
+  }
+  onFileOper(type){
+    let fileList = [];
+    this.files.forEach((file) => {
+      if (file.checked){
+        fileList.push({type:type, fileList:fileList});
+      }
+    })
   }
   inputChanged(e){
     var evt = window.event || e;
@@ -74,6 +91,11 @@ export class FilelistComponent implements OnInit, AfterViewChecked {
   checkAll(value:boolean):void{
     this.files.forEach(file => {
       file.checked = value;
+      this.checkCheckBoxChanged();
     })
+  }
+  checkOne(file, checked: boolean){
+    file.checked = checked;
+    this.checkCheckBoxChanged();
   }
 }

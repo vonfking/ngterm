@@ -1,10 +1,12 @@
-<as-split direction="horizontal" gutterSize='4' (dragEnd)="onSplitterChange($event)">
-    <as-split-area [size]='50'>
-        <app-filelist listType='Local' [path]='localPath' [isSpinning]="isLocalSpinning" [files]="localFiles" (pathChange)='onLocalPathChange($event)'>
-        </app-filelist>
-    </as-split-area>
-    <as-split-area [size]='50'>
-        <app-filelist listType='Remote' [path]='remotePath' [isSpinning]="isRemoteSpinning" [files]="remoteFiles" (pathChange)='onRemotePathChange($event)'>
-        </app-filelist>
-    </as-split-area>
-</as-split>
+<nz-spin [nzSpinning]="isSpinning">
+    <as-split direction="horizontal" gutterSize='4' (dragEnd)="onSplitterChange($event)">
+        <as-split-area [size]='50'>
+            <app-filelist listType='Local' [path]='localPath' [isSpinning]="isLocalSpinning" [files]="localFiles" (pathChange)='onLocalPathChange($event)' (fileOper)='onLocalFileOperation($event)'>
+            </app-filelist>
+        </as-split-area>
+        <as-split-area [size]='50'>
+            <app-filelist listType='Remote' [path]='remotePath' [isSpinning]="isRemoteSpinning" [files]="remoteFiles" (pathChange)='onRemotePathChange($event)' (fileOper)='onRemoteFileOperation($event)'>
+            </app-filelist>
+        </as-split-area>
+    </as-split>
+</nz-spin>
