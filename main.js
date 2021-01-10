@@ -6,6 +6,61 @@ var url = require("url");
 var SSHClient = require('ssh2').Client;
 var win = null;
 var args = process.argv.slice(1), serve = args.some(function (val) { return val === '--serve'; });
+/*web socket init*/
+function webSocketInit() {
+    var server = require('http').createServer();
+    var io = require('socket.io')(server, { cors: {
+            orgin: '*',
+            methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
+            allowedHeaders: ['Origin', 'X-Requested-Width', 'Content-Type', 'Accept'],
+            credentials: true
+        } });
+    var ssh = require('./ssh');
+    io.on('connect', ssh);
+    server.listen({ host: '127.0.0.1', port: 9527 });
+    console.log("start ok");
+}
+function windowOperation(_win) {
+    var winStartPosition = { x: 0, y: 0 };
+    var mouseStartPosition = { x: 0, y: 0 };
+    var movingInterval = null;
+    electron_1.ipcMain.on('window-move', function (events, canMoving) {
+        if (canMoving) {
+            var winPosition = _win.getPosition();
+            winStartPosition = { x: winPosition[0], y: winPosition[1] };
+            mouseStartPosition = electron_1.screen.getCursorScreenPoint();
+            if (movingInterval) {
+                clearInterval(movingInterval);
+            }
+            movingInterval = setInterval(function () {
+                var cursorPosition = electron_1.screen.getCursorScreenPoint();
+                var x = winStartPosition.x + cursorPosition.x - mouseStartPosition.x;
+                var y = winStartPosition.y + cursorPosition.y - mouseStartPosition.y;
+                _win.setPosition(x, y, true);
+            }, 20);
+        }
+        else {
+            clearInterval(movingInterval);
+            movingInterval = null;
+        }
+    });
+    electron_1.ipcMain.on('window-min', function (e, args) {
+        _win.minimize();
+    });
+    electron_1.ipcMain.on('window-max', function (e, args) {
+        if (_win.isMaximized()) {
+            _win.unmaximize();
+        }
+        else {
+            _win.maximize();
+        }
+    });
+    electron_1.ipcMain.on('window-close', function (e, args) {
+        console.log('windowOper', args);
+        _win.close();
+        electron_1.app.quit();
+    });
+}
 function createWindow() {
     var electronScreen = electron_1.screen;
     var size = electronScreen.getPrimaryDisplay().workAreaSize;
@@ -45,6 +100,7 @@ function createWindow() {
         // when you should delete the corresponding element.
         win = null;
     });
+    windowOperation(win);
     return win;
 }
 try {
@@ -68,38 +124,10 @@ try {
             createWindow();
         }
     });
+    webSocketInit();
 }
 catch (e) {
     // Catch Error
     // throw e;
 }
-electron_1.ipcMain.on('windowOper', function (e, args) {
-    if (args == 'min') {
-        win.minimize();
-    }
-    else if (args == 'max') {
-        if (win.isMaximized()) {
-            win.unmaximize();
-        }
-        else {
-            win.maximize();
-        }
-    }
-    else if (args == 'close') {
-        console.log('windowOper', args);
-        //win.close();
-        electron_1.app.quit();
-    }
-});
-var server = require('http').createServer();
-var io = require('socket.io')(server, { cors: {
-        orgin: '*',
-        methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
-        allowedHeaders: ['Origin', 'X-Requested-Width', 'Content-Type', 'Accept'],
-        credentials: true
-    } });
-var ssh = require('./ssh');
-io.on('connect', ssh);
-server.listen({ host: '127.0.0.1', port: 9527 });
-console.log("start ok");
 //# sourceMappingURL=main.js.map

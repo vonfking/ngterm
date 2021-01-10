@@ -4,6 +4,10 @@ nz-spin {
     height: 100%;
 }
 
+::ng-deep .ant-spin-container {
+    width: 100%;
+}
+
 app-filelist {
     padding: 0px 2px;
     height: 100%;

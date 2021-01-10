@@ -1,4 +1,6 @@
 import { AfterViewChecked, AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzTableComponent } from 'ng-zorro-antd/table';
 import { fromEvent } from 'rxjs';
 
@@ -20,7 +22,10 @@ export class FilelistComponent implements OnInit, AfterViewChecked, AfterViewIni
   indeterminate = false;
   tableSize: any = {x: '100px', y: '100px'};
   nameWidth = '300px';
-  constructor() { }
+  constructor(private nzContexMenuService: NzContextMenuService, private message: NzMessageService) { }
+  contextMenu($event: MouseEvent, menu: NzDropdownMenuComponent): void {
+    this.nzContexMenuService.create($event, menu);
+  }
 
   //@ViewChild('nzTable') nzTableComponent: any;//NzTableComponent<any>;
   @ViewChild('nzTable') nzTableComponent: any;//NzTableComponent<any>;
@@ -52,23 +57,31 @@ export class FilelistComponent implements OnInit, AfterViewChecked, AfterViewIni
   dblClick(type:string, name:string){
     if (type == 'd'){
       console.log('dblclick', type, name);
+      this.filenameReset();
       this.pathChange.emit({type:'relative', path:name});
     }
   }
   onRefresh(){
     console.log('refresh', this.path);
+    this.filenameReset();
     this.pathChange.emit({type:'absolute', path:this.path});
   }
   onUpdir(){
+    this.filenameReset();
     this.pathChange.emit({type:'relative', path:'..'});
   }
-  onFileOper(type){
+  onFileBatchOper(type){
     let fileList = [];
     this.files.forEach((file) => {
       if (file.checked){
         fileList.push({type:file.type, name:file.name});
       }
     })
+    this.filenameReset();
+    if (fileList.length == 0){
+      this.message.create('error', 'No File selected!');
+      return;
+    }
     this.fileOper.emit({type:type, fileList:fileList});
   }
   inputChanged(e){
@@ -98,5 +111,36 @@ export class FilelistComponent implements OnInit, AfterViewChecked, AfterViewIni
   checkOne(file, checked: boolean){
     file.checked = checked;
     this.checkCheckBoxChanged();
+  }
+  /* rename */
+  private oldFileName: string;
+  private editIndex: number;
+  rename(index, filename){
+    this.oldFileName = filename;
+    this.editIndex = index;
+  }
+  isEditable(index){
+    return index === this.editIndex;
+  }
+  filenameReset(){
+    let i = this.editIndex;
+    this.editIndex = -1;
+    if (i == -1)return;
+    this.files[i] = this.oldFileName;
+  }
+  filenameChanged(e){
+    var evt = window.event || e;
+    if (evt.keyCode == 13){ //Enter
+      for( let i =0; i <  this.files.length; i++){
+        if (i != this.editIndex && this.files[i].name == this.oldFileName){
+          this.message.create('error', 'File Name duplicated!');
+          return;
+        }
+      }
+      this.fileOper.emit({type:'rename', oldname:this.oldFileName, newname: this.files[this.editIndex].name});
+      this.editIndex = -1;
+    }else if (evt.keyCode == 27){ //ESC
+      this.filenameReset();
+    }
   }
 }

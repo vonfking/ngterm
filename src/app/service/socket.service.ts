@@ -50,6 +50,12 @@ export class Socket {
       cb(progress, error);
     })
   }
+  rename(oldname:string, newname:string, cb:any){
+    this.socket.emit('rename-req', oldname, newname);
+    this.socket.once('rename-ack', (error) => {
+      cb(error);
+    })
+  }
   sendMsg(msg: string){
     this.socket.emit('ssh-data', msg);
   }

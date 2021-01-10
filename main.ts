@@ -7,6 +7,62 @@ let win: BrowserWindow = null;
 const args = process.argv.slice(1),
   serve = args.some(val => val === '--serve');
 
+/*web socket init*/
+function webSocketInit(){
+  const server = require('http').createServer();
+
+  var io = require('socket.io')(server, {cors: {
+      orgin: '*',
+      methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Origin', 'X-Requested-Width', 'Content-Type', 'Accept'],
+      credentials: true
+  }})
+  var ssh = require('./ssh')
+  io.on('connect', ssh);
+  
+  server.listen({host: '127.0.0.1', port: 9527});
+  console.log("start ok")
+}
+function windowOperation(_win){
+  let winStartPosition = {x: 0, y: 0};
+  let mouseStartPosition = {x: 0, y: 0};
+  let movingInterval = null;
+
+  ipcMain.on('window-move', (events, canMoving) => {
+    if (canMoving) {
+      const winPosition = _win.getPosition();
+      winStartPosition = {x: winPosition[0], y: winPosition[1]};
+      mouseStartPosition = screen.getCursorScreenPoint();
+      if (movingInterval) {
+        clearInterval(movingInterval);
+      }
+      movingInterval = setInterval(() => {
+        const cursorPosition = screen.getCursorScreenPoint();
+        const x = winStartPosition.x + cursorPosition.x - mouseStartPosition.x;
+        const y = winStartPosition.y + cursorPosition.y - mouseStartPosition.y;
+        _win.setPosition(x, y, true);
+      }, 20);
+    } else {
+      clearInterval(movingInterval);
+      movingInterval = null;
+    }
+  })
+  ipcMain.on('window-min', (e, args) => {
+      _win.minimize();
+  })
+  ipcMain.on('window-max', (e, args) => {
+    if (_win.isMaximized()) {
+      _win.unmaximize()
+    } else {
+      _win.maximize()
+    }
+  })
+  ipcMain.on('window-close', (e, args) => {
+    console.log('windowOper', args);
+    _win.close();
+    app.quit();
+  })
+}
 function createWindow(): BrowserWindow {
 
   const electronScreen = screen;
@@ -53,6 +109,7 @@ function createWindow(): BrowserWindow {
     win = null;
   });
 
+  windowOperation(win);
   return win;
 }
 
@@ -79,41 +136,9 @@ try {
       createWindow();
     }
   });
-
+  webSocketInit();
 } catch (e) {
   // Catch Error
   // throw e;
 }
 
-ipcMain.on('windowOper', (e, args) => {
-    
-    if (args == 'min'){
-      win.minimize();
-    }
-    else if (args == 'max'){
-      if (win.isMaximized()) {
-        win.unmaximize()
-      } else {
-        win.maximize()
-      }
-    }
-    else if (args == 'close'){
-      console.log('windowOper', args);
-      //win.close();
-      app.quit();
-    }
-})
-
-const server = require('http').createServer();
-
-var io = require('socket.io')(server, {cors: {
-    orgin: '*',
-    methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Origin', 'X-Requested-Width', 'Content-Type', 'Accept'],
-    credentials: true
-}})
-var ssh = require('./ssh')
-io.on('connect', ssh);
-
-server.listen({host: '127.0.0.1', port: 9527});
-console.log("start ok")

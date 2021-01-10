@@ -70,6 +70,6 @@ export class AppComponent implements OnInit, AfterViewInit{
   }
   windowOper(oper:string){
     console.log(oper);
-    this.electron.ipcRenderer.send('windowOper', oper);
+    this.electron.ipcRenderer.send(oper);
   }
 }

@@ -26,6 +26,8 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzMessageModule } from 'ng-zorro-antd/message';
+import { NzCardModule } from 'ng-zorro-antd/card';
 
 import { HostcfgComponent } from './hostcfg/hostcfg.component';
 import { BasicCfgComponent } from './hostcfg/basic-cfg/basic-cfg.component';
@@ -34,6 +36,8 @@ import { SftpComponent } from './sftp/sftp.component';
 import { FilelistComponent } from './sftp/filelist/filelist.component';
 import { ResizeTableColDirective } from './directive/resize-table-col.directive';
 import { ResizeOneColDirective } from './directive/resize-one-col.directive';
+import { WinOperationDirective } from './directive/win-operation.directive';
+import { HistoryComponent } from './history/history.component';
 registerLocaleData(en);
 
 @NgModule({
@@ -46,7 +50,9 @@ registerLocaleData(en);
     SftpComponent,
     FilelistComponent,
     ResizeTableColDirective,
-    ResizeOneColDirective
+    ResizeOneColDirective,
+    WinOperationDirective,
+    HistoryComponent
   ],
   imports: [
     BrowserModule,
@@ -56,7 +62,8 @@ registerLocaleData(en);
     NgTerminalModule,
     AngularSplitModule,
     NzLayoutModule, NzIconModule, NzMenuModule, NzTabsModule, NzModalModule, NzTreeModule, NzSpinModule,
-    NzFormModule, NzDropDownModule, NzInputModule, NzDividerModule, NzButtonModule, NzTableModule
+    NzFormModule, NzDropDownModule, NzInputModule, NzDividerModule, NzButtonModule, NzTableModule,
+    NzMessageModule, NzCardModule
   ],
   providers: [{ provide: NZ_I18N, useValue: en_US }],
   bootstrap: [AppComponent]

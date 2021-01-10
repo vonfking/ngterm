@@ -27,6 +27,11 @@ nz-table {
     align-items: center;
 }
 
+.btnlist {
+    display: flex;
+    align-items: center;
+}
+
 ::ng-deep .ant-table.ant-table-small .ant-table-thead>tr>th,
  ::ng-deep .ant-table.ant-table-small .ant-table-tbody>tr>td {
     padding: 2px 8px;

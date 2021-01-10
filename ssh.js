@@ -177,6 +177,17 @@ function onDownloadReq(socket, localPath, remotePath, fileList) {
         socket.emit('download-ack', '0', err);
     })
 }
+
+function onRenameReq(socket, oldname, newname) {
+    let myClient = socket.myClient;
+    myClient.rename(oldname, newname).then((result) => {
+        console.log('rename success')
+        socket.emit('rename-ack');
+    }, (err) => {
+        console.log(err);
+        socket.emit('rename-ack', 'rename failed');
+    })
+}
 module.exports = function ssh(socket) {
     socket.on('ssh-conn-req', function(host, type) {
         onClientConnectReq(socket, host, type);
@@ -186,5 +197,7 @@ module.exports = function ssh(socket) {
         onUploadReq(socket, localPath, remotePath, fileList);
     }).on('download-req', function(localPath, remotePath, fileList) {
         onDownloadReq(socket, localPath, remotePath, fileList);
+    }).on('rename-req', function(oldname, newname) {
+        onRenameReq(socket, oldname, newname);
     })
 }

@@ -93,16 +93,23 @@ export class SftpComponent implements OnInit {
   onLocalPathChange(e:any){
     console.log('recv change:', e);
     if (e.type == 'relative'){
-      this.localPath = this.electonService.path.join(this.localPath, e.path);
+      this.localPath = this.getRealPath(this.localPath, e.path);
     }else{
       this.localPath = e.path;
     }
     this.getLocalFiles(this.localPath);
   }
+  getRealPath(path, name, type='win'){
+    let _path = this.electonService.path.join(path, name);
+    if (type == 'linux'){
+      return _path.split(this.electonService.path.sep).join('/'); 
+    }
+    return _path;
+  }
   onRemotePathChange(e:any){
     console.log('recv change:', e);
     if (e.type == 'relative'){
-      this.remotePath = this.electonService.path.join(this.remotePath, e.path).split(this.electonService.path.sep).join('/');    
+      this.remotePath = this.getRealPath(this.remotePath, e.path, 'linux');    
     }else{
       this.remotePath = e.path;
     }
@@ -117,6 +124,11 @@ export class SftpComponent implements OnInit {
           this.getRemoteFiles(this.remotePath);
         }
       })
+    }else if (e.type == 'rename'){
+      let oldname = this.getRealPath(this.localPath, e.oldname);
+      let newname = this.getRealPath(this.localPath, e.newname);
+      this.electonService.fs.renameSync(oldname, newname);
+      this.isSpinning = false;
     }
   }
   onRemoteFileOperation(e){
@@ -128,6 +140,15 @@ export class SftpComponent implements OnInit {
           this.getLocalFiles(this.localPath);
         }
       })
+    }else if (e.type == 'rename'){
+      let oldname = this.getRealPath(this.remotePath, e.oldname, 'linux');
+      let newname = this.getRealPath(this.remotePath, e.newname, 'linux');
+      this.socket.rename(oldname, newname, (error) => {
+        if (error) {
+          this.getRemoteFiles(this.remotePath);
+        }
+        this.isSpinning = false;
+      });
     }
   }
 }

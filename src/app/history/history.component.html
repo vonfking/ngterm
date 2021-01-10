@@ -1,0 +1,11 @@
+<nz-card nzTitle="History">
+    <nz-card nzType="inner" nzTitle="Inner Card Title" [nzExtra]="extraTemplate">
+        <a>Inner Card Content</a>
+    </nz-card>
+    <nz-card nzType="inner" style="margin-top:16px;" nzTitle="Inner Card Title" [nzExtra]="extraTemplate">
+        <a>Inner Card Content</a>
+    </nz-card>
+</nz-card>
+<ng-template #extraTemplate>
+    <a>More</a>
+</ng-template>
