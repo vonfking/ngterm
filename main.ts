@@ -23,6 +23,7 @@ function webSocketInit(){
   server.listen({host: '127.0.0.1', port: 9527});
   console.log("start ok")
 }
+/*window operation*/
 function windowOperation(_win){
   let winStartPosition = {x: 0, y: 0};
   let mouseStartPosition = {x: 0, y: 0};
@@ -30,6 +31,9 @@ function windowOperation(_win){
 
   ipcMain.on('window-move', (events, canMoving) => {
     if (canMoving) {
+      if (_win.isMaximized()) {
+        _win.unmaximize()
+      }
       const winPosition = _win.getPosition();
       winStartPosition = {x: winPosition[0], y: winPosition[1]};
       mouseStartPosition = screen.getCursorScreenPoint();
@@ -70,10 +74,7 @@ function createWindow(): BrowserWindow {
 
   // Create the browser window.
   win = new BrowserWindow({
-    x: 0,
-    y: 0,
-    width: size.width,
-    height: size.height,
+    width: 800, height: 600,
     frame: false,
     webPreferences: {
       nodeIntegration: true,

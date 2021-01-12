@@ -38,6 +38,7 @@ nz-footer {
     padding: 0px;
     display: block;
     height: 100%;
+    border: 1px solid rgb(75, 75, 75);
 }
 
 ::ng-deep .ant-tabs {
@@ -52,10 +53,11 @@ nz-footer {
     padding: 0px;
 }
 
-::ng-deep .ant-tabs-top>.ant-tabs-nav {
-    margin: 0px;
+.main ::ng-deep .ant-tabs-tab-active {
+    border-top: 2px solid #800f19;
 }
 
-::ng-deep .ant-tabs-tab-active {
-    border-top: 2px solid #800f19;
+::ng-deep .ant-tabs-top>.ant-tabs-nav {
+    margin-top: 8px;
+    margin-left: 4px;
 }

@@ -12,6 +12,7 @@ export class ElectronService {
   ipcRenderer: typeof ipcRenderer;
   webFrame: typeof webFrame;
   remote: typeof remote;
+  screen: Electron.Screen;
   childProcess: typeof childProcess;
   fs: typeof fs;
   path: typeof path;
@@ -26,6 +27,7 @@ export class ElectronService {
       this.ipcRenderer = window.require('electron').ipcRenderer;
       this.webFrame = window.require('electron').webFrame;
       this.remote = window.require('electron').remote;
+      this.screen = this.remote.screen;
       this.app = this.remote.app;
       this.childProcess = window.require('child_process');
       this.fs = window.require('fs');
