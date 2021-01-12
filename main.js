@@ -20,12 +20,16 @@ function webSocketInit() {
     server.listen({ host: '127.0.0.1', port: 9527 });
     console.log("start ok");
 }
+/*window operation*/
 function windowOperation(_win) {
     var winStartPosition = { x: 0, y: 0 };
     var mouseStartPosition = { x: 0, y: 0 };
     var movingInterval = null;
     electron_1.ipcMain.on('window-move', function (events, canMoving) {
         if (canMoving) {
+            if (_win.isMaximized()) {
+                _win.unmaximize();
+            }
             var winPosition = _win.getPosition();
             winStartPosition = { x: winPosition[0], y: winPosition[1] };
             mouseStartPosition = electron_1.screen.getCursorScreenPoint();
@@ -60,16 +64,16 @@ function windowOperation(_win) {
         _win.close();
         electron_1.app.quit();
     });
+    electron_1.ipcMain.on('window-open-devtool', function (e, args) {
+        win.webContents.openDevTools();
+    });
 }
 function createWindow() {
     var electronScreen = electron_1.screen;
     var size = electronScreen.getPrimaryDisplay().workAreaSize;
     // Create the browser window.
     win = new electron_1.BrowserWindow({
-        x: 0,
-        y: 0,
-        width: size.width,
-        height: size.height,
+        width: 800, height: 600,
         frame: false,
         webPreferences: {
             nodeIntegration: true,

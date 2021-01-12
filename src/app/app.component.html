@@ -35,6 +35,14 @@
                 </nz-tab>
             </nz-tabset>
             <ng-template #extraTemplate>
+                <button nz-button nzType="text" nz-dropdown [nzDropdownMenu]="menuSystem"><i nz-icon nzType="menu" nzTheme="outline"></i></button>
+                <nz-dropdown-menu #menuSystem="nzDropdownMenu">
+                    <ul nz-menu>
+                        <li nz-menu-item><i nz-icon nzType="setting" nzTheme="outline"></i>Setting</li>
+                        <li nz-menu-item (click)="windowOper('window-open-devtool')"><i nz-icon nzType="tool" nzTheme="outline"></i>DevTool</li>
+                        <li nz-menu-item><i nz-icon nzType="question-circle" nzTheme="outline"></i>About</li>
+                    </ul>
+                </nz-dropdown-menu>
                 <button nz-button nzType="text" (click)="windowOper('window-min')"><i nz-icon><svg t="1607827494330" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7534" width="16" height="16"><path d="M512 1255.489906" p-id="7535" fill="#ffffff"></path><path d="M498.081951 943.76654" p-id="7536" fill="#ffffff"></path><path d="M772.963422 533.491105l-528.06716 0c-12.38297 0-22.514491-10.131521-22.514491-22.514491l0 0c0-12.38297 10.131521-22.514491 22.514491-22.514491l528.06716 0c12.38297 0 22.514491 10.131521 22.514491 22.514491l0 0C795.477913 523.359584 785.346392 533.491105 772.963422 533.491105z" p-id="7537" fill="#ffffff"></path></svg></i></button>
                 <button nz-button nzType="text" (click)="windowOper('window-max')"><i nz-icon><svg t="1607827232030" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6647" width="16" height="16"><path d="M832 832H192V192h640v640z m-597.333333-42.666667h554.666666V234.666667H234.666667v554.666666z" fill="#ffffff" p-id="6648"></path></svg></i></button>
                 <button nz-button nzType="text" (click)="windowOper('window-close')"><i nz-icon><svg t="1607827131591" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5949" width="16" height="16"><path d="M794.737778 284.444444l-56.32-56.888888-223.573334 223.573333L291.84 227.555556l-56.888889 56.888888 223.573333 223.004445-223.573333 223.573333 56.888889 56.32 223.004444-223.573333 223.573334 223.573333 56.32-56.32-223.573334-223.573333L794.737778 284.444444z" p-id="5950" fill="#ffffff"></path></svg></i></button>

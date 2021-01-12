@@ -66,6 +66,9 @@ function windowOperation(_win){
     _win.close();
     app.quit();
   })
+  ipcMain.on('window-open-devtool', (e, args) => {
+    win.webContents.openDevTools();
+  })
 }
 function createWindow(): BrowserWindow {
 
