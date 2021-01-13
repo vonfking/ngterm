@@ -60,6 +60,7 @@ export class TermComponent implements OnInit, AfterViewInit, AfterViewChecked, O
     this.xterm.open(this.terminalDiv.nativeElement);
     //this.fitAddon.fit();
     this.xterm.setOption('theme', theme);
+    this.xterm.setOption('fontFamily', "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace")
     this.xtermCore = (this.xterm as any)._core;
     
     this.socket.connect(this.host, 'ssh').subscribe((value: any) => {

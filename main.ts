@@ -77,7 +77,7 @@ function createWindow(): BrowserWindow {
 
   // Create the browser window.
   win = new BrowserWindow({
-    width: 800, height: 600,
+    width: 1000, height: 600,
     frame: false,
     webPreferences: {
       nodeIntegration: true,
@@ -88,16 +88,14 @@ function createWindow(): BrowserWindow {
   });
 
   if (serve) {
-
-    win.webContents.openDevTools();
-
+    //win.webContents.openDevTools();
     require('electron-reload')(__dirname, {
       electron: require(`${__dirname}/node_modules/electron`)
     });
     win.loadURL('http://localhost:4200');
 
   } else {
-    win.webContents.openDevTools();
+    //win.webContents.openDevTools();
     win.loadURL(url.format({
       pathname: path.join(__dirname, 'dist/ngterm/index.html'),
       protocol: 'file:',

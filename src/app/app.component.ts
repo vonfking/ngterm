@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnInit, ViewContainerRef } from '@angular/core';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { HostcfgComponent } from './hostcfg/hostcfg.component';
 import { DiagDragDropService } from './service/diag-drag-drop.service';
@@ -71,5 +71,15 @@ export class AppComponent implements OnInit, AfterViewInit{
   windowOper(oper:string){
     console.log(oper);
     this.electron.ipcRenderer.send(oper);
+  }
+  @HostListener('window:keydown', ['$event'])
+  handleKeyDown(event: KeyboardEvent) {
+    console.log(event.keyCode, event.key)
+    if (event.ctrlKey && event.keyCode == 9) {
+      this.selectedIndex += 1;
+      this.selectedIndex %= this.tablist.length + 1;
+    }else if (event.ctrlKey && event.keyCode >= 49 && event.keyCode <= 57 && event.keyCode-49<=this.tablist.length){
+      this.selectedIndex = event.keyCode-49;
+    }
   }
 }

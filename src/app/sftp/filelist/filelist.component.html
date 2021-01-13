@@ -5,16 +5,14 @@
         <nz-button-group class='btnlist' style='text-align:right;'>
             <button nz-button nzType="text" (click)="onRefresh()"><i nz-icon nzType="sync" nzTheme="outline"></i></button>
             <button nz-button nzType="text" (click)="onUpdir()"><i nz-icon nzType="arrow-left" nzTheme="outline"></i></button>
-            <button nz-button nzType="text" (click)="onFileBatchOper('updown')">
-                <i *ngIf="listType=='Local'"  nz-icon nzType="cloud-upload" mzTheme="outline"></i>
-                <i *ngIf="listType=='Remote'" nz-icon nzType="cloud-download" mzTheme="outline"></i>
-            </button>
-            <button nz-button nzType="text" nz-dropdown [nzDropdownMenu]="menuBatch">v</button>
+            <button nz-button nzType="text" nz-dropdown [nzDropdownMenu]="menuBatch"><i nz-icon nzType="more" nzTheme="outline"></i></button>
             <nz-dropdown-menu #menuBatch="nzDropdownMenu">
                 <ul nz-menu>
-                    <li nz-menu-item (click)="onFileBatchOper('delete')">New Directoy</li>
-                    <li nz-menu-item (click)="onFileBatchOper('delete')">New File</li>
-                    <li nz-menu-item (click)="onFileBatchOper('delete')">Delete</li>
+                    <li *ngIf="listType=='Local'" nz-menu-item (click)="onFileBatchOper('updown')"><i nz-icon nzType="cloud-upload" nzTheme="outline"></i>Upload</li>
+                    <li *ngIf="listType=='Remote'" nz-menu-item (click)="onFileBatchOper('updown')"><i nz-icon nzType="cloud-download" nzTheme="outline"></i>Download</li>
+                    <li nz-menu-item (click)="onFileBatchOper('delete')"><i nz-icon nzType="folder-add" nzTheme="outline"></i>New Directoy</li>
+                    <li nz-menu-item (click)="onFileBatchOper('delete')"><i nz-icon nzType="file-add" nzTheme="outline"></i>New File</li>
+                    <li nz-menu-item (click)="onFileBatchOper('delete')"><i nz-icon nzType="delete" nzTheme="outline"></i>Delete</li>
                 </ul>
             </nz-dropdown-menu>
         </nz-button-group>
@@ -44,8 +42,8 @@
                     <td nzEllipsis (contextmenu)="contextMenu($event, operMenu)">{{ file.name }}</td>
                     <nz-dropdown-menu #operMenu="nzDropdownMenu">
                         <ul nz-menu>
-                            <li nz-menu-item (click)="rename(i, file.name)">Rename</li>
-                            <li nz-menu-item (click)="rename(1, '')">Delete</li>
+                            <li nz-menu-item (click)="rename(i, file.name)"><i nz-icon nzType="edit" nzTheme="outline"></i>Rename</li>
+                            <li nz-menu-item (click)="rename(1, '')"><i nz-icon nzType="delete" nzTheme="outline"></i>Delete</li>
                         </ul>
                     </nz-dropdown-menu>
                 </ng-container>
