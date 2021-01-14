@@ -127,11 +127,11 @@ function onClientConnectReq(socket, host, type) {
         myClient.sshConnect(host).then((stream) => {
             socket.on('ssh-data', function(data) { stream.write(data); });
             socket.on('resize', function(rows, cols) { stream.setWindow(rows, cols); });
-            socket.on('disconnect', function(reason) { sshconn.end(); });
-            socket.on('error', function(err) { sshconn.end(); });
+            socket.on('disconnect', function(reason) { myClient.end(); });
+            socket.on('error', function(err) { myClient.end(); });
 
             stream.on('data', function(data) { socket.emit('ssh-data', data.toString('utf-8')); })
-            stream.on('close', function(code, signal) { sshconn.end(); })
+            stream.on('close', function(code, signal) { socket.emit('ssh-conn-close'); })
             socket.emit('ssh-conn-ack');
         })
     }

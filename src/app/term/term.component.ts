@@ -1,10 +1,10 @@
-import { ThrowStmt } from '@angular/compiler';
-import { AfterViewChecked, AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, Output, ViewChild, EventEmitter } from '@angular/core';
 import { NgTerminal, DisplayOption } from 'ng-terminal';
 import { Socket, SocketService } from '../service/socket.service';
 import { Terminal, ITheme } from "xterm";
 import { ElectronService } from '../service/electron.service';
 import { FitAddon } from 'xterm-addon-fit';
+import { interval } from 'rxjs';
 
 
 @Component({
@@ -21,30 +21,25 @@ export class TermComponent implements OnInit, AfterViewInit, AfterViewChecked, O
   xtermCore: any;
   rows:any;
   cols:any;
+  recvNewData = false;
   
   @Input('hostInfo')
   set _hostInfo(hostinfo: any){
     this.host = hostinfo;
   }
+  @Output() onNewData = new EventEmitter<any>();
   constructor(private socketService: SocketService, private electron: ElectronService) { this.socket = socketService.newSocket(); }
 
   @ViewChild('terminal', {static: true}) terminalDiv:ElementRef;
   
   ngOnInit(): void {
-    /*this.xtermDataSource = new Observable(observer => {  
-      
-      this.electron.ipcRenderer.send('SSH', {
-        host: '192.168.3.135',
-        port: 22,
-        username: 'ubuntu',
-        password: 'vonf99'
-      });
-      this.electron.ipcRenderer.on('DATA', (e, data)=>{
-        observer.next(data);  
-      });
-      
-      
-    });*/
+    let timer = interval(100);
+    timer.subscribe(t => {
+      if (this.recvNewData){
+        this.onNewData.emit();
+        this.recvNewData = false;
+      }
+    })
   }
   ngAfterViewInit(): void {
     const theme: ITheme = {
@@ -70,6 +65,7 @@ export class TermComponent implements OnInit, AfterViewInit, AfterViewChecked, O
           this.socket.sendMsg(input);
          });
       }else{
+        this.recvNewData = true;
         this.xterm.write(value.data);
       }
     });

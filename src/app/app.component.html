@@ -22,15 +22,26 @@
             </ul>
         </nz-sider-->
         <nz-content>
-            <nz-tabset appWinOperation nzSize='small' [(nzSelectedIndex)]='selectedIndex' nzType='editable-card' (nzAdd)='newTab()' (nzClose)='closeTab($event)' [nzTabBarExtraContent]="extraTemplate">
+            <nz-tabset appWinOperation nzSize='small' nzType='editable-card' [(nzSelectedIndex)]='selectedIndex' [nzTabBarExtraContent]="extraTemplate" (nzAdd)='newTab()' (nzClose)='closeTab($event)' (nzSelectedIndexChange)='onSelectTabChange($event -1)'>
                 <nz-tab nzTitle='Home'>
                     <app-history></app-history>
                 </nz-tab>
-                <nz-tab *ngFor='let tab of tablist; let i=index' nzClosable [nzTitle]="titleTemplate">
+                <nz-tab *ngFor='let tab of tablist; let i=index' nzClosable [nzTitle]="titleTemplate" (nzContextmenu)="contextMenu($event, tabMenu)">
                     <ng-template #titleTemplate>
-                        <i nz-icon [nzType]="tab.icon"></i> {{ getTitle(tab.host) }}
+                        <nz-badge [nzDot]="tab.dot">
+                            <i nz-icon [nzType]="tab.icon"></i>
+                        </nz-badge>
+                        {{ tab.title }}
                     </ng-template>
-                    <app-term *ngIf="tab.type=='ssh'" [hostInfo]='tab.host'></app-term>
+                    <nz-dropdown-menu #tabMenu="nzDropdownMenu">
+                        <ul nz-menu>
+                            <li nz-menu-item (click)="dupTab(tab, 'ssh')"><i nz-icon nzType="copy" nzTheme="outline"></i>Duplicate(SSH)</li>
+                            <li nz-menu-item (click)="dupTab(tab, 'sftp')"><i nz-icon nzType="copy" nzTheme="outline"></i>Duplicate(SFTP)</li>
+                            <li nz-menu-item><i nz-icon nzType="edit" nzTheme="outline"></i>Rename</li>
+                            <li nz-menu-item (click)="closeTab({index: i+1})"><i nz-icon nzType="close" nzTheme="outline"></i>Close</li>
+                        </ul>
+                    </nz-dropdown-menu>
+                    <app-term *ngIf="tab.type=='ssh'" [hostInfo]='tab.host' (onNewData)='onTabRecvNewData(i)'></app-term>
                     <app-sftp *ngIf="tab.type=='sftp'" [hostInfo]='tab.host'></app-sftp>
                 </nz-tab>
             </nz-tabset>

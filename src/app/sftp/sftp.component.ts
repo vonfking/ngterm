@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { ElectronService } from '../service/electron.service';
 import { Socket, SocketService } from '../service/socket.service';
 import { FilelistComponent } from './filelist/filelist.component';
@@ -8,7 +8,7 @@ import { FilelistComponent } from './filelist/filelist.component';
   templateUrl: './sftp.component.html',
   styleUrls: ['./sftp.component.css']
 })
-export class SftpComponent implements OnInit {
+export class SftpComponent implements OnInit, OnDestroy {
   localPath  = 'C:\\';
   remotePath = '/';
   localFiles =[]
@@ -89,7 +89,9 @@ export class SftpComponent implements OnInit {
       this.getRemoteFiles(path);
     });
   }
-
+  ngOnDestroy(): void{
+    this.socket.disconnect();
+  }
   onLocalPathChange(e:any){
     console.log('recv change:', e);
     if (e.type == 'relative'){

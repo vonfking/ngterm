@@ -28,6 +28,7 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzMessageModule } from 'ng-zorro-antd/message';
 import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzBadgeModule } from 'ng-zorro-antd/badge';
 
 import { HostcfgComponent } from './hostcfg/hostcfg.component';
 import { BasicCfgComponent } from './hostcfg/basic-cfg/basic-cfg.component';
@@ -63,7 +64,7 @@ registerLocaleData(en);
     AngularSplitModule,
     NzLayoutModule, NzIconModule, NzMenuModule, NzTabsModule, NzModalModule, NzTreeModule, NzSpinModule,
     NzFormModule, NzDropDownModule, NzInputModule, NzDividerModule, NzButtonModule, NzTableModule,
-    NzMessageModule, NzCardModule
+    NzMessageModule, NzCardModule, NzBadgeModule
   ],
   providers: [{ provide: NZ_I18N, useValue: en_US }],
   bootstrap: [AppComponent]

@@ -1,4 +1,5 @@
 import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnInit, ViewContainerRef } from '@angular/core';
+import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { HostcfgComponent } from './hostcfg/hostcfg.component';
 import { DiagDragDropService } from './service/diag-drag-drop.service';
@@ -18,7 +19,12 @@ export class AppComponent implements OnInit, AfterViewInit{
     private viewContainerRef: ViewContainerRef, 
     private diagDragDrop: DiagDragDropService, 
     private electron: ElectronService,
-    private cd: ChangeDetectorRef) {}
+    private cd: ChangeDetectorRef,
+    private nzContexMenuService: NzContextMenuService) {}
+  
+  contextMenu($event: MouseEvent, menu: NzDropdownMenuComponent): void {
+    this.nzContexMenuService.create($event, menu);
+  }
   
   ngOnInit(){
     document.addEventListener('contextmenu',function(e){
@@ -27,6 +33,16 @@ export class AppComponent implements OnInit, AfterViewInit{
   }
   ngAfterViewInit() {
     this.cd.detectChanges();
+  }
+  getIconByType(type){
+    return type == 'ssh' ? 'code' : 'read';
+  }
+  getTitle(host: any){
+    if (host.child){
+      return this.getTitle(host.child);
+    }else{
+      return host.ip;
+    }
   }
   closeTab({index}: {index: number}): void {
     this.tablist.splice(index - 1, 1);
@@ -50,23 +66,32 @@ export class AppComponent implements OnInit, AfterViewInit{
     // Return a result when closed
     modal.afterClose.subscribe(result => {
       if (result){
-        if (result.type=='ssh')
-          result.icon = 'apple';
-        else
-          result.icon = 'android';
+        result.icon = this.getIconByType(result.type);
+        result.title= this.getTitle(result.host);
+        result.dot  = false;
         this.tablist.push(result);
         this.selectedIndex = this.tablist.length;  
       }
     });
-    
   }
-
-  getTitle(host: any){
-    if (host.child){
-      return this.getTitle(host.child);
-    }else{
-      return host.ip;
+  dupTab(tab, type){
+    let newTab = {
+      type : type,
+      dot  : false,
+      host : tab.host,
+      icon : this.getIconByType(type),
+      title: this.getTitle(tab.host)
     }
+    this.tablist.push(newTab);
+    this.selectedIndex = this.tablist.length;
+  }
+  onTabRecvNewData(index){
+    if (this.selectedIndex != index + 1){
+      this.tablist[index].dot = true;
+    }
+  }
+  onSelectTabChange(index){
+    this.tablist[index].dot = false;
   }
   windowOper(oper:string){
     console.log(oper);

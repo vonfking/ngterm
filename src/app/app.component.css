@@ -61,3 +61,7 @@ nz-footer {
     margin-top: 8px;
     margin-left: 4px;
 }
+
+::ng-deep .ant-tabs-tab .anticon {
+    margin-right: 2px;
+}
