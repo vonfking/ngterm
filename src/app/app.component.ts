@@ -4,11 +4,13 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { HostcfgComponent } from './hostcfg/hostcfg.component';
 import { DiagDragDropService } from './service/diag-drag-drop.service';
 import { ElectronService } from './service/electron.service';
+import { NotifyService } from './service/notify.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  providers: [NotifyService]
 })
 export class AppComponent implements OnInit, AfterViewInit{
   isCollapsed = true;
@@ -20,7 +22,8 @@ export class AppComponent implements OnInit, AfterViewInit{
     private diagDragDrop: DiagDragDropService, 
     private electron: ElectronService,
     private cd: ChangeDetectorRef,
-    private nzContexMenuService: NzContextMenuService) {}
+    private nzContexMenuService: NzContextMenuService,
+    private notify: NotifyService) {}
   
   contextMenu($event: MouseEvent, menu: NzDropdownMenuComponent): void {
     this.nzContexMenuService.create($event, menu);
@@ -35,17 +38,56 @@ export class AppComponent implements OnInit, AfterViewInit{
     this.cd.detectChanges();
   }
   getIconByType(type){
-    return type == 'ssh' ? 'code' : 'read';
+    return type == 'ssh' ? 'code' : (type == 'sftp' ? 'read' : 'windows');
   }
-  getTitle(host: any){
+  getOriginTitle(host: any){
+    if (host == null) return 'Local Terminal';
     if (host.child){
-      return this.getTitle(host.child);
+      return this.getOriginTitle(host.child);
     }else{
       return host.ip;
     }
   }
+  getInitalTitle(title, index){
+    if (index == 0) return title;
+    else return title + '(' + index + ')';
+  }
+  getTitleIndex(type, origin_title): number {
+    let index = 0;
+    let used_index = {};
+    for (let i = 0; i < this.tablist.length; i++){
+      let tab = this.tablist[i];
+      if (tab.origin_title == origin_title && tab.type == type){
+        if (tab.title != this.getInitalTitle(tab.origin_title, tab.title_index)){
+          return tab.index;
+        }
+        used_index[tab.title_index] = true;
+        index += 1;
+      }
+    }
+    for (let i=0; i< index; i++){
+      if (!used_index[i])
+        return i;
+    }
+    return index;
+  }
   closeTab({index}: {index: number}): void {
     this.tablist.splice(index - 1, 1);
+  }
+  addTab(tab: {type:string, host:any}){
+    let origin_title = this.getOriginTitle(tab.host);
+    let title_index  = this.getTitleIndex(tab.type, origin_title);
+    let newTab = {
+      type : tab.type,
+      dot  : false,
+      host : tab.host,
+      icon : this.getIconByType(tab.type),
+      origin_title: origin_title,
+      title_index: title_index,
+      title: this.getInitalTitle(origin_title, title_index)
+    }
+    this.tablist.push(newTab);
+    this.selectedIndex = this.tablist.length;
   }
   newTab(): void{
     const modal = this.modal.create({
@@ -65,25 +107,14 @@ export class AppComponent implements OnInit, AfterViewInit{
     modal.afterOpen.subscribe(() => this.diagDragDrop.setDragDrop(modal));
     // Return a result when closed
     modal.afterClose.subscribe(result => {
-      if (result){
-        result.icon = this.getIconByType(result.type);
-        result.title= this.getTitle(result.host);
-        result.dot  = false;
-        this.tablist.push(result);
-        this.selectedIndex = this.tablist.length;  
-      }
+      if (result)this.addTab(result);
     });
   }
   dupTab(tab, type){
-    let newTab = {
-      type : type,
-      dot  : false,
-      host : tab.host,
-      icon : this.getIconByType(type),
-      title: this.getTitle(tab.host)
-    }
-    this.tablist.push(newTab);
-    this.selectedIndex = this.tablist.length;
+    this.addTab({type: type, host: tab.host});
+  }
+  newLocalShell(){
+    this.addTab({type: 'local', host: null});
   }
   onTabRecvNewData(index){
     if (this.selectedIndex != index + 1){
@@ -91,7 +122,10 @@ export class AppComponent implements OnInit, AfterViewInit{
     }
   }
   onSelectTabChange(index){
-    this.tablist[index].dot = false;
+    if (index > 0){
+      this.tablist[index - 1].dot = false;
+      this.notify.emitMainTabIndexChange(index - 1);
+    }
   }
   windowOper(oper:string){
     console.log(oper);

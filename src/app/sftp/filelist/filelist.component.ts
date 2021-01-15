@@ -1,15 +1,17 @@
-import { AfterViewChecked, AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { TouchBarSlider } from 'electron';
 import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzTableComponent } from 'ng-zorro-antd/table';
-import { fromEvent } from 'rxjs';
+import { fromEvent, Subscription } from 'rxjs';
+import { NotifyService } from 'src/app/service/notify.service';
 
 @Component({
   selector: 'app-filelist',
   templateUrl: './filelist.component.html',
   styleUrls: ['./filelist.component.css']
 })
-export class FilelistComponent implements OnInit, AfterViewChecked, AfterViewInit {
+export class FilelistComponent implements OnInit, OnDestroy,AfterViewChecked, AfterViewInit {
 
   @Input() listType:string;
   @Input() path:string;
@@ -22,7 +24,9 @@ export class FilelistComponent implements OnInit, AfterViewChecked, AfterViewIni
   indeterminate = false;
   tableSize: any = {x: '100px', y: '100px'};
   nameWidth = '300px';
-  constructor(private nzContexMenuService: NzContextMenuService, private message: NzMessageService) { }
+  subscription: Subscription;
+
+  constructor(private notify: NotifyService, private nzContexMenuService: NzContextMenuService, private message: NzMessageService) { }
   contextMenu($event: MouseEvent, menu: NzDropdownMenuComponent): void {
     this.nzContexMenuService.create($event, menu);
   }
@@ -39,12 +43,22 @@ export class FilelistComponent implements OnInit, AfterViewChecked, AfterViewIni
       x: (tabWidth)+'px', 
       y: (tabHeight)+'px'    
     };
+    let el_table_body = this.nzTableComponent.elementRef.nativeElement.getElementsByClassName('ant-table-body');
+    if (el_table_body && el_table_body.length > 0){
+      el_table_body[0].style.height = tabHeight + 'px';
+    }
   }
   
   ngOnInit(): void {
     fromEvent(window, 'resize').subscribe((event)=>{
       this.setTableSize();
     })
+    this.subscription = this.notify.onSftpWindowChange(() => {
+      this.setTableSize();
+    })
+  }
+  ngOnDestroy(){
+    this.subscription.unsubscribe();
   }
   ngAfterViewInit(){
     setTimeout(() => this.setTableSize());

@@ -22,8 +22,9 @@
             </ul>
         </nz-sider-->
         <nz-content>
-            <nz-tabset appWinOperation nzSize='small' nzType='editable-card' [(nzSelectedIndex)]='selectedIndex' [nzTabBarExtraContent]="extraTemplate" (nzAdd)='newTab()' (nzClose)='closeTab($event)' (nzSelectedIndexChange)='onSelectTabChange($event -1)'>
+            <nz-tabset appWinOperation nzSize='small' nzType='editable-card' [(nzSelectedIndex)]='selectedIndex' [nzTabBarExtraContent]="extraTemplate" (nzAdd)='newTab()' (nzClose)='closeTab($event)' (nzSelectedIndexChange)='onSelectTabChange($event)'>
                 <nz-tab nzTitle='Home'>
+                    <button nz-button nztype="primary" (click)="newLocalShell()"><i nz-icon nztype="windows" nztheme="outline"></i></button>
                     <app-history></app-history>
                 </nz-tab>
                 <nz-tab *ngFor='let tab of tablist; let i=index' nzClosable [nzTitle]="titleTemplate" (nzContextmenu)="contextMenu($event, tabMenu)">
@@ -35,14 +36,15 @@
                     </ng-template>
                     <nz-dropdown-menu #tabMenu="nzDropdownMenu">
                         <ul nz-menu>
-                            <li nz-menu-item (click)="dupTab(tab, 'ssh')"><i nz-icon nzType="copy" nzTheme="outline"></i>Duplicate(SSH)</li>
-                            <li nz-menu-item (click)="dupTab(tab, 'sftp')"><i nz-icon nzType="copy" nzTheme="outline"></i>Duplicate(SFTP)</li>
+                            <li *ngIf="tab.type=='ssh' || tab.type=='sftp'" nz-menu-item (click)="dupTab(tab, 'ssh')"><i nz-icon nzType="copy" nzTheme="outline"></i>Duplicate(SSH)</li>
+                            <li *ngIf="tab.type=='ssh' || tab.type=='sftp'" nz-menu-item (click)="dupTab(tab, 'sftp')"><i nz-icon nzType="copy" nzTheme="outline"></i>Duplicate(SFTP)</li>
+                            <li *ngIf="tab.type=='local'" nz-menu-item (click)="dupTab(tab, 'local')"><i nz-icon nzType="copy" nzTheme="outline"></i>Duplicate</li>
                             <li nz-menu-item><i nz-icon nzType="edit" nzTheme="outline"></i>Rename</li>
                             <li nz-menu-item (click)="closeTab({index: i+1})"><i nz-icon nzType="close" nzTheme="outline"></i>Close</li>
                         </ul>
                     </nz-dropdown-menu>
-                    <app-term *ngIf="tab.type=='ssh'" [hostInfo]='tab.host' (onNewData)='onTabRecvNewData(i)'></app-term>
-                    <app-sftp *ngIf="tab.type=='sftp'" [hostInfo]='tab.host'></app-sftp>
+                    <app-term *ngIf="tab.type=='ssh' || tab.type=='local'" [termType]='tab.type' [tabIndex]='i' [hostInfo]='tab.host' (onNewData)='onTabRecvNewData(i)'></app-term>
+                    <app-sftp *ngIf="tab.type=='sftp'" [tabIndex]='i' [hostInfo]='tab.host'></app-sftp>
                 </nz-tab>
             </nz-tabset>
             <ng-template #extraTemplate>

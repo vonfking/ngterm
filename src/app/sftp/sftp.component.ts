@@ -1,5 +1,6 @@
 import { Component, Input, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { ElectronService } from '../service/electron.service';
+import { NotifyService } from '../service/notify.service';
 import { Socket, SocketService } from '../service/socket.service';
 import { FilelistComponent } from './filelist/filelist.component';
 
@@ -16,7 +17,7 @@ export class SftpComponent implements OnInit, OnDestroy {
   isLocalSpinning = false
   isRemoteSpinning = false
   isSpinning = false
-  constructor(private socketService: SocketService, private electonService: ElectronService) { }
+  constructor(private notify: NotifyService, private socketService: SocketService, private electonService: ElectronService) { }
 
   prefix(n){
     const str = '' + n;
@@ -76,9 +77,11 @@ export class SftpComponent implements OnInit, OnDestroy {
   set _hostInfo(hostinfo: any){
     this.host = hostinfo;
   }
+  @Input() tabIndex: number;
   @ViewChildren(FilelistComponent) componentChildList: QueryList<FilelistComponent>
   onSplitterChange(e: any){
-    this.componentChildList.forEach(elementRef => elementRef.setTableSize());
+    //this.componentChildList.forEach(elementRef => elementRef.setTableSize());
+    this.notify.emitSftpWindowChange();
   }
   ngOnInit(): void {
     this.localPath = this.electonService.app.getAppPath();

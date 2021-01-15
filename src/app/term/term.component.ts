@@ -4,7 +4,8 @@ import { Socket, SocketService } from '../service/socket.service';
 import { Terminal, ITheme } from "xterm";
 import { ElectronService } from '../service/electron.service';
 import { FitAddon } from 'xterm-addon-fit';
-import { interval } from 'rxjs';
+import { interval, Subscription } from 'rxjs';
+import { NotifyService } from '../service/notify.service';
 
 
 @Component({
@@ -22,13 +23,18 @@ export class TermComponent implements OnInit, AfterViewInit, AfterViewChecked, O
   rows:any;
   cols:any;
   recvNewData = false;
+  subscription: Subscription;
   
   @Input('hostInfo')
   set _hostInfo(hostinfo: any){
     this.host = hostinfo;
   }
+  @Input() tabIndex: number;
+  @Input() termType: string;
   @Output() onNewData = new EventEmitter<any>();
-  constructor(private socketService: SocketService, private electron: ElectronService) { this.socket = socketService.newSocket(); }
+  constructor(private notify: NotifyService, private socketService: SocketService, private electron: ElectronService) { 
+    this.socket = socketService.newSocket(); 
+  }
 
   @ViewChild('terminal', {static: true}) terminalDiv:ElementRef;
   
@@ -58,7 +64,7 @@ export class TermComponent implements OnInit, AfterViewInit, AfterViewChecked, O
     this.xterm.setOption('fontFamily', "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace")
     this.xtermCore = (this.xterm as any)._core;
     
-    this.socket.connect(this.host, 'ssh').subscribe((value: any) => {
+    this.socket.connect(this.host, this.termType).subscribe((value: any) => {
       if (value.key == 'ssh-conn-ack'){
         this.resizeHandler();
         this.xterm.onData((input) => {
@@ -70,6 +76,9 @@ export class TermComponent implements OnInit, AfterViewInit, AfterViewChecked, O
       }
     });
     setTimeout(() => this.xterm.focus());
+    this.subscription = this.notify.onMainTabIndexChange((index) => {
+      if (index == this.tabIndex) this.xterm.focus();
+    })
   }
   resizeHandler = () => {
     try {
@@ -87,7 +96,7 @@ export class TermComponent implements OnInit, AfterViewInit, AfterViewChecked, O
 
             if (!isNaN(cols) && !isNaN(rows)) {
                 this.xterm.resize(cols, rows)
-                this.socket.resize(rows, cols);
+                this.socket.resize(cols, rows);
             }
         }
     } catch (e) {
@@ -116,6 +125,7 @@ export class TermComponent implements OnInit, AfterViewInit, AfterViewChecked, O
   }
   ngOnDestroy(): void{
     this.socket.disconnect();
+    this.subscription.unsubscribe();
     window.removeEventListener('resize', this.resizeHandler);
   }
 }
