@@ -16,11 +16,17 @@ function onClientConnectReq(socket, host, type) {
         myClient.sshConnect(host).then((stream) => {
             socket.on('ssh-data', function(data) { stream.write(data); });
             socket.on('resize', function(cols, rows) { stream.setWindow(rows, cols); });
-            socket.on('disconnect', function(reason) { myClient.end(); });
+            socket.on('disconnect', function(reason) {
+                console.log("ssh disconnect", reason)
+                myClient.end();
+            });
             socket.on('error', function(err) { myClient.end(); });
 
             stream.on('data', function(data) { socket.emit('ssh-data', data.toString('utf-8')); })
-            stream.on('close', function(code, signal) { socket.emit('ssh-conn-close'); })
+            stream.on('close', function(code, signal) {
+                console.log("ssh closed", reason)
+                socket.emit('ssh-conn-close');
+            })
             socket.emit('ssh-conn-ack');
         })
     }
@@ -40,6 +46,10 @@ function onLocalShellReq(socket) {
     })
     socket.on('resize', (cols, rows) => ptyProcess.resize(cols, rows));
     socket.on('ssh-data', (data) => ptyProcess.write(data));
+    socket.on('disconnect', function(reason) {
+        console.log("local disconnect", reason)
+        ptyProcess.end();
+    });
 }
 
 function onClientListDirReq(socket, dir) {
@@ -94,6 +104,9 @@ function onRenameReq(socket, oldname, newname) {
     })
 }
 module.exports = function ssh(socket) {
+    socket.onAny((event, ...args) => {
+        console.log(`got ${event}`);
+    });
     socket.on('ssh-conn-req', function(host, type) {
         if (type == 'local') onLocalShellReq(socket);
         else onClientConnectReq(socket, host, type);

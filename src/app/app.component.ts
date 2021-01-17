@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnInit, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { HostcfgComponent } from './hostcfg/hostcfg.component';
@@ -12,7 +12,7 @@ import { NotifyService } from './service/notify.service';
   styleUrls: ['./app.component.css'],
   providers: [NotifyService]
 })
-export class AppComponent implements OnInit, AfterViewInit{
+export class AppComponent implements OnInit, OnDestroy, AfterViewInit{
   isCollapsed = true;
   tablist = [];
   selectedIndex = 0;
@@ -33,6 +33,9 @@ export class AppComponent implements OnInit, AfterViewInit{
     document.addEventListener('contextmenu',function(e){
       e.preventDefault();
     })
+  }
+  ngOnDestroy(){
+    this.tablist = [];
   }
   ngAfterViewInit() {
     this.cd.detectChanges();
