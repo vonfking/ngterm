@@ -1,0 +1,22 @@
+<nz-layout class='main'>
+    <nz-sider nzCollapsible [nzCollapsed]="true" [nzTrigger]="null">
+        <div class="btn-list">
+            <button nz-button nzSize="large" nzShape="round" (click)="openLocalTerm()"><i nz-icon nzType="unordered-list"></i></button>
+            <button nz-button nzSize="large" nzShape="round" (click)="openLocalTerm()"><i nz-icon nzType="history"></i></button>
+            <button nz-button nzSize="large" nzShape="round" (click)="openLocalTerm()"><i nz-icon nzType="windows"></i></button>
+            <button nz-button nzSize="large" nzShape="round" (click)="openLocalTerm()"><i nz-icon nzType="setting"></i></button>
+        </div>
+    </nz-sider>
+    <nz-layout>
+        <nz-content>
+            <nz-breadcrumb>
+                <nz-breadcrumb-item>User</nz-breadcrumb-item>
+                <nz-breadcrumb-item>Bill</nz-breadcrumb-item>
+            </nz-breadcrumb>
+            <div class="inner-content">
+                Bill is a cat.
+            </div>
+        </nz-content>
+        <nz-footer>Ant Design ©2020 Implement By Angular</nz-footer>
+    </nz-layout>
+</nz-layout>

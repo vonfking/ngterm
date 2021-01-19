@@ -30,6 +30,7 @@ import { NzMessageModule } from 'ng-zorro-antd/message';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 
 import { HostcfgComponent } from './hostcfg/hostcfg.component';
 import { BasicCfgComponent } from './hostcfg/basic-cfg/basic-cfg.component';
@@ -40,6 +41,7 @@ import { ResizeTableColDirective } from './directive/resize-table-col.directive'
 import { ResizeOneColDirective } from './directive/resize-one-col.directive';
 import { WinOperationDirective } from './directive/win-operation.directive';
 import { HistoryComponent } from './history/history.component';
+import { HomeComponent } from './home/home.component';
 registerLocaleData(en);
 
 @NgModule({
@@ -54,7 +56,8 @@ registerLocaleData(en);
     ResizeTableColDirective,
     ResizeOneColDirective,
     WinOperationDirective,
-    HistoryComponent
+    HistoryComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
@@ -65,7 +68,7 @@ registerLocaleData(en);
     AngularSplitModule,
     NzLayoutModule, NzIconModule, NzMenuModule, NzTabsModule, NzModalModule, NzTreeModule, NzSpinModule,
     NzFormModule, NzDropDownModule, NzInputModule, NzDividerModule, NzButtonModule, NzTableModule,
-    NzMessageModule, NzCardModule, NzBadgeModule, NzPopconfirmModule
+    NzMessageModule, NzCardModule, NzBadgeModule, NzPopconfirmModule, NzBreadCrumbModule
   ],
   providers: [{ provide: NZ_I18N, useValue: en_US }],
   bootstrap: [AppComponent]

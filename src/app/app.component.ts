@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostListener, OnDestroy, OnInit, QueryList, ViewChildren, ViewContainerRef } from '@angular/core';
 import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { HostcfgComponent } from './hostcfg/hostcfg.component';
@@ -143,5 +143,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit{
     }else if (event.ctrlKey && event.keyCode >= 49 && event.keyCode <= 57 && event.keyCode-49<=this.tablist.length){
       this.selectedIndex = event.keyCode-49;
     }
+  }
+  @ViewChildren('popOrigin', {read: ElementRef}) popOriginList: QueryList<ElementRef>;
+  getPopOrigin(i): ElementRef{
+    return this.popOriginList.toArray()[i];
   }
 }

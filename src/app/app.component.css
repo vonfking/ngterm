@@ -60,6 +60,7 @@ nz-footer {
 ::ng-deep .ant-tabs-top>.ant-tabs-nav {
     margin-top: 8px;
     margin-left: 4px;
+    margin-bottom: 0px;
 }
 
 ::ng-deep .ant-tabs-tab .anticon {

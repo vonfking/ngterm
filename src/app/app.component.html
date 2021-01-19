@@ -1,13 +1,15 @@
 <nz-layout class='main'>
     <nz-content>
         <nz-tabset appWinOperation nzSize='small' nzType='editable-card' [(nzSelectedIndex)]='selectedIndex' [nzTabBarExtraContent]="extraTemplate" (nzAdd)='newTab()' (nzClose)='closeTab($event)' (nzSelectedIndexChange)='onSelectTabChange($event)'>
-            <nz-tab nzTitle='Home'>
-                <button nz-button nztype="primary" (click)="newLocalShell()"><i nz-icon nztype="windows" nztheme="outline"></i></button>
-                <app-history></app-history>
+            <nz-tab [nzTitle]="homeTemplate">
+                <ng-template #homeTemplate><i nz-icon nzType="home"></i>Home</ng-template>
+                <app-home (openTab)="newLocalShell()"></app-home>
+                <!--button nz-button nztype="primary" (click)="newLocalShell()"><i nz-icon nzType="windows" nztheme="outline"></i></button>
+                <app-history></app-history-->
             </nz-tab>
             <nz-tab *ngFor='let tab of tablist; let i=index' nzClosable [nzTitle]="titleTemplate" (nzContextmenu)="contextMenu($event, tabMenu)">
                 <ng-template #titleTemplate>
-                    <nz-badge [nzDot]="tab.dot">
+                    <nz-badge [nzDot]="tab.dot" #popOrigin>
                         <i nz-icon [nzType]="tab.icon"></i>
                     </nz-badge>
                     {{ tab.title }}
@@ -17,7 +19,7 @@
                         <li *ngIf="tab.type=='ssh' || tab.type=='sftp'" nz-menu-item (click)="dupTab(tab, 'ssh')"><i nz-icon nzType="copy" nzTheme="outline"></i>Duplicate(SSH)</li>
                         <li *ngIf="tab.type=='ssh' || tab.type=='sftp'" nz-menu-item (click)="dupTab(tab, 'sftp')"><i nz-icon nzType="copy" nzTheme="outline"></i>Duplicate(SFTP)</li>
                         <li *ngIf="tab.type=='local'" nz-menu-item (click)="dupTab(tab, 'local')"><i nz-icon nzType="copy" nzTheme="outline"></i>Duplicate</li>
-                        <li nz-menu-item nz-popconfirm [nzPopconfirmTitle]="titleEditTemplate" [nzPopconfirmOrigin]="titleTemplate" nzPopconfirmPlacement="bottom"><i nz-icon nzType="edit" nzTheme="outline"></i>Rename</li>
+                        <li nz-menu-item nz-popconfirm [nzPopconfirmTitle]="titleEditTemplate" [nzPopconfirmOrigin]="popOrigin" nzPopconfirmPlacement="bottom"><i nz-icon nzType="edit" nzTheme="outline"></i>Rename</li>
                         <li nz-menu-item (click)="closeTab({index: i+1})"><i nz-icon nzType="close" nzTheme="outline"></i>Close</li>
                         <ng-template #titleEditTemplate><input type="text" nz-input [ngModel]="tab.title" /></ng-template>
                     </ul>
