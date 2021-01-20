@@ -7,11 +7,11 @@ import { NzFormatEmitEvent, NzTreeComponent, NzTreeNode } from 'ng-zorro-antd/tr
 import { ElectronService } from '../service/electron.service';
 
 @Component({
-  selector: 'app-hostcfg',
+  selector: 'app-hostcfg2',
   templateUrl: './hostcfg.component.html',
   styleUrls: ['./hostcfg.component.css']
 })
-export class HostcfgComponent implements AfterViewInit {
+export class HostcfgComponent2 implements AfterViewInit {
 
   @Input() title?: string;
   @Input() subtitle?: string;

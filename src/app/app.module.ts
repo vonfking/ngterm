@@ -32,7 +32,7 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 
-import { HostcfgComponent } from './hostcfg/hostcfg.component';
+import { HostcfgComponent2 } from './hostcfg/hostcfg.component';
 import { BasicCfgComponent } from './hostcfg/basic-cfg/basic-cfg.component';
 import { TermCfgComponent } from './hostcfg/term-cfg/term-cfg.component';
 import { SftpComponent } from './sftp/sftp.component';
@@ -40,8 +40,10 @@ import { FilelistComponent } from './sftp/filelist/filelist.component';
 import { ResizeTableColDirective } from './directive/resize-table-col.directive';
 import { ResizeOneColDirective } from './directive/resize-one-col.directive';
 import { WinOperationDirective } from './directive/win-operation.directive';
-import { HistoryComponent } from './history/history.component';
 import { HomeComponent } from './home/home.component';
+import { SettingComponent } from './home/setting/setting.component';
+import { HistoryComponent } from './home/history/history.component';
+import { HostcfgComponent } from './home/hostcfg/hostcfg.component';
 registerLocaleData(en);
 
 @NgModule({
@@ -49,6 +51,7 @@ registerLocaleData(en);
     AppComponent,
     TermComponent,
     HostcfgComponent,
+    HostcfgComponent2,
     BasicCfgComponent,
     TermCfgComponent,
     SftpComponent,
@@ -57,7 +60,8 @@ registerLocaleData(en);
     ResizeOneColDirective,
     WinOperationDirective,
     HistoryComponent,
-    HomeComponent
+    HomeComponent,
+    SettingComponent
   ],
   imports: [
     BrowserModule,

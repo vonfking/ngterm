@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { io } from 'socket.io-client';
 import { Client } from 'ssh2';
+import { ElectronService } from './electron.service';
 export class Socket {
   private socket: any;
-  private sshClient;
 
-  constructor(){}
+  constructor(private electron: ElectronService){}
   connect(host: any, type: string, cb:any = null){
-    this.socket = io('ws://127.0.0.1:9527');
+    this.socket = io('ws://127.0.0.1:'+this.electron.getLocalPort());
     this.socket.on('connect', () => {
       this.socket.emit('ssh-conn-req', host, type);
     }).once('ssh-conn-ack', (path) => {
@@ -70,8 +70,8 @@ export class Socket {
   providedIn: 'root'
 })
 export class SocketService {
-  constructor() { }
+  constructor(private electron: ElectronService) { }
   newSocket(): any{
-    return new Socket();
+    return new Socket(this.electron);
   }
 }

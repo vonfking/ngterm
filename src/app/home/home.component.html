@@ -1,22 +1,15 @@
 <nz-layout class='main'>
-    <nz-sider nzCollapsible [nzCollapsed]="true" [nzTrigger]="null">
+    <nz-sider nzWidth='101px'>
         <div class="btn-list">
-            <button nz-button nzSize="large" nzShape="round" (click)="openLocalTerm()"><i nz-icon nzType="unordered-list"></i></button>
-            <button nz-button nzSize="large" nzShape="round" (click)="openLocalTerm()"><i nz-icon nzType="history"></i></button>
+            <button nz-button nzSize="large" nzShape="round" (click)="setFunc('hostcfg')" [ngClass]="{'btn-selected':openedFunc == 'hostcfg'}"><i nz-icon nzType="unordered-list"></i></button>
+            <button nz-button nzSize="large" nzShape="round" (click)="setFunc('history')" [ngClass]="{'btn-selected':openedFunc == 'history'}"><i nz-icon nzType="history"></i></button>
             <button nz-button nzSize="large" nzShape="round" (click)="openLocalTerm()"><i nz-icon nzType="windows"></i></button>
-            <button nz-button nzSize="large" nzShape="round" (click)="openLocalTerm()"><i nz-icon nzType="setting"></i></button>
+            <button nz-button nzSize="large" nzShape="round" (click)="setFunc('setting')" [ngClass]="{'btn-selected':openedFunc == 'setting'}"><i nz-icon nzType="setting"></i></button>
         </div>
     </nz-sider>
-    <nz-layout>
-        <nz-content>
-            <nz-breadcrumb>
-                <nz-breadcrumb-item>User</nz-breadcrumb-item>
-                <nz-breadcrumb-item>Bill</nz-breadcrumb-item>
-            </nz-breadcrumb>
-            <div class="inner-content">
-                Bill is a cat.
-            </div>
-        </nz-content>
-        <nz-footer>Ant Design ©2020 Implement By Angular</nz-footer>
-    </nz-layout>
+    <nz-content>
+        <app-hostcfg *ngIf="isOpenedFunc('hostcfg')"></app-hostcfg>
+        <app-history *ngIf="isOpenedFunc('history')"></app-history>
+        <app-setting *ngIf="isOpenedFunc('setting')"></app-setting>
+    </nz-content>
 </nz-layout>

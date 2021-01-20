@@ -1,7 +1,7 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostListener, OnDestroy, OnInit, QueryList, ViewChildren, ViewContainerRef } from '@angular/core';
 import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { HostcfgComponent } from './hostcfg/hostcfg.component';
+import { HostcfgComponent2 } from './hostcfg/hostcfg.component';
 import { DiagDragDropService } from './service/diag-drag-drop.service';
 import { ElectronService } from './service/electron.service';
 import { NotifyService } from './service/notify.service';
@@ -96,7 +96,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit{
     const modal = this.modal.create({
       nzTitle: 'Hosts Configuration',
       nzWidth: '800px',
-      nzContent: HostcfgComponent,
+      nzContent: HostcfgComponent2,
       nzMaskClosable: false,
       nzViewContainerRef: this.viewContainerRef,
       nzComponentParams: {

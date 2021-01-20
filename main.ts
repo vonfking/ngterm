@@ -20,8 +20,8 @@ function webSocketInit(){
   var ssh = require('./ssh')
   io.on('connect', ssh);
   
-  server.listen({host: '127.0.0.1', port: 9527});
-  console.log("start ok")
+  server.listen(0);
+  return server.address().port;
 }
 /*window operation*/
 function windowOperation(_win){
@@ -112,6 +112,7 @@ function createWindow(): BrowserWindow {
   });
 
   windowOperation(win);
+  win['localPort'] = webSocketInit();
   return win;
 }
 
@@ -138,7 +139,6 @@ try {
       createWindow();
     }
   });
-  webSocketInit();
 } catch (e) {
   // Catch Error
   // throw e;

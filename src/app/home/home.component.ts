@@ -8,7 +8,13 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 export class HomeComponent implements OnInit {
 
   constructor() { }
-  isCollapsed = false;
+  openedFunc = "hostcfg";
+  setFunc(func){
+    this.openedFunc = func;
+  }
+  isOpenedFunc(func){
+    return this.openedFunc == func;
+  }
   @Output() openTab = new EventEmitter<any>();
 
   ngOnInit(): void {

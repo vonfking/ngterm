@@ -2,7 +2,7 @@
     <nz-content>
         <nz-tabset appWinOperation nzSize='small' nzType='editable-card' [(nzSelectedIndex)]='selectedIndex' [nzTabBarExtraContent]="extraTemplate" (nzAdd)='newTab()' (nzClose)='closeTab($event)' (nzSelectedIndexChange)='onSelectTabChange($event)'>
             <nz-tab [nzTitle]="homeTemplate">
-                <ng-template #homeTemplate><i nz-icon nzType="home"></i>Home</ng-template>
+                <ng-template #homeTemplate><i nz-icon nzType="home"></i>NgTerm</ng-template>
                 <app-home (openTab)="newLocalShell()"></app-home>
                 <!--button nz-button nztype="primary" (click)="newLocalShell()"><i nz-icon nzType="windows" nztheme="outline"></i></button>
                 <app-history></app-history-->

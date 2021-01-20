@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HostcfgComponent2 } from './hostcfg.component';
+import { HostcfgComponent } from './hostcfg.component';
 
-describe('HostcfgComponent2', () => {
-  let component: HostcfgComponent2;
-  let fixture: ComponentFixture<HostcfgComponent2>;
+describe('HostcfgComponent', () => {
+  let component: HostcfgComponent;
+  let fixture: ComponentFixture<HostcfgComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ HostcfgComponent2 ]
+      declarations: [ HostcfgComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HostcfgComponent2);
+    fixture = TestBed.createComponent(HostcfgComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
