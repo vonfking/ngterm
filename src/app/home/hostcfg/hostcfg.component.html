@@ -1,1 +1,19 @@
-<p>hostcfg works!</p>
+<nz-page-header class="site-page-header">
+    <nz-page-header-title>Groups</nz-page-header-title>
+    <nz-page-header-subtitle><button nz-button nzShape="circle">+</button></nz-page-header-subtitle>
+    <nz-page-header-content>
+        <div class='host-list'>
+            <app-hostcard *ngFor='let group of groups; let i=index' [host]='group'></app-hostcard>
+        </div>
+    </nz-page-header-content>
+</nz-page-header>
+
+<nz-page-header class="site-page-header">
+    <nz-page-header-title>Hosts</nz-page-header-title>
+    <nz-page-header-subtitle><button nz-button nzShape="circle">+</button></nz-page-header-subtitle>
+    <nz-page-header-content>
+        <div class='host-list'>
+            <app-hostcard *ngFor='let host of hosts; let i=index' [host]='host'></app-hostcard>
+        </div>
+    </nz-page-header-content>
+</nz-page-header>

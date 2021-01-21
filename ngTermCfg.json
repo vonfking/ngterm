@@ -31,7 +31,7 @@
                     "user": "ubuntu2",
                     "pass": "vonf9912",
                     "expanded": true,
-                    "key": 4,
+                    "key": 3,
                     "isLeaf": true,
                     "selected": false
                 }
@@ -40,6 +40,40 @@
             "selected": false,
             "key": 1,
             "isLeaf": false
+        },
+        {
+            "title": "group(4)",
+            "type": "group",
+            "isLeaf": true,
+            "key": "group4",
+            "level": 1,
+            "selected": false,
+            "expanded": true,
+            "children": [
+                {
+                    "title": "group(5)",
+                    "type": "group",
+                    "isLeaf": true,
+                    "key": "group5",
+                    "level": 2,
+                    "selected": false,
+                    "expanded": true,
+                    "children": [
+                        {
+                            "title": "192.168.1.100",
+                            "type": "host",
+                            "isLeaf": true,
+                            "key": "host6",
+                            "level": 3,
+                            "selected": true,
+                            "ip": "192.168.1.100",
+                            "port": "22",
+                            "user": "root",
+                            "pass": "root"
+                        }
+                    ]
+                }
+            ]
         }
     ],
     "expanded": true,
