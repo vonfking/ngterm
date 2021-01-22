@@ -1,3 +1,10 @@
 <div class='card'>
-    <div>{{host.title}}</div>
+    <nz-avatar *ngIf="config.isGroup(host)" nzText="G" style="color:#f56a00; background-color: #fde3cf;"></nz-avatar>
+    <nz-avatar *ngIf="config.isHost(host)" nzText="H" style="color:#f56a00; background-color: #fde3cf;"></nz-avatar>
+    <div>
+        <div class='title'>{{host.title}}</div>
+        <div class='subtitle' *ngIf="config.isGroup(host)">{{host.hostnum}} Hosts</div>
+        <div class='subtitle' *ngIf="config.isHost(host) && host.hopIp">Hop:{{host.hopIp}}</div>
+        <div class='subtitle' *ngIf="config.isHost(host) && host.group">Group:{{host.group}}</div>
+    </div>
 </div>

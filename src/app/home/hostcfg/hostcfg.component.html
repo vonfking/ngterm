@@ -1,19 +1,22 @@
-<nz-page-header class="site-page-header">
-    <nz-page-header-title>Groups</nz-page-header-title>
-    <nz-page-header-subtitle><button nz-button nzShape="circle">+</button></nz-page-header-subtitle>
-    <nz-page-header-content>
-        <div class='host-list'>
-            <app-hostcard *ngFor='let group of groups; let i=index' [host]='group'></app-hostcard>
-        </div>
-    </nz-page-header-content>
-</nz-page-header>
-
-<nz-page-header class="site-page-header">
-    <nz-page-header-title>Hosts</nz-page-header-title>
-    <nz-page-header-subtitle><button nz-button nzShape="circle">+</button></nz-page-header-subtitle>
-    <nz-page-header-content>
-        <div class='host-list'>
-            <app-hostcard *ngFor='let host of hosts; let i=index' [host]='host'></app-hostcard>
-        </div>
-    </nz-page-header-content>
-</nz-page-header>
+<nz-breadcrumb>
+    <nz-breadcrumb-item *ngFor='let group of grouplist; let i=index'>
+        <a (click)="spliceGroup(i)">{{group.title}}</a>
+    </nz-breadcrumb-item>
+</nz-breadcrumb>
+<nz-card nzType="inner" nzTitle="Group" [nzExtra]="groupExtraTemplate">
+    <div class='host-list'>
+        <app-hostcard *ngFor='let group of groups; let i=index' [host]='group' (dblclick)="refresh(group)"></app-hostcard>
+    </div>
+    <ng-template #groupExtraTemplate>
+        <button nz-button>Add</button>
+    </ng-template>
+</nz-card>
+<br/>
+<nz-card nzType="inner" nzTitle="Host" [nzExtra]="hostExtraTemplate">
+    <div class='host-list'>
+        <app-hostcard *ngFor='let host of hosts; let i=index' [host]='host' (dblclick)="config.newTab({type: 'ssh', host: host})"></app-hostcard>
+    </div>
+    <ng-template #hostExtraTemplate>
+        <button nz-button>Add</button>
+    </ng-template>
+</nz-card>

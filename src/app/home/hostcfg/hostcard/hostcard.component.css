@@ -1,6 +1,22 @@
 .card {
+    display: flex;
     background-color: #1f1f1f;
     width: 200px;
-    height: 40px;
+    height: 54px;
     margin: 8px;
+    padding: 2px;
+    cursor: default;
+    user-select: none;
+    border-radius: 8px;
+}
+
+.subtitle {
+    color: #7f7f7f;
+    font-size: 10px;
+}
+
+nz-avatar {
+    margin-top: 8px;
+    margin-right: 16px;
+    margin-left: 4px;
 }

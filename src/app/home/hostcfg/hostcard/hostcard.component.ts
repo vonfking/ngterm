@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { ConfigService } from '../../../service/config.service';
 
 @Component({
   selector: 'app-hostcard',
@@ -7,7 +8,7 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class HostcardComponent implements OnInit {
 
-  constructor() { }
+  constructor(public config: ConfigService) { }
   @Input() host: any;
   ngOnInit(): void {
   }

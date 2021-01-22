@@ -89,8 +89,8 @@ export class TermComponent implements OnInit, AfterViewInit, AfterViewChecked, O
             let o = window.getComputedStyle(this.xterm.element)
             let i = r - (parseInt(o.getPropertyValue('padding-top')) + parseInt(o.getPropertyValue('padding-bottom')))
             let l = n - (parseInt(o.getPropertyValue('padding-right')) + parseInt(o.getPropertyValue('padding-left'))) - this.xtermCore.viewport.scrollBarWidth
-            let actualCellWidth = this.xtermCore._renderService.dimensions.actualCellWidth || 9
-            let actualCellHeight = this.xtermCore._renderService.dimensions.actualCellHeight || 17
+            let actualCellWidth = this.xtermCore._renderService.dimensions.actualCellWidth || 8
+            let actualCellHeight = this.xtermCore._renderService.dimensions.actualCellHeight || 18
             let cols = Math.floor(l / actualCellWidth)
             let rows = Math.floor(i / actualCellHeight)
 

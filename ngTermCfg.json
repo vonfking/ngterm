@@ -44,8 +44,8 @@
         {
             "title": "group(4)",
             "type": "group",
-            "isLeaf": true,
-            "key": "group4",
+            "isLeaf": false,
+            "key": 4,
             "level": 1,
             "selected": false,
             "expanded": true,
@@ -53,8 +53,8 @@
                 {
                     "title": "group(5)",
                     "type": "group",
-                    "isLeaf": true,
-                    "key": "group5",
+                    "isLeaf": false,
+                    "key": 5,
                     "level": 2,
                     "selected": false,
                     "expanded": true,
@@ -63,15 +63,38 @@
                             "title": "192.168.1.100",
                             "type": "host",
                             "isLeaf": true,
-                            "key": "host6",
+                            "key": 6,
                             "level": 3,
-                            "selected": true,
+                            "selected": false,
                             "ip": "192.168.1.100",
                             "port": "22",
                             "user": "root",
-                            "pass": "root"
+                            "pass": "root",
+                            "expanded": true,
+                            "children": [
+                                {
+                                    "title": "10.10.10.10",
+                                    "type": "subhost",
+                                    "isLeaf": true,
+                                    "key": "subhost8",
+                                    "level": 4,
+                                    "selected": true,
+                                    "ip": "10.10.10.10",
+                                    "port": "22",
+                                    "user": "root",
+                                    "pass": "root"
+                                }
+                            ]
                         }
                     ]
+                },
+                {
+                    "title": "host(7)",
+                    "type": "host",
+                    "isLeaf": true,
+                    "key": 7,
+                    "level": 2,
+                    "selected": false
                 }
             ]
         }
