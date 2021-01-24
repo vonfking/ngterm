@@ -62,7 +62,7 @@
                         {
                             "title": "192.168.1.100",
                             "type": "host",
-                            "isLeaf": true,
+                            "isLeaf": false,
                             "key": 6,
                             "level": 3,
                             "selected": false,
@@ -76,15 +76,27 @@
                                     "title": "10.10.10.10",
                                     "type": "subhost",
                                     "isLeaf": true,
-                                    "key": "subhost8",
+                                    "key": 7,
                                     "level": 4,
-                                    "selected": true,
+                                    "selected": false,
                                     "ip": "10.10.10.10",
                                     "port": "22",
                                     "user": "root",
                                     "pass": "root"
                                 }
                             ]
+                        },
+                        {
+                            "title": "192.168.43.117",
+                            "type": "host",
+                            "isLeaf": true,
+                            "key": "host9",
+                            "level": 3,
+                            "selected": true,
+                            "ip": "192.168.43.117",
+                            "port": "22",
+                            "user": "ubuntu",
+                            "pass": "vonf99"
                         }
                     ]
                 },
@@ -92,7 +104,7 @@
                     "title": "host(7)",
                     "type": "host",
                     "isLeaf": true,
-                    "key": 7,
+                    "key": 8,
                     "level": 2,
                     "selected": false
                 }

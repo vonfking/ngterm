@@ -77,7 +77,10 @@ export class TermComponent implements OnInit, AfterViewInit, AfterViewChecked, O
     });
     setTimeout(() => this.xterm.focus());
     this.subscription = this.notify.onMainTabIndexChange((index) => {
-      if (index == this.tabIndex) this.xterm.focus();
+      if (index == this.tabIndex) {
+        this.resizeHandler();
+        this.xterm.focus();
+      }
     })
   }
   resizeHandler = () => {

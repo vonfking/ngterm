@@ -40,4 +40,5 @@ export class BasicCfgComponent implements OnInit {
     //console.log(title);
     this.titleChange.emit(title);
   }
+
 }

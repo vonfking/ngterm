@@ -9,8 +9,8 @@
             </nz-tab>
             <nz-tab *ngFor='let tab of tablist; let i=index' nzClosable [nzTitle]="titleTemplate" (nzContextmenu)="contextMenu($event, tabMenu)">
                 <ng-template #titleTemplate>
-                    <nz-badge [nzDot]="tab.dot" #popOrigin>
-                        <i nz-icon [nzType]="tab.icon"></i>
+                    <nz-badge [nzDot]="tab.dot">
+                        <i nz-icon [nzType]="tab.icon" #popOrigin></i>
                     </nz-badge>
                     {{ tab.title }}
                 </ng-template>

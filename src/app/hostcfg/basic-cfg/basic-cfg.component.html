@@ -2,7 +2,7 @@
     <nz-form-item>
         <nz-form-label [nzSpan]="7" nzRequired>Alias</nz-form-label>
         <nz-form-control [nzSpan]="12" nzValidatingTip="Validating...">
-            <input nz-input [(ngModel)]="host.title" formControlName="title" placeholder="Host Alias" (ngModelChange)="onTitleChange($event)"/>
+            <input nz-input [(ngModel)]="host.title" formControlName="title" placeholder="Host Alias" (ngModelChange)="onTitleChange($event)" />
         </nz-form-control>
     </nz-form-item>
     <nz-form-item *ngIf="host.type=='host' || host.type=='subhost'">

@@ -8,7 +8,7 @@
         <app-hostcard *ngFor='let group of groups; let i=index' [host]='group' (dblclick)="refresh(group)"></app-hostcard>
     </div>
     <ng-template #groupExtraTemplate>
-        <button nz-button>Add</button>
+        <button nz-button (click)="openEditDrawer('New', 'Group')">Add</button>
     </ng-template>
 </nz-card>
 <br/>
@@ -17,6 +17,48 @@
         <app-hostcard *ngFor='let host of hosts; let i=index' [host]='host' (dblclick)="config.newTab({type: 'ssh', host: host})"></app-hostcard>
     </div>
     <ng-template #hostExtraTemplate>
-        <button nz-button>Add</button>
+        <button nz-button (click)="openEditDrawer('New', 'Host')">Add</button>
     </ng-template>
 </nz-card>
+<nz-drawer [nzClosable]="true" [nzWidth]="600" [nzVisible]="isEditing" nzPlacement="right" [nzTitle]="editTitle" [nzFooter]="footerTpl" (nzOnClose)="closeEditDrawer()">
+    <ng-container *nzDrawerContent>
+        <form nz-form>
+            <nz-form-item>
+                <nz-form-label [nzSpan]="7" nzRequired>Alias</nz-form-label>
+                <nz-form-control [nzSpan]="12">
+                    <input nz-input [(ngModel)]="editHost.title" placeholder="Host Alias" />
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item *ngIf="editHost.type=='host' || editHost.type=='subhost'">
+                <nz-form-label [nzSpan]="7" nzRequired>HostIP</nz-form-label>
+                <nz-form-control [nzSpan]="12">
+                    <input nz-input [(ngModel)]="editHost.ip" placeholder="Host IP Address" />
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item *ngIf="editHost.type=='host' || editHost.type=='subhost'">
+                <nz-form-label [nzSpan]="7" nzRequired>Port</nz-form-label>
+                <nz-form-control [nzSpan]="12">
+                    <input nz-input [(ngModel)]="editHost.port" placeholder="Host Port" />
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item *ngIf="editHost.type=='host' || editHost.type=='subhost'">
+                <nz-form-label [nzSpan]="7" nzRequired>User</nz-form-label>
+                <nz-form-control [nzSpan]="12">
+                    <input nz-input [(ngModel)]="editHost.user" placeholder="User" />
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item *ngIf="editHost.type=='host' || editHost.type=='subhost'">
+                <nz-form-label [nzSpan]="7" nzRequired>Password</nz-form-label>
+                <nz-form-control [nzSpan]="12">
+                    <input nz-input type="password" [(ngModel)]="editHost.pass" placeholder="Password" />
+                </nz-form-control>
+            </nz-form-item>
+        </form>
+    </ng-container>
+    <ng-template #footerTpl>
+        <div style="float: right">
+            <button nz-button style="margin-right: 8px;" (click)="closeEditDrawer()">Cancel</button>
+            <button nz-button nzType="primary" (click)="closeEditDrawer()">Submit</button>
+        </div>
+    </ng-template>
+</nz-drawer>

@@ -30,4 +30,41 @@ export class HostcfgComponent implements OnInit {
     this.grouplist.splice(index, this.grouplist.length - index);
     this.refresh(group);
   }
+  public isEditing = false;
+  public editTitle = "";
+  public editHost = {
+    type: 'host',
+    title: '',
+    ip: '',
+    port: 22,
+    user: '',
+    pass: ''
+  };
+  openEditDrawer(oper: 'New'| 'Edit', type: 'Host'| 'Group', host:any = null){
+    this.editTitle = oper + " " + type;
+    if (oper == 'New' && type == 'Host'){
+      this.editHost = {
+        type: 'host',
+        title: '',
+        ip: '',
+        port: 22,
+        user: '',
+        pass: ''
+      }
+    }
+    else if (oper == 'New' && type == 'Group'){
+      this.editHost = {
+        type: 'group',
+        title: '',
+        ip: '',
+        port: 22,
+        user: '',
+        pass: ''
+      }
+    }
+    this.isEditing = true;
+  }
+  closeEditDrawer(){
+    this.isEditing = false;
+  }
 }

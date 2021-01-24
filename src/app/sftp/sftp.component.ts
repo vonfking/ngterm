@@ -1,4 +1,5 @@
 import { Component, Input, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { ElectronService } from '../service/electron.service';
 import { NotifyService } from '../service/notify.service';
 import { Socket, SocketService } from '../service/socket.service';
@@ -17,6 +18,7 @@ export class SftpComponent implements OnInit, OnDestroy {
   isLocalSpinning = false
   isRemoteSpinning = false
   isSpinning = false
+  subscription: Subscription;
   constructor(private notify: NotifyService, private socketService: SocketService, private electonService: ElectronService) { }
 
   prefix(n){
@@ -91,9 +93,15 @@ export class SftpComponent implements OnInit, OnDestroy {
       this.remotePath = path;
       this.getRemoteFiles(path);
     });
+    this.subscription = this.notify.onMainTabIndexChange((index) => {
+      if (index == this.tabIndex) {
+        this.notify.emitSftpWindowChange();
+      }
+    })
   }
   ngOnDestroy(): void{
     this.socket.disconnect();
+    this.subscription.unsubscribe();
   }
   onLocalPathChange(e:any){
     console.log('recv change:', e);
