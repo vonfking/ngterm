@@ -1,5 +1,4 @@
 import { AfterViewChecked, AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, Output, ViewChild, EventEmitter } from '@angular/core';
-import { NgTerminal, DisplayOption } from 'ng-terminal';
 import { Socket, SocketService } from '../service/socket.service';
 import { Terminal, ITheme } from "xterm";
 import { ElectronService } from '../service/electron.service';

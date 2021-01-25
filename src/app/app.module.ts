@@ -10,7 +10,6 @@ import { en_US } from 'ng-zorro-antd/i18n';
 import { registerLocaleData } from '@angular/common';
 import en from '@angular/common/locales/en';
 import { TermComponent } from './term/term.component';
-import { NgTerminalModule } from 'ng-terminal';
 import { AngularSplitModule } from 'angular-split';
 
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
@@ -73,7 +72,6 @@ registerLocaleData(en);
     FormsModule, ReactiveFormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    NgTerminalModule,
     AngularSplitModule,
     NzLayoutModule, NzIconModule, NzMenuModule, NzTabsModule, NzModalModule, NzTreeModule, NzSpinModule,
     NzFormModule, NzDropDownModule, NzInputModule, NzDividerModule, NzButtonModule, NzTableModule,
