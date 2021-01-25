@@ -8,3 +8,14 @@
         <div class='subtitle' *ngIf="config.isHost(host) && host.group">Group:{{host.group}}</div>
     </div>
 </div>
+<div *ngIf="showOperBtn || isVisible" class="oper">
+    <a nz-dropdown [nzDropDownMenu]="menuSystem" nzTrigger="click" (nzVisibleChange)="visibleChange($event)"><i nz-icon nzType="more"></i></a>
+    <nz-dropdown-menu #menuSystem="nzDropdownMenu">
+        <ul nz-menu>
+            <li nz-menu-item><i nz-icon nzType="edit"></i>Edit</li>
+            <li nz-menu-item><i nz-icon nzType="delete"></i>Delete</li>
+            <li nz-menu-item *ngIf="config.isHost(host)"><i nz-icon [nzType]="config.getIconByType('ssh')"></i>Open SSH</li>
+            <li nz-menu-item *ngIf="config.isHost(host)"><i nz-icon [nzType]="config.getIconByType('sftp')"></i>Open SFTP</li>
+        </ul>
+    </nz-dropdown-menu>
+</div>

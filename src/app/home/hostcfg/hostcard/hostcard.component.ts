@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { ConfigService } from '../../../service/config.service';
 
 @Component({
@@ -12,5 +12,17 @@ export class HostcardComponent implements OnInit {
   @Input() host: any;
   ngOnInit(): void {
   }
-
+  showOperBtn = false;
+  @HostListener('mouseenter')
+  onMouseEnter(){
+    this.showOperBtn = true;
+  }
+  @HostListener('mouseleave')
+  onMouseLeave(){
+    this.showOperBtn = false;
+  }
+  isVisible = false;
+  visibleChange(visible){
+    this.isVisible = visible;
+  }
 }

@@ -1,18 +1,34 @@
-.card {
-    display: flex;
+:host {
     background-color: #1f1f1f;
     width: 200px;
     height: 54px;
     margin: 8px;
     padding: 2px;
+    border-radius: 8px;
+    position: relative;
+}
+
+.card {
+    display: flex;
     cursor: default;
     user-select: none;
-    border-radius: 8px;
 }
 
 .subtitle {
     color: #7f7f7f;
     font-size: 10px;
+}
+
+.oper {
+    position: absolute;
+    top: 16px;
+    right: 8px;
+    border-radius: 4px;
+    ;
+}
+
+.oper:hover {
+    background-color: #7f7f7f;
 }
 
 nz-avatar {

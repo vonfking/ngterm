@@ -1,10 +1,10 @@
 <nz-layout class='main'>
     <nz-sider nzWidth='101px'>
         <div class="btn-list">
-            <button nz-button nzSize="large" nzShape="round" (click)="setFunc('hostcfg')" [ngClass]="{'btn-selected':openedFunc == 'hostcfg'}"><i nz-icon nzType="unordered-list"></i></button>
-            <button nz-button nzSize="large" nzShape="round" (click)="setFunc('history')" [ngClass]="{'btn-selected':openedFunc == 'history'}"><i nz-icon nzType="history"></i></button>
-            <button nz-button nzSize="large" nzShape="round" (click)="openLocalTerm()"><i nz-icon nzType="windows"></i></button>
-            <button nz-button nzSize="large" nzShape="round" (click)="setFunc('setting')" [ngClass]="{'btn-selected':openedFunc == 'setting'}"><i nz-icon nzType="setting"></i></button>
+            <div (click)="setFunc('hostcfg')" title="host config" [ngClass]="{'btn-selected':openedFunc == 'hostcfg'}"><i nz-icon nzType="unordered-list"></i></div>
+            <div (click)="setFunc('history')" title="history" [ngClass]="{'btn-selected':openedFunc == 'history'}"><i nz-icon nzType="history"></i></div>
+            <div (click)="openLocalTerm()" title="open local terminal"><i nz-icon nzType="windows"></i></div>
+            <div (click)="setFunc('setting')" title="setting" [ngClass]="{'btn-selected':openedFunc == 'setting'}"><i nz-icon nzType="setting"></i></div>
         </div>
     </nz-sider>
     <nz-content>

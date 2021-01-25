@@ -2,6 +2,15 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { ElectronService } from './electron.service';
 
+export interface Host{
+  title: string,
+  type: "root"|"group"|"host"|"subhost",
+  ip?: string,
+  port?: number,
+  user?: string,
+  pass?: string,
+  children?: Host[]
+}
 @Injectable({
   providedIn: 'root'
 })
@@ -77,5 +86,9 @@ export class ConfigService {
   }
   onNewTab(cb){
     return this.tabSubject.asObservable().subscribe(tab => cb(tab));
+  }
+
+  getIconByType(type){
+    return type == 'ssh' ? 'code' : (type == 'sftp' ? 'read' : 'windows');
   }
 }

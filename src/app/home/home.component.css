@@ -2,30 +2,33 @@
     height: 100%;
 }
 
-.trigger {
-    font-size: 18px;
-    line-height: 64px;
-    padding: 0 24px;
-    cursor: pointer;
-    transition: color 0.3s;
-}
-
-.trigger:hover {
-    color: #1890ff;
-}
-
 .btn-list {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.btn-list button {
+.btn-list div {
     margin-top: 16px;
+    padding: 8px 24px;
+    border-radius: 16px;
+    border: 1px solid;
+    cursor: pointer;
 }
 
-nz-header {
-    padding: 0;
+.btn-list div:not(.btn-selected) {
+    border: 1px solid #4f4f4f;
+    color: #4f4f4f;
+}
+
+.btn-list div.btn-selected {
+    border-color: #4357cc;
+    color: #4357cc;
+}
+
+.btn-list div:hover {
+    border-color: #2477c5;
+    color: #2477c5;
 }
 
 nz-content {
@@ -35,8 +38,4 @@ nz-content {
 .inner-content {
     padding: 24px;
     min-height: 360px;
-}
-
-::ng-deep .btn_selected {
-    color: #4357cc;
 }

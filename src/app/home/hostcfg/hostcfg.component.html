@@ -26,31 +26,31 @@
             <nz-form-item>
                 <nz-form-label [nzSpan]="7" nzRequired>Alias</nz-form-label>
                 <nz-form-control [nzSpan]="12">
-                    <input nz-input [(ngModel)]="editHost.title" placeholder="Host Alias" />
+                    <input nz-input name="title" [(ngModel)]="editHost.title" placeholder="Host Alias" />
                 </nz-form-control>
             </nz-form-item>
             <nz-form-item *ngIf="editHost.type=='host' || editHost.type=='subhost'">
                 <nz-form-label [nzSpan]="7" nzRequired>HostIP</nz-form-label>
                 <nz-form-control [nzSpan]="12">
-                    <input nz-input [(ngModel)]="editHost.ip" placeholder="Host IP Address" />
+                    <input nz-input name="ip" [(ngModel)]="editHost.ip" placeholder="Host IP Address" />
                 </nz-form-control>
             </nz-form-item>
             <nz-form-item *ngIf="editHost.type=='host' || editHost.type=='subhost'">
                 <nz-form-label [nzSpan]="7" nzRequired>Port</nz-form-label>
                 <nz-form-control [nzSpan]="12">
-                    <input nz-input [(ngModel)]="editHost.port" placeholder="Host Port" />
+                    <input nz-input name="port" [(ngModel)]="editHost.port" placeholder="Host Port" />
                 </nz-form-control>
             </nz-form-item>
             <nz-form-item *ngIf="editHost.type=='host' || editHost.type=='subhost'">
                 <nz-form-label [nzSpan]="7" nzRequired>User</nz-form-label>
                 <nz-form-control [nzSpan]="12">
-                    <input nz-input [(ngModel)]="editHost.user" placeholder="User" />
+                    <input nz-input name="user" [(ngModel)]="editHost.user" placeholder="User" />
                 </nz-form-control>
             </nz-form-item>
             <nz-form-item *ngIf="editHost.type=='host' || editHost.type=='subhost'">
                 <nz-form-label [nzSpan]="7" nzRequired>Password</nz-form-label>
                 <nz-form-control [nzSpan]="12">
-                    <input nz-input type="password" [(ngModel)]="editHost.pass" placeholder="Password" />
+                    <input nz-input name="pass" type="password" [(ngModel)]="editHost.pass" placeholder="Password" />
                 </nz-form-control>
             </nz-form-item>
         </form>
