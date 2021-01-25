@@ -30,7 +30,6 @@
     "@terminus-term/node-pty": "^0.10.0-beta11",
     "angular-split": "^5.0.0",
     "electron": "^11.0.3",
-    "ng-terminal": "^3.0.1",
     "ng-zorro-antd": "^10.2.0",
     "rxjs": "~6.6.0",
     "socket.io": "^3.0.4",
