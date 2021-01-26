@@ -22,4 +22,12 @@ export class NotifyService {
   onMainTabIndexChange(cb){
     return this.mainTabIndex.asObservable().subscribe(index => cb(index));
   }
+  /** main tab index change */
+  private openTab = new Subject();
+  emitOpenTab(tab: {type:string, host: any}){
+    this.openTab.next(tab);
+  }
+  onOpenTab(cb){
+    return this.openTab.asObservable().subscribe(tab => cb(tab));
+  }
 }

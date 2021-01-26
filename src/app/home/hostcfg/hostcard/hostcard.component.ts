@@ -1,4 +1,4 @@
-import { Component, HostListener, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { ConfigService } from '../../../service/config.service';
 
 @Component({
@@ -11,6 +11,14 @@ export class HostcardComponent implements OnInit {
   constructor(public config: ConfigService) { }
   @Input() host: any;
   ngOnInit(): void {
+  }
+  @Output() hostOperation = new EventEmitter<string>();
+  @HostListener('dblclick')
+  onDoubleClick(){
+    this.hostOperation.emit('dblclick');
+  }
+  onClickOper(type){
+    this.hostOperation.emit(type);
   }
   showOperBtn = false;
   @HostListener('mouseenter')

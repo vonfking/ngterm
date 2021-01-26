@@ -1,25 +1,28 @@
 import { Injectable } from '@angular/core';
+import { title } from 'process';
 import { Subject } from 'rxjs';
 import { ElectronService } from './electron.service';
 
 export interface Host{
   title: string,
+  key: number,
   type: "root"|"group"|"host"|"subhost",
+  children: Host[],
   ip?: string,
   port?: number,
   user?: string,
-  pass?: string,
-  children?: Host[]
-}
+  pass?: string
+ }
 @Injectable({
   providedIn: 'root'
 })
 export class ConfigService {
 
   constructor(private electron: ElectronService) { }
-  keynum = 0;
-  hostTreeList = [];
+  keynum = 1;
+  hostConfig: Host;
   loaded = false;
+  configFile = 'ngTermCfg.json';
   
   isHost(item: any){
     return item.type == 'host' || item.type == 'subhost';
@@ -29,24 +32,25 @@ export class ConfigService {
   }
   getHostTreeList(): any {
     let _formatHostList = (hostList: any) => {
+      if (!hostList)return;
       hostList.forEach(host => {
         host.key = this.keynum++;
-        host.selected = false;
+        //host.selected = false;
         if (!host.children || host.children.lenth == 0){
-          host.isLeaf = true;
+          //host.isLeaf = true;
         }else{
-          host.isLeaf = false;
+          //host.isLeaf = false;
           _formatHostList(host.children);
         }
       });
     }
     if (!this.loaded){
-      var strConfig: any= this.electron.fs.readFileSync('ngTermCfg.json');
-      if (strConfig)this.hostTreeList = [JSON.parse(strConfig)];
-      _formatHostList(this.hostTreeList);
+      var strConfig: any= this.electron.fs.readFileSync(this.configFile);
+      if (strConfig)this.hostConfig = JSON.parse(strConfig);
+      _formatHostList(this.hostConfig.children);
       this.loaded = true;
     }
-    return this.hostTreeList;
+    return this.hostConfig;
   }
   getGroupArray(host: any){
     let groups = [];
@@ -90,5 +94,41 @@ export class ConfigService {
 
   getIconByType(type){
     return type == 'ssh' ? 'code' : (type == 'sftp' ? 'read' : 'windows');
+  }
+  newHost(type, host=null){
+    let tmp = {
+      type: type,
+      key: this.keynum++,
+      title: '',
+      children: [],
+      ip: '',
+      port: 22,
+      user: '',
+      pass: ''
+    }
+    if (host)this.copyHost(host, tmp);
+    return tmp;
+  }
+  copyHost(host1, host2){
+    host1.type = host2.type;
+    host1.key  = host2.key;
+    host1.title= host2.title;
+    host1.ip   = host2.ip;
+    host1.port = host2.port;
+    host1.user = host2.user;
+    host1.pass = host2.pass;
+  }
+  saveHost(baseHost, host){
+    let isModify = false;
+    for (let h of baseHost.children){
+      if (h.key == host.key){
+        this.copyHost(h, host);
+        isModify = true;  
+      }
+    }
+    if (!isModify){
+      baseHost.children.push(host);
+    }
+    this.electron.fs.writeFileSync(this.configFile, JSON.stringify(this.hostConfig, null, 4));
   }
 }

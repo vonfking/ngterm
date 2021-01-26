@@ -20,8 +20,9 @@
                     "children": [],
                     "expanded": true,
                     "selected": false,
-                    "key": 2,
-                    "isLeaf": false
+                    "key": 3,
+                    "isLeaf": false,
+                    "hopIp": "192.168.3.135"
                 },
                 {
                     "title": "172.1.1.2",
@@ -31,30 +32,31 @@
                     "user": "ubuntu2",
                     "pass": "vonf9912",
                     "expanded": true,
-                    "key": 3,
+                    "key": 4,
                     "isLeaf": true,
-                    "selected": false
+                    "selected": false,
+                    "hopIp": "192.168.3.135"
                 }
             ],
             "expanded": true,
             "selected": false,
-            "key": 1,
+            "key": 2,
             "isLeaf": false
         },
         {
-            "title": "group(4)",
+            "title": "group",
             "type": "group",
             "isLeaf": false,
-            "key": 4,
+            "key": 5,
             "level": 1,
             "selected": false,
             "expanded": true,
             "children": [
                 {
-                    "title": "group(5)",
+                    "title": "group2",
                     "type": "group",
                     "isLeaf": false,
-                    "key": 5,
+                    "key": 6,
                     "level": 2,
                     "selected": false,
                     "expanded": true,
@@ -63,7 +65,7 @@
                             "title": "192.168.1.100",
                             "type": "host",
                             "isLeaf": false,
-                            "key": 6,
+                            "key": 7,
                             "level": 3,
                             "selected": false,
                             "ip": "192.168.1.100",
@@ -76,39 +78,81 @@
                                     "title": "10.10.10.10",
                                     "type": "subhost",
                                     "isLeaf": true,
-                                    "key": 7,
+                                    "key": 8,
                                     "level": 4,
                                     "selected": false,
                                     "ip": "10.10.10.10",
                                     "port": "22",
                                     "user": "root",
-                                    "pass": "root"
+                                    "pass": "root",
+                                    "hopIp": "192.168.1.100",
+                                    "group": "group2"
                                 }
-                            ]
+                            ],
+                            "group": "group2"
                         },
                         {
                             "title": "192.168.43.117",
                             "type": "host",
                             "isLeaf": true,
-                            "key": "host9",
+                            "key": 9,
                             "level": 3,
                             "selected": true,
                             "ip": "192.168.43.117",
                             "port": "22",
                             "user": "ubuntu",
-                            "pass": "vonf99"
+                            "pass": "vonf99",
+                            "group": "group2"
+                        },
+                        {
+                            "type": "group",
+                            "key": 10,
+                            "title": "group3",
+                            "children": [
+                                {
+                                    "type": "host",
+                                    "key": 13,
+                                    "title": "10.1.1.1",
+                                    "children": [],
+                                    "ip": "10.1.1.1",
+                                    "port": 22,
+                                    "user": "10.1.1.1",
+                                    "pass": "10.1.1.1"
+                                }
+                            ],
+                            "ip": "",
+                            "port": 22,
+                            "user": "",
+                            "pass": "",
+                            "hostnum": 0,
+                            "group": "group"
                         }
-                    ]
+                    ],
+                    "hostnum": 2
                 },
                 {
                     "title": "host(7)",
                     "type": "host",
                     "isLeaf": true,
-                    "key": 8,
+                    "key": 11,
                     "level": 2,
-                    "selected": false
+                    "selected": false,
+                    "group": "group2"
                 }
-            ]
+            ],
+            "hostnum": 1
+        },
+        {
+            "type": "group",
+            "key": 12,
+            "title": "group3",
+            "children": [],
+            "ip": "",
+            "port": 22,
+            "user": "",
+            "pass": "",
+            "hostnum": 0,
+            "group": "group"
         }
     ],
     "expanded": true,

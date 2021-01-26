@@ -35,6 +35,10 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit{
     document.addEventListener('contextmenu',function(e){
       e.preventDefault();
     })
+    this.notify.onOpenTab(tab => {
+      if (tab.type == 'local')this.newLocalShell();
+      else this.addTab(tab);
+    })
   }
   ngOnDestroy(){
     this.tablist = [];

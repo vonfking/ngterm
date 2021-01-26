@@ -5,7 +5,7 @@
 </nz-breadcrumb>
 <nz-card nzType="inner" nzTitle="Group" [nzExtra]="groupExtraTemplate">
     <div class='host-list'>
-        <app-hostcard *ngFor='let group of groups; let i=index' [host]='group' (dblclick)="refresh(group)"></app-hostcard>
+        <app-hostcard *ngFor='let group of groups; let i=index' [host]='group' (hostOperation)="onOperation($event, group)"></app-hostcard>
     </div>
     <ng-template #groupExtraTemplate>
         <button nz-button (click)="openEditDrawer('New', 'Group')">Add</button>
@@ -14,7 +14,7 @@
 <br/>
 <nz-card nzType="inner" nzTitle="Host" [nzExtra]="hostExtraTemplate">
     <div class='host-list'>
-        <app-hostcard *ngFor='let host of hosts; let i=index' [host]='host' (dblclick)="config.newTab({type: 'ssh', host: host})"></app-hostcard>
+        <app-hostcard *ngFor='let host of hosts; let i=index' [host]='host' (hostOperation)="onOperation($event, host)"></app-hostcard>
     </div>
     <ng-template #hostExtraTemplate>
         <button nz-button (click)="openEditDrawer('New', 'Host')">Add</button>
@@ -57,8 +57,7 @@
     </ng-container>
     <ng-template #footerTpl>
         <div style="float: right">
-            <button nz-button style="margin-right: 8px;" (click)="closeEditDrawer()">Cancel</button>
-            <button nz-button nzType="primary" (click)="closeEditDrawer()">Submit</button>
+            <button nz-button nzType="primary" (click)="saveEditDrawer()">Save</button>
         </div>
     </ng-template>
 </nz-drawer>

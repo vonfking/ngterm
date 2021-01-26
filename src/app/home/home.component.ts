@@ -1,4 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { NotifyService } from '../service/notify.service';
 
 @Component({
   selector: 'app-home',
@@ -7,7 +8,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 
-  constructor() { }
+  constructor(private notify: NotifyService) { }
   openedFunc = "hostcfg";
   setFunc(func){
     this.openedFunc = func;
@@ -20,6 +21,6 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
   }
   openLocalTerm(){
-    this.openTab.emit({type:"local"})
+    this.notify.emitOpenTab({type:"local",  host: null});
   }
 }
