@@ -8,7 +8,7 @@
         <app-hostcard *ngFor='let group of groups; let i=index' [host]='group' (hostOperation)="onOperation($event, group)"></app-hostcard>
     </div>
     <ng-template #groupExtraTemplate>
-        <button nz-button (click)="openEditDrawer('New', 'Group')">Add</button>
+        <button nz-button (click)="openEditDrawer('Group')">Add</button>
     </ng-template>
 </nz-card>
 <br/>
@@ -17,7 +17,7 @@
         <app-hostcard *ngFor='let host of hosts; let i=index' [host]='host' (hostOperation)="onOperation($event, host)"></app-hostcard>
     </div>
     <ng-template #hostExtraTemplate>
-        <button nz-button (click)="openEditDrawer('New', 'Host')">Add</button>
+        <button nz-button (click)="openEditDrawer('Host')">Add</button>
     </ng-template>
 </nz-card>
 <nz-drawer [nzClosable]="true" [nzWidth]="600" [nzVisible]="isEditing" nzPlacement="right" [nzTitle]="editTitle" [nzFooter]="footerTpl" (nzOnClose)="closeEditDrawer()">

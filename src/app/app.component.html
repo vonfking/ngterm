@@ -11,6 +11,8 @@
                 <ng-template #titleTemplate>
                     <nz-badge [nzDot]="tab.dot">
                         <i nz-icon [nzType]="tab.icon" #popOrigin></i>
+                        <span #popRename nz-popconfirm [nzPopconfirmTitle]="titleEditTemplate" nzPopconfirmPlacement="bottom"></span>
+                        <ng-template #titleEditTemplate><input type="text" nz-input [ngModel]="tab.title" /></ng-template>
                     </nz-badge>
                     {{ tab.title }}
                 </ng-template>
@@ -19,9 +21,8 @@
                         <li *ngIf="tab.type=='ssh' || tab.type=='sftp'" nz-menu-item (click)="dupTab(tab, 'ssh')"><i nz-icon nzType="copy" nzTheme="outline"></i>Duplicate(SSH)</li>
                         <li *ngIf="tab.type=='ssh' || tab.type=='sftp'" nz-menu-item (click)="dupTab(tab, 'sftp')"><i nz-icon nzType="copy" nzTheme="outline"></i>Duplicate(SFTP)</li>
                         <li *ngIf="tab.type=='local'" nz-menu-item (click)="dupTab(tab, 'local')"><i nz-icon nzType="copy" nzTheme="outline"></i>Duplicate</li>
-                        <li nz-menu-item nz-popconfirm [nzPopconfirmTitle]="titleEditTemplate" [nzPopconfirmOrigin]="popOrigin" nzPopconfirmPlacement="bottom"><i nz-icon nzType="edit" nzTheme="outline"></i>Rename</li>
+                        <li nz-menu-item (click)="rename(i)"><i nz-icon nzType="edit" nzTheme="outline"></i>Rename</li>
                         <li nz-menu-item (click)="closeTab({index: i+1})"><i nz-icon nzType="close" nzTheme="outline"></i>Close</li>
-                        <ng-template #titleEditTemplate><input type="text" nz-input [ngModel]="tab.title" /></ng-template>
                     </ul>
                 </nz-dropdown-menu>
                 <app-term *ngIf="tab.type=='ssh' || tab.type=='local'" [termType]='tab.type' [tabIndex]='i' [hostInfo]='tab.host' (onNewData)='onTabRecvNewData(i)'></app-term>

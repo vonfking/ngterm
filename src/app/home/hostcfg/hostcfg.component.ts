@@ -38,14 +38,14 @@ export class HostcfgComponent implements OnInit {
   public isEditing = false;
   public editTitle = "";
   public editHost: Host = this.config.newHost('host');
-  openEditDrawer(oper: 'New'| 'Edit', host: string | Host){
+  openEditDrawer(host: string | Host){
     if (typeof host === 'string'){
       let type = host;
-      this.editTitle = oper + " " + type;
-      this.config.newHost(type.toLowerCase(), this.editHost);
+      this.editTitle = "New " + type;
+      this.editHost = this.config.newHost(type.toLowerCase());
     }
     else{
-      this.editTitle = oper + " " + this.config.isGroup(host)?'Group':'Host';
+      this.editTitle = "Edit " + this.config.isGroup(host)?'Group':'Host';
       this.config.copyHost(this.editHost, host);
     }
     this.isEditing = true;
@@ -63,9 +63,10 @@ export class HostcfgComponent implements OnInit {
       if (this.config.isGroup(host))this.refresh(host);
       else this.config.newTab({type: 'ssh', host: host});
     } else if (type == 'edit'){
-      this.openEditDrawer('Edit', host);
+      this.openEditDrawer(host);
     } else if (type == 'delete'){
-      this.openEditDrawer('Edit', host);
+      this.config.deleteHost(this.baseHost, host);
+      this.refresh(this.baseHost);
     } else if (type == 'openssh'){
       this.notify.emitOpenTab({type: 'ssh', host: host});
     } else if (type == 'opensftp'){

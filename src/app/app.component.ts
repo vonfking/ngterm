@@ -153,8 +153,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit{
       this.selectedIndex = event.keyCode-49;
     }
   }
-  @ViewChildren('popOrigin', {read: ElementRef}) popOriginList: QueryList<ElementRef>;
-  getPopOrigin(i): ElementRef{
-    return this.popOriginList.toArray()[i];
+  @ViewChildren("popRename", {read: ElementRef}) pop: QueryList<ElementRef>;
+  rename(i){
+    this.pop.toArray()[i].nativeElement.click();
   }
 }

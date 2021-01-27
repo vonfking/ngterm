@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ConfigService } from '../../../service/config.service';
 
 @Component({
@@ -19,6 +19,13 @@ export class HostcardComponent implements OnInit {
   }
   onClickOper(type){
     this.hostOperation.emit(type);
+  }
+  confirmDelete(){
+    this.hostOperation.emit('delete');
+  }
+  @ViewChild("popConfirm") pop:ElementRef;
+  clickDelete(){
+    this.pop.nativeElement.click();
   }
   showOperBtn = false;
   @HostListener('mouseenter')

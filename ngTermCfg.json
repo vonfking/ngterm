@@ -86,10 +86,10 @@
                                     "user": "root",
                                     "pass": "root",
                                     "hopIp": "192.168.1.100",
-                                    "group": "group2"
+                                    "group": "group"
                                 }
                             ],
-                            "group": "group2"
+                            "group": "group"
                         },
                         {
                             "title": "192.168.43.117",
@@ -102,7 +102,7 @@
                             "port": "22",
                             "user": "ubuntu",
                             "pass": "vonf99",
-                            "group": "group2"
+                            "group": "group"
                         },
                         {
                             "type": "group",
@@ -110,49 +110,76 @@
                             "title": "group3",
                             "children": [
                                 {
-                                    "type": "host",
-                                    "key": 13,
-                                    "title": "10.1.1.1",
+                                    "type": "group",
+                                    "key": 11,
+                                    "title": "group4",
                                     "children": [],
-                                    "ip": "10.1.1.1",
+                                    "ip": "",
                                     "port": 22,
-                                    "user": "10.1.1.1",
-                                    "pass": "10.1.1.1"
+                                    "user": "",
+                                    "pass": "",
+                                    "group": "group3",
+                                    "hostnum": 0
                                 }
                             ],
                             "ip": "",
                             "port": 22,
                             "user": "",
                             "pass": "",
-                            "hostnum": 0,
+                            "hostnum": 1,
                             "group": "group"
                         }
                     ],
                     "hostnum": 2
-                },
-                {
-                    "title": "host(7)",
-                    "type": "host",
-                    "isLeaf": true,
-                    "key": 11,
-                    "level": 2,
-                    "selected": false,
-                    "group": "group2"
                 }
             ],
-            "hostnum": 1
+            "hostnum": 0
         },
         {
             "type": "group",
             "key": 12,
-            "title": "group3",
-            "children": [],
+            "title": "group4",
+            "children": [
+                {
+                    "type": "group",
+                    "key": 13,
+                    "title": "group5",
+                    "children": [
+                        {
+                            "type": "host",
+                            "key": 16,
+                            "title": "1.1.1.2",
+                            "children": [],
+                            "ip": "1.1.1.2",
+                            "port": 22,
+                            "user": "root",
+                            "pass": "root"
+                        }
+                    ],
+                    "ip": "",
+                    "port": 22,
+                    "user": "",
+                    "pass": "",
+                    "hostnum": 0
+                },
+                {
+                    "type": "host",
+                    "key": 14,
+                    "title": "1.1.1.1",
+                    "children": [],
+                    "ip": "1.1.1.1",
+                    "port": 22,
+                    "user": "root",
+                    "pass": "root",
+                    "group": "group5"
+                }
+            ],
             "ip": "",
             "port": 22,
             "user": "",
             "pass": "",
-            "hostnum": 0,
-            "group": "group"
+            "group": "group3",
+            "hostnum": 1
         }
     ],
     "expanded": true,

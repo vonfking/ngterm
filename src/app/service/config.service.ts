@@ -95,8 +95,8 @@ export class ConfigService {
   getIconByType(type){
     return type == 'ssh' ? 'code' : (type == 'sftp' ? 'read' : 'windows');
   }
-  newHost(type, host=null){
-    let tmp = {
+  newHost(type){
+    return {
       type: type,
       key: this.keynum++,
       title: '',
@@ -106,8 +106,6 @@ export class ConfigService {
       user: '',
       pass: ''
     }
-    if (host)this.copyHost(host, tmp);
-    return tmp;
   }
   copyHost(host1, host2){
     host1.type = host2.type;
@@ -117,6 +115,20 @@ export class ConfigService {
     host1.port = host2.port;
     host1.user = host2.user;
     host1.pass = host2.pass;
+  }
+  deleteHost(baseHost:Host, host:Host){
+    if (!baseHost.children)return;
+    for (let i=0; i<baseHost.children.length; i++){
+      let tmp:Host = baseHost.children[i];
+      if (tmp.key == host.key){
+        baseHost.children.splice(i, 1);
+        this.electron.fs.writeFileSync(this.configFile, JSON.stringify(this.hostConfig, null, 4));
+        return true;
+      }else if(this.deleteHost(tmp, host)){
+        return true;
+      }
+    }
+    return false;
   }
   saveHost(baseHost, host){
     let isModify = false;
