@@ -37,7 +37,10 @@ export class ElectronService {
     }
   }
   getLocalPort(){
-    let win: any =  this.BrowserWindow.getFocusedWindow()
+    let win: any =  this.BrowserWindow.getFocusedWindow();
     return win.localPort;
+  }
+  isWindowMax(){
+    return this.BrowserWindow.getFocusedWindow().isMaximized();
   }
 }

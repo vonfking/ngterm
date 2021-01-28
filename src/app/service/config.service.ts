@@ -84,14 +84,6 @@ export class ConfigService {
     return hosts;
   }
 
-  private tabSubject = new Subject();
-  newTab(tab){
-    this.tabSubject.next(tab);
-  }
-  onNewTab(cb){
-    return this.tabSubject.asObservable().subscribe(tab => cb(tab));
-  }
-
   getIconByType(type){
     return type == 'ssh' ? 'code' : (type == 'sftp' ? 'read' : 'windows');
   }
@@ -122,7 +114,7 @@ export class ConfigService {
       let tmp:Host = baseHost.children[i];
       if (tmp.key == host.key){
         baseHost.children.splice(i, 1);
-        this.electron.fs.writeFileSync(this.configFile, JSON.stringify(this.hostConfig, null, 4));
+        this.saveConfig();
         return true;
       }else if(this.deleteHost(tmp, host)){
         return true;
@@ -130,7 +122,7 @@ export class ConfigService {
     }
     return false;
   }
-  saveHost(baseHost, host){
+  modifyHost(baseHost, host){
     let isModify = false;
     for (let h of baseHost.children){
       if (h.key == host.key){
@@ -141,6 +133,9 @@ export class ConfigService {
     if (!isModify){
       baseHost.children.push(host);
     }
+    this.saveConfig();
+  }
+  saveConfig(){
     this.electron.fs.writeFileSync(this.configFile, JSON.stringify(this.hostConfig, null, 4));
   }
 }

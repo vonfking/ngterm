@@ -24,7 +24,7 @@ function onClientConnectReq(socket, host, type) {
 
             stream.on('data', function(data) { socket.emit('ssh-data', data.toString('utf-8')); })
             stream.on('close', function(code, signal) {
-                console.log("ssh closed", reason)
+                console.log("ssh closed")
                 socket.emit('ssh-conn-close');
             })
             socket.emit('ssh-conn-ack');

@@ -17,6 +17,8 @@ export class WinOperationDirective implements AfterViewInit {
     this.navElement.push(this.el.nativeElement);
   }
   isNavEvent(e){
+    if (this.navElement.length == 0)
+      return true;
     for (let element of this.navElement) {
       if (e.srcElement == element)
         return true;

@@ -2,17 +2,9 @@
     height: 100%;
 }
 
-nz-header {
-    /**/
-    background: rgb(75, 75, 75);
-    padding: 0px 12px 0px 12px;
+.title {
     display: flex;
     justify-content: space-between;
-}
-
-nz-header div {
-    /*-webkit-app-region: drag;*/
-    flex-grow: 2;
 }
 
 ::ng-deep .ant-layout-header {
@@ -58,7 +50,7 @@ nz-footer {
 }
 
 ::ng-deep .ant-tabs-top>.ant-tabs-nav {
-    margin-top: 8px;
+    /*margin-top: 8px;*/
     /*margin-left: 4px;*/
     margin-bottom: 0px;
 }

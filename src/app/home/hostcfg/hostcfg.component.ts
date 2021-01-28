@@ -54,14 +54,14 @@ export class HostcfgComponent implements OnInit {
     this.isEditing = false;
   }
   saveEditDrawer(){
-    this.config.saveHost(this.baseHost, this.editHost);
+    this.config.modifyHost(this.baseHost, this.editHost);
     this.refresh(this.baseHost);
     this.isEditing = false;
   }
   onOperation(type, host){
     if (type == "dblclick"){
       if (this.config.isGroup(host))this.refresh(host);
-      else this.config.newTab({type: 'ssh', host: host});
+      else this.notify.emitOpenTab({type: 'ssh', host: host});
     } else if (type == 'edit'){
       this.openEditDrawer(host);
     } else if (type == 'delete'){

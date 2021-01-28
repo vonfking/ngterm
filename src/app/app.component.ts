@@ -21,7 +21,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit{
   constructor(private modal: NzModalService, 
     private viewContainerRef: ViewContainerRef, 
     private diagDragDrop: DiagDragDropService, 
-    private electron: ElectronService,
+    public  electron: ElectronService,
     private cd: ChangeDetectorRef,
     private nzContexMenuService: NzContextMenuService,
     private notify: NotifyService, 
@@ -45,9 +45,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit{
   }
   ngAfterViewInit() {
     this.cd.detectChanges();
-    this.config.onNewTab(tab => {
-      this.addTab(tab);
-    })
   }
   getIconByType(type){
     return type == 'ssh' ? 'code' : (type == 'sftp' ? 'read' : 'windows');
@@ -70,11 +67,10 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit{
     for (let i = 0; i < this.tablist.length; i++){
       let tab = this.tablist[i];
       if (tab.origin_title == origin_title && tab.type == type){
-        if (tab.title != this.getInitalTitle(tab.origin_title, tab.title_index)){
-          return tab.index;
+        if (tab.title == this.getInitalTitle(tab.origin_title, tab.title_index)){
+          used_index[tab.title_index] = true;
+          index += 1;
         }
-        used_index[tab.title_index] = true;
-        index += 1;
       }
     }
     for (let i=0; i< index; i++){
@@ -99,7 +95,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit{
       title: this.getInitalTitle(origin_title, title_index)
     }
     this.tablist.push(newTab);
-    this.selectedIndex = this.tablist.length;
+    setTimeout(() => this.selectedIndex = this.tablist.length);
   }
   newTab(): void{
     const modal = this.modal.create({
@@ -154,7 +150,12 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit{
     }
   }
   @ViewChildren("popRename", {read: ElementRef}) pop: QueryList<ElementRef>;
-  rename(i){
-    this.pop.toArray()[i].nativeElement.click();
+  newTitle: string;
+  renameTitle(index){
+    this.newTitle = this.tablist[index].title;
+    this.pop.toArray()[index].nativeElement.click();
+  }
+  confirmRename(index){
+    this.tablist[index].title = this.newTitle;
   }
 }

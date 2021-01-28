@@ -16,8 +16,7 @@ export class HomeComponent implements OnInit {
   isOpenedFunc(func){
     return this.openedFunc == func;
   }
-  @Output() openTab = new EventEmitter<any>();
-
+  
   ngOnInit(): void {
   }
   openLocalTerm(){
