@@ -17,12 +17,12 @@ export class HostcfgComponent implements OnInit {
   groups=[]
   grouplist=[];
   ngOnInit(): void {
-    this.hostConfig = this.config.getHostTreeList();
+    this.hostConfig = this.config.getHostConfig();
     if (this.hostConfig){
       this.refresh(this.hostConfig);
     }    
   }
-  refresh(host){
+  refresh(host: Host){
     this.groups = this.config.getGroupArray(host);
     this.hosts = this.config.getHostArray(host);  
     if (this.baseHost != host){
@@ -58,19 +58,21 @@ export class HostcfgComponent implements OnInit {
     this.refresh(this.baseHost);
     this.isEditing = false;
   }
-  onOperation(type, host){
+  onOperation(type: string, host: Host){
     if (type == "dblclick"){
       if (this.config.isGroup(host))this.refresh(host);
-      else this.notify.emitOpenTab({type: 'ssh', host: host});
+      else this.notify.emitOpenTab({type: 'ssh', host: this.config.getConnectHost(host)});
     } else if (type == 'edit'){
       this.openEditDrawer(host);
+    } else if (type == 'editchild'){
+      this.refresh(host);
     } else if (type == 'delete'){
       this.config.deleteHost(this.baseHost, host);
       this.refresh(this.baseHost);
     } else if (type == 'openssh'){
-      this.notify.emitOpenTab({type: 'ssh', host: host});
+      this.notify.emitOpenTab({type: 'ssh', host: this.config.getConnectHost(host)});
     } else if (type == 'opensftp'){
-      this.notify.emitOpenTab({type: 'sftp', host: host});
+      this.notify.emitOpenTab({type: 'sftp', host: this.config.getConnectHost(host)});
     }
   }
 }

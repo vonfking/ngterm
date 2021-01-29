@@ -36,11 +36,14 @@ export class ElectronService {
       this.path = window.require('path');
     }
   }
+  private win: BrowserWindow = null;
   getLocalPort(){
-    let win: any =  this.BrowserWindow.getFocusedWindow();
-    return win.localPort;
+    if (!this.win)this.win = this.BrowserWindow.getFocusedWindow();
+    return (this.win as any).localPort;
   }
   isWindowMax(){
-    return this.BrowserWindow.getFocusedWindow().isMaximized();
+    if (!this.win)this.win = this.BrowserWindow.getFocusedWindow();
+    if (!this.win)return false;
+    return this.win.isMaximized();
   }
 }
