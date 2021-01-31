@@ -1,1 +1,13 @@
-<p>setting works!</p>
+<nz-card nzType="inner" nzTitle="Global">
+    <div class='host-list'>
+        theme
+        <nz-switch [(ngModel)]="setting.global.theme"></nz-switch>
+    </div>
+</nz-card>
+<br/>
+<nz-card nzType="inner" nzTitle="Terminal">
+    <div class='host-list'>
+        Allow right click to copy and paste selected
+    </div>
+    <nz-switch [(ngModel)]="setting.terminal.rightCopy"></nz-switch>
+</nz-card>

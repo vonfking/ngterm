@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NotifyService } from '../../service/notify.service';
-import { ConfigService, Host } from '../../service/config.service';
+import { HostConfigService, Host } from '../../service/config.service';
 
 @Component({
   selector: 'app-hostcfg',
@@ -9,44 +9,44 @@ import { ConfigService, Host } from '../../service/config.service';
 })
 export class HostcfgComponent implements OnInit {
 
-  constructor(public config: ConfigService, private notify: NotifyService) { }
+  constructor(public hostCfg: HostConfigService, private notify: NotifyService) { }
 
   hostConfig: Host;
   baseHost: Host;
-  hosts=[]
-  groups=[]
-  grouplist=[];
+  hosts: Host[]=[];
+  groups: Host[]=[];
+  grouplist: Host[]=[];
+  showAllSub = false;
   ngOnInit(): void {
-    this.hostConfig = this.config.getHostConfig();
+    this.hostConfig = this.hostCfg.getHostConfig();
     if (this.hostConfig){
       this.refresh(this.hostConfig);
     }    
   }
   refresh(host: Host){
-    this.groups = this.config.getGroupArray(host);
-    this.hosts = this.config.getHostArray(host);  
+    this.groups = this.hostCfg.getChildGroups(host);
+    this.hosts = this.hostCfg.getChildHosts(host, this.showAllSub);  
     if (this.baseHost != host){
-      this.grouplist.push(host);
+      this.grouplist = this.hostCfg.getHostPath(host);
       this.baseHost = host;
     } 
   }
-  spliceGroup(index){
+  changeGroup(index){
     let group = this.grouplist[index];
-    this.grouplist.splice(index, this.grouplist.length - index);
     this.refresh(group);
   }
   public isEditing = false;
   public editTitle = "";
-  public editHost: Host = this.config.newHost('host');
+  public editHost: Host = this.hostCfg.newHost('host');
   openEditDrawer(host: string | Host){
     if (typeof host === 'string'){
       let type = host;
       this.editTitle = "New " + type;
-      this.editHost = this.config.newHost(type.toLowerCase());
+      this.editHost = this.hostCfg.newHost(type.toLowerCase());
     }
     else{
-      this.editTitle = "Edit " + this.config.isGroup(host)?'Group':'Host';
-      this.config.copyHost(this.editHost, host);
+      this.editTitle = "Edit " + (this.hostCfg.isGroup(host)?'Group':'Host');
+      this.hostCfg.copyHost(this.editHost, host);
     }
     this.isEditing = true;
   }
@@ -54,25 +54,25 @@ export class HostcfgComponent implements OnInit {
     this.isEditing = false;
   }
   saveEditDrawer(){
-    this.config.modifyHost(this.baseHost, this.editHost);
+    this.hostCfg.modifyHost(this.baseHost, this.editHost);
     this.refresh(this.baseHost);
     this.isEditing = false;
   }
   onOperation(type: string, host: Host){
     if (type == "dblclick"){
-      if (this.config.isGroup(host))this.refresh(host);
-      else this.notify.emitOpenTab({type: 'ssh', host: this.config.getConnectHost(host)});
+      if (this.hostCfg.isGroup(host))this.refresh(host);
+      else this.notify.emitOpenTab({type: 'ssh', host: this.hostCfg.getConnectHost(host)});
     } else if (type == 'edit'){
       this.openEditDrawer(host);
     } else if (type == 'editchild'){
       this.refresh(host);
     } else if (type == 'delete'){
-      this.config.deleteHost(this.baseHost, host);
+      this.hostCfg.deleteHost(this.baseHost, host);
       this.refresh(this.baseHost);
     } else if (type == 'openssh'){
-      this.notify.emitOpenTab({type: 'ssh', host: this.config.getConnectHost(host)});
+      this.notify.emitOpenTab({type: 'ssh', host: this.hostCfg.getConnectHost(host)});
     } else if (type == 'opensftp'){
-      this.notify.emitOpenTab({type: 'sftp', host: this.config.getConnectHost(host)});
+      this.notify.emitOpenTab({type: 'sftp', host: this.hostCfg.getConnectHost(host)});
     }
   }
 }

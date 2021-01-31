@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Setting, SettingService } from '../../service/config.service';
 
 @Component({
   selector: 'app-setting',
@@ -7,9 +8,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SettingComponent implements OnInit {
 
-  constructor() { }
+  constructor(public settingSvc: SettingService) { }
 
+  setting: Setting;
   ngOnInit(): void {
+    this.setting = this.settingSvc.getConfig();
   }
 
 }

@@ -1,8 +1,16 @@
 import { Injectable } from '@angular/core';
-import { title } from 'process';
-import { Subject } from 'rxjs';
 import { ElectronService } from './electron.service';
-
+export interface Setting{
+  global:{
+    theme: 'dark'|'default';
+  },
+  terminal:{
+    rightCopy: true;
+    theme: 'default'|'',
+    fontFamily: '',
+    fontSize: number 
+  }
+}
 export interface Host{
   title: string,
   type: "root"|"group"|"host"|"subhost",
@@ -15,13 +23,13 @@ export interface Host{
   parent?: Host,
   child?: Host,
   hopIp?: string,
-  group?: string
+  group?: string,
+  hostnum?:number
  }
 @Injectable({
   providedIn: 'root'
 })
-export class ConfigService {
-
+export class HostConfigService {
   constructor(private electron: ElectronService) { }
   keynum = 0;
   hostConfig: Host;
@@ -60,36 +68,48 @@ export class ConfigService {
     }
     return this.hostConfig;
   }
-  getGroupArray(host: any){
+  getChildGroups(host: Host){
     let groups = [];
     if (host && host.children){
       host.children.forEach(item => {
         if (this.isGroup(item)){
-          item.hostnum = this.getHostArray(item, null, false, false).length;
+          item.hostnum = this.getChildHosts(item, false, false).length;
           groups.push(item);
         }
       })
     }
     return groups;
   }
-  getHostArray(host: Host, rootGroup = null, recursive = true, change = true){
-    let hosts = [];
-    if (host && host.children){
-      host.children.forEach(item => {
-        if (this.isHost(item)){
-          if (change){
-            if (this.isHost(host)) item.hopIp = host.ip;
-            if (rootGroup) item.group = rootGroup;
+  getChildHosts(host: Host, recursive = true, change = true){
+    let _getChildHosts = (host: Host, rootGroup = null, recursive:boolean, change:boolean) => {
+      let hosts = [];
+      if (host && host.children){
+        host.children.forEach(item => {
+          if (this.isHost(item)){
+            if (change){
+              if (this.isHost(host)) item.hopIp = host.ip;
+              if (rootGroup) item.group = rootGroup;
+            }
+            hosts.push(item);
           }
-          hosts.push(item);
-        }
-        if (recursive){
-          if (rootGroup == null && this.isGroup(item))rootGroup = item.title;
-          hosts.push.apply(hosts, this.getHostArray(item, rootGroup, recursive, change));
-        }
-      })
+          if (recursive){
+            if (rootGroup == null && this.isGroup(item))rootGroup = item.title;
+            hosts.push.apply(hosts, _getChildHosts(item, rootGroup, recursive, change));
+          }
+        })
+      }
+      return hosts;
     }
-    return hosts;
+    return _getChildHosts(host, null, recursive, change);
+  }
+  getHostPath(host: Host){
+    let path=[];
+    let tmp = host;
+    do{
+      path.splice(0, 0, tmp);
+      tmp = tmp.parent;
+    }while(tmp);
+    return path;
   }
   getConnectHost(host: Host, subhost:Host = null):Host{
     let tmpHost: Host = this.newHost('host');
@@ -172,5 +192,36 @@ export class ConfigService {
     let tmpHost: Host = this.newHost('root');
     this.copyHost(tmpHost, this.hostConfig, true, true);
     this.electron.fs.writeFileSync(this.configFile, JSON.stringify(this.hostConfig, null, 4));
+  }
+}
+@Injectable({
+  providedIn: 'root'
+})
+export class SettingService {
+  setting: Setting = {
+    global:{
+      theme: 'dark'
+    },
+    terminal:{
+      rightCopy: true,
+      theme: 'default',
+      fontFamily: '',
+      fontSize: 14 
+    }
+  }
+  configFile = 'setting.json';
+  constructor(private electron: ElectronService) { 
+    var strConfig: any;
+    try{
+      strConfig = this.electron.fs.readFileSync(this.configFile);
+      if (strConfig)this.setting = JSON.parse(strConfig);
+    }catch(e){
+    }
+  }
+  getConfig(): Setting{
+    return this.setting;
+  }
+  saveConfig(){
+    this.electron.fs.writeFileSync(this.configFile, JSON.stringify(this.setting, null, 4));
   }
 }

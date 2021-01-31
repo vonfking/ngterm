@@ -51,7 +51,6 @@ export class TermComponent implements OnInit, AfterViewInit, AfterViewChecked, O
       foreground: '#08cc6f',
       selection: '#0a714e',
       background: '#000000',
-      //cursor: config.terminal.colorScheme.cursor,
     }
     window.addEventListener('resize', this.resizeHandler);
     this.fitAddon = new FitAddon();

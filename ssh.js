@@ -4,31 +4,35 @@ var pty = require('@terminus-term/node-pty')
 function onClientConnectReq(socket, host, type) {
     let myClient = new MySSHClient();
     myClient.debug = console.log;
-    if (type == 'sftp') {
-        myClient.sftpConnect(host).then(() => {
-            myClient.cwd().then((path) => {
-                console.log("cwd:", path)
-                socket.emit('ssh-conn-ack', path);
-                socket.myClient = myClient;
+    try {
+        if (type == 'sftp') {
+            myClient.sftpConnect(host).then(() => {
+                myClient.cwd().then((path) => {
+                    console.log("cwd:", path)
+                    socket.emit('ssh-conn-ack', path);
+                    socket.myClient = myClient;
+                })
             })
-        })
-    } else if (type == 'ssh') {
-        myClient.sshConnect(host).then((stream) => {
-            socket.on('ssh-data', function(data) { stream.write(data); });
-            socket.on('resize', function(cols, rows) { stream.setWindow(rows, cols); });
-            socket.on('disconnect', function(reason) {
-                console.log("ssh disconnect", reason)
-                myClient.end();
-            });
-            socket.on('error', function(err) { myClient.end(); });
+        } else if (type == 'ssh') {
+            myClient.sshConnect(host).then((stream) => {
+                socket.on('ssh-data', function(data) { stream.write(data); });
+                socket.on('resize', function(cols, rows) { stream.setWindow(rows, cols); });
+                socket.on('disconnect', function(reason) {
+                    console.log("ssh disconnect", reason)
+                    myClient.end();
+                });
+                socket.on('error', function(err) { myClient.end(); });
 
-            stream.on('data', function(data) { socket.emit('ssh-data', data.toString('utf-8')); })
-            stream.on('close', function(code, signal) {
-                console.log("ssh closed")
-                socket.emit('ssh-conn-close');
+                stream.on('data', function(data) { socket.emit('ssh-data', data.toString('utf-8')); })
+                stream.on('close', function(code, signal) {
+                    console.log("ssh closed")
+                    socket.emit('ssh-conn-close');
+                })
+                socket.emit('ssh-conn-ack');
             })
-            socket.emit('ssh-conn-ack');
-        })
+        }
+    } catch (e) {
+        socket.emit('ssh-error', e);
     }
 }
 
@@ -104,9 +108,9 @@ function onRenameReq(socket, oldname, newname) {
     })
 }
 module.exports = function ssh(socket) {
-    socket.onAny((event, ...args) => {
+    /*socket.onAny((event, ...args) => {
         console.log(`got ${event}`);
-    });
+    });*/
     socket.on('ssh-conn-req', function(host, type) {
         if (type == 'local') onLocalShellReq(socket);
         else onClientConnectReq(socket, host, type);

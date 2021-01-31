@@ -2,7 +2,7 @@ import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostListener, 
 import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { HostcfgComponent2 } from './hostcfg/hostcfg.component';
-import { ConfigService } from './service/config.service';
+import { HostConfigService } from './service/config.service';
 import { DiagDragDropService } from './service/diag-drag-drop.service';
 import { ElectronService } from './service/electron.service';
 import { NotifyService } from './service/notify.service';
@@ -25,7 +25,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit{
     private cd: ChangeDetectorRef,
     private nzContexMenuService: NzContextMenuService,
     private notify: NotifyService, 
-    private config: ConfigService) {}
+    private hostCfg: HostConfigService) {}
   
   contextMenu($event: MouseEvent, menu: NzDropdownMenuComponent): void {
     this.nzContexMenuService.create($event, menu);

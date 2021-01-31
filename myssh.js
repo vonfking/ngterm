@@ -22,12 +22,13 @@ class MySSHClient extends SFTPClient {
             console.log('connecting:', host.ip)
             if (!host.child) {
                 client.on('banner', (data) => {
+                    console.log('banner:', data);
                     _eventEmmitter.emit('ssh-data', data.replace(/\r?\n/g, '\r\n').toString('utf-8'))
                 })
             } else {
                 client = new SSHClient();
             }
-            client.on('keyboard-interactive', (name, instructions, lang, prompts, finish) => { finish[host.pass] })
+            client.on('keyboard-interactive', (name, instructions, lang, prompts, finish) => { finish([host.pass]) })
                 .on('ready', () => {
                     console.log('connected:', host.ip)
                     if (host.child) {
@@ -43,6 +44,7 @@ class MySSHClient extends SFTPClient {
                     sock: stream,
                     username: host.user,
                     password: host.pass,
+                    tryKeyboard: true,
                     keepaliveInterval: 1000
                 })
             } else {
@@ -52,6 +54,7 @@ class MySSHClient extends SFTPClient {
                     port: host.port || 22,
                     username: host.user,
                     password: host.pass,
+                    tryKeyboard: true,
                     keepaliveInterval: 1000
                 })
             }

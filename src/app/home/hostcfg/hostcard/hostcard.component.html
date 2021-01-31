@@ -1,12 +1,12 @@
 <div class='card'>
-    <nz-avatar *ngIf="config.isGroup(host)" nzText="G" style="color:#f56a00; background-color: #fde3cf;"></nz-avatar>
-    <nz-avatar *ngIf="config.isHost(host)" nzText="H" style="color:#f56a00; background-color: #fde3cf;"></nz-avatar>
+    <nz-avatar *ngIf="hostCfg.isGroup(host)" nzText="G" style="color:#f56a00; background-color: #fde3cf;"></nz-avatar>
+    <nz-avatar *ngIf="hostCfg.isHost(host)" nzText="H" style="color:#f56a00; background-color: #fde3cf;"></nz-avatar>
     <div>
         <div class='title'>{{host.title}}</div>
         <span #popConfirm nz-popconfirm nzPopconfirmPlacement="bottom" nzPopconfirmTitle="Are you sure to delete?" (nzOnConfirm)="confirmDelete()"></span>
-        <div class='subtitle' *ngIf="config.isGroup(host)">{{host.hostnum}} Hosts</div>
-        <div class='subtitle' *ngIf="config.isHost(host) && host.hopIp">Hop:{{host.hopIp}}</div>
-        <div class='subtitle' *ngIf="config.isHost(host) && host.group">Group:{{host.group}}</div>
+        <div class='subtitle' *ngIf="hostCfg.isGroup(host)">{{host.hostnum}} Hosts</div>
+        <div class='subtitle' *ngIf="hostCfg.isHost(host) && host.hopIp">Hop:{{host.hopIp}}</div>
+        <div class='subtitle' *ngIf="hostCfg.isHost(host) && host.group">Group:{{host.group}}</div>
     </div>
 </div>
 <div *ngIf="showOperBtn || isVisible" class="oper">
@@ -16,8 +16,8 @@
             <li nz-menu-item (click)="onClickOper('edit')"><i nz-icon nzType="edit"></i>Edit</li>
             <li nz-menu-item (click)="onClickOper('editchild')"><i nz-icon nzType="edit"></i>Edit Child Node</li>
             <li nz-menu-item (click)="clickDelete()"><i nz-icon nzType="delete"></i>Delete</li>
-            <li nz-menu-item (click)="onClickOper('openssh')" *ngIf="config.isHost(host)"><i nz-icon [nzType]="config.getIconByType('ssh')"></i>Open SSH</li>
-            <li nz-menu-item (click)="onClickOper('opensftp')" *ngIf="config.isHost(host)"><i nz-icon [nzType]="config.getIconByType('sftp')"></i>Open SFTP</li>
+            <li nz-menu-item (click)="onClickOper('openssh')" *ngIf="hostCfg.isHost(host)"><i nz-icon [nzType]="hostCfg.getIconByType('ssh')"></i>Open SSH</li>
+            <li nz-menu-item (click)="onClickOper('opensftp')" *ngIf="hostCfg.isHost(host)"><i nz-icon [nzType]="hostCfg.getIconByType('sftp')"></i>Open SFTP</li>
         </ul>
     </nz-dropdown-menu>
 </div>
