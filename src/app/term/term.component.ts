@@ -5,6 +5,7 @@ import { ElectronService } from '../service/electron.service';
 import { FitAddon } from 'xterm-addon-fit';
 import { interval, Subscription } from 'rxjs';
 import { NotifyService } from '../service/notify.service';
+import { BaseSession, SessionService } from '../service/session.service';
 
 
 @Component({
@@ -13,8 +14,6 @@ import { NotifyService } from '../service/notify.service';
   styleUrls: ['./term.component.css']
 })
 export class TermComponent implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy {
-  socket: Socket;
-  sshClient: any;
   host: any;
   fitAddon: any;
   xterm: any;
@@ -23,6 +22,7 @@ export class TermComponent implements OnInit, AfterViewInit, AfterViewChecked, O
   cols:any;
   recvNewData = false;
   subscription: Subscription;
+  session: BaseSession;
   
   @Input('hostInfo')
   set _hostInfo(hostinfo: any){
@@ -31,14 +31,14 @@ export class TermComponent implements OnInit, AfterViewInit, AfterViewChecked, O
   @Input() tabIndex: number;
   @Input() termType: string;
   @Output() onNewData = new EventEmitter<any>();
-  constructor(private notify: NotifyService, private socketService: SocketService, private electron: ElectronService) { 
-    this.socket = socketService.newSocket(); 
+  constructor(private notify: NotifyService, private sessionService: SessionService, private electron: ElectronService) { 
   }
 
   @ViewChild('terminal', {static: true}) terminalDiv:ElementRef;
   
   ngOnInit(): void {
     let timer = interval(100);
+    this.session = this.sessionService.newSession(this.termType, this.host);
     timer.subscribe(t => {
       if (this.recvNewData){
         this.onNewData.emit();
@@ -61,18 +61,15 @@ export class TermComponent implements OnInit, AfterViewInit, AfterViewChecked, O
     this.xterm.setOption('theme', theme);
     this.xterm.setOption('fontFamily', "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace")
     this.xtermCore = (this.xterm as any)._core;
-    
-    this.socket.connect(this.host, this.termType).subscribe((value: any) => {
-      if (value.key == 'ssh-conn-ack'){
-        this.resizeHandler();
-        this.xterm.onData((input) => {
-          this.socket.sendMsg(input);
-         });
-      }else{
-        this.recvNewData = true;
-        this.xterm.write(value.data);
-      }
+    this.xterm.onData((input) => {
+      this.session.write(input);
     });
+    this.session.output$.subscribe(data=>{
+      this.xterm.write(data);
+    })
+    this.session.opened$.subscribe(()=>{
+      this.resizeHandler();
+    })
     setTimeout(() => this.xterm.focus());
     this.subscription = this.notify.onMainTabIndexChange((index) => {
       if (index == this.tabIndex) {
@@ -97,7 +94,7 @@ export class TermComponent implements OnInit, AfterViewInit, AfterViewChecked, O
 
             if (!isNaN(cols) && !isNaN(rows)) {
                 this.xterm.resize(cols, rows)
-                this.socket.resize(cols, rows);
+                this.session.resize(cols, rows);
             }
         }
     } catch (e) {
@@ -125,7 +122,7 @@ export class TermComponent implements OnInit, AfterViewInit, AfterViewChecked, O
     //console.log(a.style.zIndex)
   }
   ngOnDestroy(): void{
-    this.socket.disconnect();
+    this.session.kill();
     this.subscription.unsubscribe();
     window.removeEventListener('resize', this.resizeHandler);
   }

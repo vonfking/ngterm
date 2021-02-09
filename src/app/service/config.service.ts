@@ -191,7 +191,7 @@ export class HostConfigService {
   saveConfig(){
     let tmpHost: Host = this.newHost('root');
     this.copyHost(tmpHost, this.hostConfig, true, true);
-    this.electron.fs.writeFileSync(this.configFile, JSON.stringify(this.hostConfig, null, 4));
+    this.electron.fs.writeFileSync(this.configFile, JSON.stringify(tmpHost, null, 4));
   }
 }
 @Injectable({
