@@ -1,8 +1,9 @@
-import { Component, Input, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { Subscription } from 'rxjs';
-import { ElectronService } from '../service/electron.service';
-import { NotifyService } from '../service/notify.service';
-import { Socket, SocketService } from '../service/socket.service';
+import { ElectronService } from '../../service/electron.service';
+import { NotifyService } from '../../service/notify.service';
+import { BaseSession, SessionService } from '../../service/session.service';
 import { FilelistComponent } from './filelist/filelist.component';
 
 @Component({
@@ -19,7 +20,8 @@ export class SftpComponent implements OnInit, OnDestroy {
   isRemoteSpinning = false
   isSpinning = false
   subscription: Subscription;
-  constructor(private notify: NotifyService, private socketService: SocketService, private electonService: ElectronService) { }
+  session: BaseSession;
+  constructor(private notify: NotifyService, private sessionService: SessionService, private electonService: ElectronService, private message: NzMessageService) { }
 
   prefix(n){
     const str = '' + n;
@@ -65,7 +67,7 @@ export class SftpComponent implements OnInit, OnDestroy {
   }
   getRemoteFiles(dir){
     this.isRemoteSpinning = true;
-    this.socket.readDir(dir, (list) => {
+    this.session.list(dir, (list) => {
       list.forEach(file => {
         file.mtime = this.formatTime(file.mtime);
       })
@@ -73,14 +75,35 @@ export class SftpComponent implements OnInit, OnDestroy {
       this.isRemoteSpinning = false;
     });
   }
-  socket: Socket;
+  //socket: Socket;
   host:any;
   @Input('hostInfo')
   set _hostInfo(hostinfo: any){
     this.host = hostinfo;
   }
   @Input() tabIndex: number;
+  @Output() onStateChange = new EventEmitter<string>();
   @ViewChildren(FilelistComponent) componentChildList: QueryList<FilelistComponent>
+  state:"CONNECTING"| "CONNECTED" | "ERROR";
+  newSession(){
+    this.state = "CONNECTING";
+    this.onStateChange.emit('CONNECTING');
+    this.session = this.sessionService.newSession('sftp', this.host);
+    this.session.error$.subscribe(data=>{
+      console.log("recv ERROR")
+      this.session.kill();
+      this.state = "ERROR"
+      this.isRemoteSpinning = false;
+      this.onStateChange.emit('ERROR');
+    })
+    this.session.opened$.subscribe((path:any)=>{
+      console.log("recv CONNECTED")
+      this.state = "CONNECTED";
+      this.onStateChange.emit('CONNECTED');
+      this.remotePath = path;
+      this.getRemoteFiles(path);
+    })
+  }
   onSplitterChange(e: any){
     //this.componentChildList.forEach(elementRef => elementRef.setTableSize());
     this.notify.emitSftpWindowChange();
@@ -88,11 +111,7 @@ export class SftpComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.localPath = this.electonService.app.getAppPath();
     this.getLocalFiles(this.localPath);
-    this.socket = this.socketService.newSocket();
-    this.socket.connect(this.host, 'sftp', (path) =>{
-      this.remotePath = path;
-      this.getRemoteFiles(path);
-    });
+    this.newSession();
     this.subscription = this.notify.onMainTabIndexChange((index) => {
       if (index == this.tabIndex) {
         this.notify.emitSftpWindowChange();
@@ -100,7 +119,7 @@ export class SftpComponent implements OnInit, OnDestroy {
     })
   }
   ngOnDestroy(): void{
-    this.socket.disconnect();
+    this.session.kill();
     this.subscription.unsubscribe();
   }
   onLocalPathChange(e:any){
@@ -121,20 +140,28 @@ export class SftpComponent implements OnInit, OnDestroy {
   }
   onRemotePathChange(e:any){
     console.log('recv change:', e);
-    if (e.type == 'relative'){
-      this.remotePath = this.getRealPath(this.remotePath, e.path, 'linux');    
-    }else{
-      this.remotePath = e.path;
+    if (this.state == "CONNECTED"){
+      if (e.type == 'relative'){
+        this.remotePath = this.getRealPath(this.remotePath, e.path, 'linux');    
+      }else{
+        this.remotePath = e.path;
+      }
+      this.getRemoteFiles(this.remotePath);
     }
-    this.getRemoteFiles(this.remotePath);
+    if (this.state == "ERROR" && e.type == 'absolute'){
+      this.newSession();
+    }
   }
   onLocalFileOperation(e){
     this.isSpinning = true;
     if (e.type == 'updown'){
-      this.socket.upload(this.localPath, this.remotePath, e.fileList, (progress, error) => {
+      this.session.upload(this.localPath, this.remotePath, e.fileList, (progress, error) => {
         if (error || progress == '100'){
           this.isSpinning = false;
           this.getRemoteFiles(this.remotePath);
+        }
+        if (error){
+          this.message.create('error', 'upload failed:'+ error);
         }
       })
     }else if (e.type == 'rename'){
@@ -147,18 +174,22 @@ export class SftpComponent implements OnInit, OnDestroy {
   onRemoteFileOperation(e){
     this.isSpinning = true;
     if (e.type == 'updown'){
-      this.socket.download(this.localPath, this.remotePath, e.fileList, (progress, error) => {
+      this.session.download(this.localPath, this.remotePath, e.fileList, (progress, error) => {
         if (error || progress == '100'){
           this.isSpinning = false;
           this.getLocalFiles(this.localPath);
+        }
+        if (error){
+          this.message.create('error', 'download failed:'+ error);
         }
       })
     }else if (e.type == 'rename'){
       let oldname = this.getRealPath(this.remotePath, e.oldname, 'linux');
       let newname = this.getRealPath(this.remotePath, e.newname, 'linux');
-      this.socket.rename(oldname, newname, (error) => {
+      this.session.rename(oldname, newname, (error) => {
         if (error) {
           this.getRemoteFiles(this.remotePath);
+          this.message.create('error', 'rename failed:'+ error);
         }
         this.isSpinning = false;
       });

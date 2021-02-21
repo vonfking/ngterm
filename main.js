@@ -7,19 +7,21 @@ var SSHClient = require('ssh2').Client;
 var win = null;
 var args = process.argv.slice(1), serve = args.some(function (val) { return val === '--serve'; });
 /*web socket init*/
-function webSocketInit() {
-    var server = require('http').createServer();
-    var io = require('socket.io')(server, { cors: {
-            orgin: '*',
-            methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
-            allowedHeaders: ['Origin', 'X-Requested-Width', 'Content-Type', 'Accept'],
-            credentials: true
-        } });
-    var ssh = require('./ssh');
-    io.on('connect', ssh);
-    server.listen(0);
-    return server.address().port;
-}
+/*function webSocketInit(){
+  const server = require('http').createServer();
+
+  var io = require('socket.io')(server, {cors: {
+      orgin: '*',
+      methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Origin', 'X-Requested-Width', 'Content-Type', 'Accept'],
+      credentials: true
+  }})
+  var ssh = require('./ssh')
+  io.on('connect', ssh);
+  
+  server.listen(0);
+  return server.address().port;
+}*/
 /*window operation*/
 function windowOperation(_win) {
     var winStartPosition = { x: 0, y: 0 };
@@ -60,7 +62,7 @@ function windowOperation(_win) {
         }
     });
     electron_1.ipcMain.on('window-close', function (e, args) {
-        console.log('windowOper', args);
+        //console.log('windowOper', args);
         _win.close();
         electron_1.app.quit();
     });
@@ -105,7 +107,7 @@ function createWindow() {
         win = null;
     });
     windowOperation(win);
-    win['localPort'] = webSocketInit();
+    //win['localPort'] = webSocketInit();
     return win;
 }
 try {

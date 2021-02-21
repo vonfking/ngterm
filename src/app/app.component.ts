@@ -1,11 +1,13 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostListener, OnDestroy, OnInit, QueryList, ViewChildren, ViewContainerRef } from '@angular/core';
 import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { HostcfgComponent2 } from './hostcfg/hostcfg.component';
-import { HostConfigService } from './service/config.service';
+import { Host, HostConfigService } from './service/config.service';
 import { DiagDragDropService } from './service/diag-drag-drop.service';
 import { ElectronService } from './service/electron.service';
 import { NotifyService } from './service/notify.service';
+import { SelectionModel } from '@angular/cdk/collections';
+import { FlatTreeControl } from '@angular/cdk/tree';
+import { NzTreeFlatDataSource, NzTreeFlattener } from 'ng-zorro-antd/tree-view';
 
 @Component({
   selector: 'app-root',
@@ -46,15 +48,12 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit{
   ngAfterViewInit() {
     this.cd.detectChanges();
   }
-  getIconByType(type){
-    return type == 'ssh' ? 'code' : (type == 'sftp' ? 'read' : 'windows');
-  }
-  getOriginTitle(host: any){
+  getOriginTitle(host: Host){
     if (host == null) return 'Local Terminal';
     if (host.child){
       return this.getOriginTitle(host.child);
     }else{
-      return host.ip;
+      return host.title;
     }
   }
   getInitalTitle(title, index){
@@ -87,17 +86,22 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit{
     let title_index  = this.getTitleIndex(tab.type, origin_title);
     let newTab = {
       type : tab.type,
-      dot  : false,
+      showChange  : false,
+      showError  : false,
       host : tab.host,
-      icon : this.getIconByType(tab.type),
+      icon : this.hostCfg.getIconByType(tab.type),
       origin_title: origin_title,
       title_index: title_index,
       title: this.getInitalTitle(origin_title, title_index)
     }
     this.tablist.push(newTab);
-    setTimeout(() => this.selectedIndex = this.tablist.length);
+    setTimeout(() => {
+      this.selectedIndex = this.tablist.length;
+      //this.notify.emitMainTabIndexChange(this.selectedIndex - 1);
+    });
   }
   newTab(): void{
+    /*
     const modal = this.modal.create({
       nzTitle: 'Hosts Configuration',
       nzWidth: '800px',
@@ -116,7 +120,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit{
     // Return a result when closed
     modal.afterClose.subscribe(result => {
       if (result)this.addTab(result);
-    });
+    });*/
   }
   dupTab(tab, type){
     this.addTab({type: type, host: tab.host});
@@ -124,14 +128,26 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit{
   newLocalShell(){
     this.addTab({type: 'local', host: null});
   }
-  onTabRecvNewData(index){
-    if (this.selectedIndex != index + 1){
-      this.tablist[index].dot = true;
+  onTabStateChange(index, msg){
+    if (msg == 'CONNECTING'){
+      this.tablist[index].isLoading = true;
+      this.tablist[index].showError = false;
+      this.tablist[index].showChange = false;
+    }else{
+      this.tablist[index].isLoading = false;
+    }
+    if (msg == 'ERROR'){
+      this.tablist[index].showError = true;
+      this.tablist[index].showChange = false;
+    }
+    else if (this.selectedIndex != index + 1){
+      this.tablist[index].showError = false;
+      this.tablist[index].showChange = true;
     }
   }
   onSelectTabChange(index){
     if (index > 0){
-      this.tablist[index - 1].dot = false;
+      this.tablist[index - 1].showChange = false;
       this.notify.emitMainTabIndexChange(index - 1);
     }
   }
@@ -141,7 +157,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit{
   }
   @HostListener('window:keydown', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
-    console.log(event.keyCode, event.key)
+    //console.log(event.keyCode, event.key)
     if (event.ctrlKey && event.keyCode == 9) {
       this.selectedIndex += 1;
       this.selectedIndex %= this.tablist.length + 1;
@@ -158,4 +174,60 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit{
   confirmRename(index){
     this.tablist[index].title = this.newTitle;
   }
+
+
+  /* tree view */
+  isTreeViewOpened = false;
+  isGroupSelected = true;
+  selectedHost: Host;
+  private transformer = (host: Host, level: number) => {
+    return {
+      expandable: !!host.children && host.children.length > 0,
+      name: host.title,
+      level: level,
+      host: host
+    };
+  };
+  treeFlattener = new NzTreeFlattener(
+    this.transformer,
+    node => node.level,
+    node => node.expandable,
+    node => node.children
+  );
+  treeControl  = new FlatTreeControl<any>(
+    node => node.level,
+    node => node.expandable
+  );
+  dataSource = new NzTreeFlatDataSource(this.treeControl, this.treeFlattener);
+  selectListSelection= new SelectionModel<any>(true);
+  showTreeView(show){
+    if (show){
+    this.dataSource.setData(this.hostCfg.getHostConfig().children);
+    this.treeControl.expandAll();
+    this.isTreeViewOpened = true;
+    }
+    else{
+      this.isTreeViewOpened = false;
+    }
+  }
+  clickTreeNode(node){
+    let nodes = this.dataSource._flattenedData.value;
+    this.selectedHost = node.host;
+    this.isGroupSelected = this.hostCfg.isGroup(node.host);
+    for (let i=0; i<nodes.length; i++){
+      if (nodes[i] == node){
+        if (!this.selectListSelection.isSelected(nodes[i]))this.selectListSelection.toggle(nodes[i]);
+      }
+      else{
+        if (this.selectListSelection.isSelected(nodes[i]))this.selectListSelection.toggle(nodes[i]);
+      }
+    }
+  }
+  confirmTreeNode(type){
+    this.isTreeViewOpened = false;
+    this.notify.emitOpenTab({type: type, host: this.hostCfg.getConnectHost(this.selectedHost)});
+    //this.addTab({type:type, host:this.selectedHost});
+  }
+  isHost = (_: number, node: any) => this.hostCfg.isHost(node.host) && node.host.children && node.host.children.length > 0;
+  isGroup= (_: number, node: any) => this.hostCfg.isGroup(node.host);
 }

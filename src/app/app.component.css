@@ -75,3 +75,46 @@ nz-footer {
 ::ng-deep .ant-tabs-card>.ant-tabs-nav .ant-tabs-tab-active {
     background-color: #1f1f1f;
 }
+
+.tabTitle {
+    position: relative;
+}
+
+.badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(50%, -50%);
+    transform-origin: 100% 0%;
+    z-index: auto;
+    width: 6px;
+    min-width: 6px;
+    height: 6px;
+    border-radius: 100%;
+    box-shadow: 0 0 0 1px #141414;
+}
+
+.badge.normal {
+    background: green;
+}
+
+.badge.error {
+    background: red;
+}
+
+.loading {
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(50%, -50%);
+    transform-origin: 100% 0%;
+    z-index: auto;
+    width: 16px;
+    min-width: 16px;
+    height: 16px;
+}
+
+.selectHostBtn button {
+    margin-right: 8px;
+    margin-bottom: 12px;
+}

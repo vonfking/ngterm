@@ -8,7 +8,7 @@ const args = process.argv.slice(1),
   serve = args.some(val => val === '--serve');
 
 /*web socket init*/
-function webSocketInit(){
+/*function webSocketInit(){
   const server = require('http').createServer();
 
   var io = require('socket.io')(server, {cors: {
@@ -22,7 +22,7 @@ function webSocketInit(){
   
   server.listen(0);
   return server.address().port;
-}
+}*/
 /*window operation*/
 function windowOperation(_win){
   let winStartPosition = {x: 0, y: 0};
@@ -62,7 +62,7 @@ function windowOperation(_win){
     }
   })
   ipcMain.on('window-close', (e, args) => {
-    console.log('windowOper', args);
+    //console.log('windowOper', args);
     _win.close();
     app.quit();
   })
@@ -112,7 +112,7 @@ function createWindow(): BrowserWindow {
   });
 
   windowOperation(win);
-  win['localPort'] = webSocketInit();
+  //win['localPort'] = webSocketInit();
   return win;
 }
 

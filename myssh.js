@@ -28,6 +28,8 @@ class MySSHClient extends SFTPClient {
             } else {
                 client = new SSHClient();
             }
+            client.removeAllListeners('error');
+            client.on('error', err => reject(err));
             client.on('keyboard-interactive', (name, instructions, lang, prompts, finish) => { finish([host.pass]) })
                 .on('ready', () => {
                     console.log('connected:', host.ip)
@@ -113,6 +115,8 @@ class MySSHClient extends SFTPClient {
                         resolve();
                     }
                 })
+            }).catch((err) => {
+                reject(err);
             })
         })
     }
@@ -126,6 +130,8 @@ class MySSHClient extends SFTPClient {
                         resolve(stream);
                     }
                 })
+            }).catch((err) => {
+                reject(err);
             })
         })
     }

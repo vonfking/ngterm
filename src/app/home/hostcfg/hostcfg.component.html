@@ -26,42 +26,53 @@
     </nz-card>
     <nz-drawer [nzClosable]="true" [nzWidth]="600" [nzVisible]="isEditing" nzPlacement="right" [nzTitle]="editTitle" [nzFooter]="footerTpl" (nzOnClose)="closeEditDrawer()">
         <ng-container *nzDrawerContent>
-            <form nz-form>
+            <form nz-form [formGroup]="validateForm">
                 <nz-form-item>
-                    <nz-form-label [nzSpan]="7" nzRequired>Alias</nz-form-label>
-                    <nz-form-control [nzSpan]="12">
-                        <input nz-input name="title" [(ngModel)]="editHost.title" placeholder="Host Alias" />
+                    <nz-form-label [nzSpan]="7 " nzRequired nzFor="title">Alias</nz-form-label>
+                    <nz-form-control [nzSpan]="12 ">
+                        <input nz-input formControlName="title " placeholder="Host Alias " />
                     </nz-form-control>
                 </nz-form-item>
-                <nz-form-item *ngIf="editHost.type=='host' || editHost.type=='subhost'">
-                    <nz-form-label [nzSpan]="7" nzRequired>HostIP</nz-form-label>
-                    <nz-form-control [nzSpan]="12">
-                        <input nz-input name="ip" [(ngModel)]="editHost.ip" placeholder="Host IP Address" />
+                <nz-form-item *ngIf="editHost.type=='host'">
+                    <nz-form-label [nzSpan]="7 " nzRequired nzFor="ip">HostIP</nz-form-label>
+                    <nz-form-control [nzSpan]="12 ">
+                        <input nz-input formControlName="ip " placeholder="Host IP Address " />
                     </nz-form-control>
                 </nz-form-item>
-                <nz-form-item *ngIf="editHost.type=='host' || editHost.type=='subhost'">
-                    <nz-form-label [nzSpan]="7" nzRequired>Port</nz-form-label>
-                    <nz-form-control [nzSpan]="12">
-                        <input nz-input name="port" [(ngModel)]="editHost.port" placeholder="Host Port" />
+                <nz-form-item *ngIf="editHost.type=='host'">
+                    <nz-form-label [nzSpan]="7 " nzRequired nzFor="port">Port</nz-form-label>
+                    <nz-form-control [nzSpan]="12 ">
+                        <input nz-input formControlName="port " placeholder="Host Port " />
                     </nz-form-control>
                 </nz-form-item>
-                <nz-form-item *ngIf="editHost.type=='host' || editHost.type=='subhost'">
-                    <nz-form-label [nzSpan]="7" nzRequired>User</nz-form-label>
-                    <nz-form-control [nzSpan]="12">
-                        <input nz-input name="user" [(ngModel)]="editHost.user" placeholder="User" />
+                <nz-form-item *ngIf="editHost.type=='host'">
+                    <nz-form-control [nzSpan]="12 " [nzOffset]="7 ">
+                        <label nz-checkbox formControlName="isForward ">Forwarding</label>
                     </nz-form-control>
                 </nz-form-item>
-                <nz-form-item *ngIf="editHost.type=='host' || editHost.type=='subhost'">
-                    <nz-form-label [nzSpan]="7" nzRequired>Password</nz-form-label>
-                    <nz-form-control [nzSpan]="12">
-                        <input nz-input name="pass" type="password" [(ngModel)]="editHost.pass" placeholder="Password" />
+                <nz-form-item *ngIf="editHost.type=='host' && !validateForm.get( 'isForward')?.value ">
+                    <nz-form-label [nzSpan]="7 " nzRequired nzFor="user">User</nz-form-label>
+                    <nz-form-control [nzSpan]="12 ">
+                        <input nz-input formControlName="user " placeholder="User " />
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item *ngIf="editHost.type=='host' && !validateForm.get( 'isForward')?.value ">
+                    <nz-form-label [nzSpan]="7 " nzRequirednzFor="pass">Password</nz-form-label>
+                    <nz-form-control [nzSpan]="12 ">
+                        <input nz-input formControlName="pass " type="password " placeholder="Password " />
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item *ngIf="editHost.type=='host' && validateForm.get( 'isForward')?.value ">
+                    <nz-form-label [nzSpan]="7 " nzRequired nzFor="localPort">LocalPort</nz-form-label>
+                    <nz-form-control [nzSpan]="12 ">
+                        <input nz-input formControlName="localPort " placeholder="Local Port " />
                     </nz-form-control>
                 </nz-form-item>
             </form>
         </ng-container>
         <ng-template #footerTpl>
-            <div style="float: right">
-                <button nz-button nzType="primary" (click)="saveEditDrawer()">Save</button>
+            <div style="float: right ">
+                <button nz-button nzType="primary " (click)="saveEditDrawer() ">Save</button>
             </div>
         </ng-template>
     </nz-drawer>

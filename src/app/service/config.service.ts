@@ -13,13 +13,15 @@ export interface Setting{
 }
 export interface Host{
   title: string,
-  type: "root"|"group"|"host"|"subhost",
+  type: "root"|"group"|"host",
+  forward?:boolean,
   key?: number,
   children?: Host[],
   ip?: string,
   port?: number,
   user?: string,
   pass?: string,
+  localPort?:number,
   parent?: Host,
   child?: Host,
   hopIp?: string,
@@ -37,14 +39,20 @@ export class HostConfigService {
   configFile = 'ngTermCfg.json';
   
   isHost(item: any){
-    return item.type == 'host' || item.type == 'subhost';
+    return item.type == 'host';
   }
   isGroup(item: any){
     return item.type == 'group';
   }
   getIconByType(type){
-    return type == 'ssh' ? 'code' : (type == 'sftp' ? 'read' : 'windows');
+    switch(type){
+      case 'ssh': return 'code';
+      case 'sftp':return 'read';
+      case 'local':return 'windows';
+      case 'forward':return 'rise';
+    }
   }
+  /** */
   getHostConfig(): any {
     let _formatHostConfig = (host: Host) => {
       if (!host.children)
@@ -133,10 +141,12 @@ export class HostConfigService {
         type: type,
         key: this.keynum++,
         title: title,
+        forward: false,
         ip: '',
         port: 22,
         user: '',
-        pass: ''
+        pass: '',
+        localPort: 0
       }
     }
   }
@@ -146,6 +156,8 @@ export class HostConfigService {
     host1.title= host2.title;
     if (withoutKey)delete host1.key;
     if (this.isHost(host2)){
+      host1.forward = host2.forward;
+      host1.localPort = host2.localPort;
       host1.ip   = host2.ip;
       host1.port = host2.port;
       host1.user = host2.user;

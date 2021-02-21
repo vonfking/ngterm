@@ -4,7 +4,7 @@ import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dro
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzTableComponent } from 'ng-zorro-antd/table';
 import { fromEvent, Subscription } from 'rxjs';
-import { NotifyService } from '../../service/notify.service';
+import { NotifyService } from '../../../service/notify.service';
 
 @Component({
   selector: 'app-filelist',

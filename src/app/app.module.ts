@@ -9,7 +9,7 @@ import { NZ_I18N } from 'ng-zorro-antd/i18n';
 import { en_US } from 'ng-zorro-antd/i18n';
 import { registerLocaleData } from '@angular/common';
 import en from '@angular/common/locales/en';
-import { TermComponent } from './term/term.component';
+import { TermComponent } from './tab/term/term.component';
 import { AngularSplitModule } from 'angular-split';
 
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
@@ -18,6 +18,7 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzTreeModule } from 'ng-zorro-antd/tree';
+import { NzTreeViewModule } from 'ng-zorro-antd/tree-view';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzInputModule } from 'ng-zorro-antd/input';
@@ -34,20 +35,17 @@ import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 
-import { HostcfgComponent2 } from './hostcfg/hostcfg.component';
-import { BasicCfgComponent } from './hostcfg/basic-cfg/basic-cfg.component';
-import { TermCfgComponent } from './hostcfg/term-cfg/term-cfg.component';
-import { SftpComponent } from './sftp/sftp.component';
-import { FilelistComponent } from './sftp/filelist/filelist.component';
-import { ResizeTableColDirective } from './directive/resize-table-col.directive';
-import { ResizeOneColDirective } from './directive/resize-one-col.directive';
+import { SftpComponent } from './tab/sftp/sftp.component';
+import { FilelistComponent } from './tab/sftp/filelist/filelist.component';
 import { WinOperationDirective } from './directive/win-operation.directive';
 import { HomeComponent } from './home/home.component';
 import { SettingComponent } from './home/setting/setting.component';
 import { HistoryComponent } from './home/history/history.component';
 import { HostcfgComponent } from './home/hostcfg/hostcfg.component';
 import { HostcardComponent } from './home/hostcfg/hostcard/hostcard.component';
+import { ForwardComponent } from './tab/forward/forward.component';
 registerLocaleData(en);
 
 @NgModule({
@@ -55,18 +53,14 @@ registerLocaleData(en);
     AppComponent,
     TermComponent,
     HostcfgComponent,
-    HostcfgComponent2,
-    BasicCfgComponent,
-    TermCfgComponent,
     SftpComponent,
     FilelistComponent,
-    ResizeTableColDirective,
-    ResizeOneColDirective,
     WinOperationDirective,
     HistoryComponent,
     HomeComponent,
     SettingComponent,
-    HostcardComponent
+    HostcardComponent,
+    ForwardComponent
   ],
   imports: [
     BrowserModule,
@@ -74,10 +68,10 @@ registerLocaleData(en);
     HttpClientModule,
     BrowserAnimationsModule,
     AngularSplitModule,
-    NzLayoutModule, NzIconModule, NzMenuModule, NzTabsModule, NzModalModule, NzTreeModule, NzSpinModule,
+    NzLayoutModule, NzIconModule, NzMenuModule, NzTabsModule, NzModalModule, NzTreeModule, NzTreeViewModule, NzSpinModule,
     NzFormModule, NzDropDownModule, NzInputModule, NzDividerModule, NzButtonModule, NzTableModule,
     NzMessageModule, NzCardModule, NzBadgeModule, NzPopconfirmModule, NzBreadCrumbModule, NzPageHeaderModule,
-    NzAvatarModule, NzDrawerModule, NzSwitchModule
+    NzAvatarModule, NzDrawerModule, NzSwitchModule, NzCheckboxModule
   ],
   providers: [{ provide: NZ_I18N, useValue: en_US }],
   bootstrap: [AppComponent]

@@ -16,8 +16,9 @@
             <li nz-menu-item (click)="onClickOper('edit')"><i nz-icon nzType="edit"></i>Edit</li>
             <li nz-menu-item (click)="onClickOper('editchild')"><i nz-icon nzType="edit"></i>Edit Child Node</li>
             <li nz-menu-item (click)="clickDelete()"><i nz-icon nzType="delete"></i>Delete</li>
-            <li nz-menu-item (click)="onClickOper('openssh')" *ngIf="hostCfg.isHost(host)"><i nz-icon [nzType]="hostCfg.getIconByType('ssh')"></i>Open SSH</li>
-            <li nz-menu-item (click)="onClickOper('opensftp')" *ngIf="hostCfg.isHost(host)"><i nz-icon [nzType]="hostCfg.getIconByType('sftp')"></i>Open SFTP</li>
+            <li nz-menu-item (click)="onClickOper('ssh')" *ngIf="hostCfg.isHost(host)"><i nz-icon [nzType]="hostCfg.getIconByType('ssh')"></i>Open SSH</li>
+            <li nz-menu-item (click)="onClickOper('sftp')" *ngIf="hostCfg.isHost(host)"><i nz-icon [nzType]="hostCfg.getIconByType('sftp')"></i>Open SFTP</li>
+            <li nz-menu-item (click)="onClickOper('forward')" *ngIf="hostCfg.isHost(host)"><i nz-icon [nzType]="hostCfg.getIconByType('forward')"></i>Forwarding</li>
         </ul>
     </nz-dropdown-menu>
 </div>

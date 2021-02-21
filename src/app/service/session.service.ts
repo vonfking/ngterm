@@ -6,11 +6,13 @@ import { session } from 'electron';
 export abstract class BaseSession {
   isOpen: boolean
 
+  protected error = new Subject<string>()
   protected output = new Subject<string>()
   protected opened = new Subject<void>()
   protected closed = new Subject<void>()
   protected destroyed = new Subject<void>()
 
+  get error$ (): Observable<string> { return this.error }
   get output$ (): Observable<string> { return this.output }
   get opened$ (): Observable<void> { return this.opened }
   get closed$ (): Observable<void> { return this.closed }
@@ -18,6 +20,9 @@ export abstract class BaseSession {
 
   emitOutput (data: Buffer): void {
     this.output.next(data.toString())
+  }
+  emitError (error: string): void {
+    this.error.next(error)
   }
 
   async destroy (): Promise<void> {
@@ -30,15 +35,19 @@ export abstract class BaseSession {
           this.output.complete()
       }
   }
-  open(){
+  open(data:any = null){
     this.isOpen = true
-    this.opened.next();
+    this.opened.next(data);
   }
 
   abstract start (): void
   abstract resize (columns: number, rows: number): void
   abstract write (data: Buffer): void
   abstract kill (signal?: string): void
+  list(dir: string, cb){}
+  upload(localPath, remotePath, fileList, cb){}
+  download(localPath, remotePath, fileList, cb){}
+  rename(oldname, newname, cb){}
 }
 
 export class ptySession extends BaseSession {
@@ -109,15 +118,18 @@ export class sshSession extends BaseSession {
   start (): void {
     this.sshClient = new this.MySSHClient();
     this.sshClient.sshConnect(this.host).then((stream) => {
-      this.open();
       this.sshStream = stream;
+      this.open();
       stream.on('data', (data) => { 
         this.emitOutput( data ); 
       })
       stream.on('close', (code, signal) => {
         console.log("ssh closed")
+        this.emitError('Connection is broken!');
       })
-    })
+    }).catch((err: Error) => {
+      this.emitError(err.message);
+    });
   }
 
   resize (cols: number, rows: number): void {
@@ -136,6 +148,82 @@ export class sshSession extends BaseSession {
     this.sshClient.end();
   }  
 }
+export class sftpSession extends BaseSession {
+  private host: any;
+  private MySSHClient: typeof MySSHClient;
+  private sshClient: any;
+  private sshStream: any;
+  constructor (host:any) {
+    super();
+    this.MySSHClient = window.require('myssh');
+    this.host = host;
+  } 
+  start (): void {
+    this.sshClient = new this.MySSHClient();
+    this.sshClient.sftpConnect(this.host).then(() => {
+      this.sshClient.cwd().then((path) => {
+        //console.log("cwd:", path)
+        this.open(path);
+    })
+    }).catch((err: Error) => {
+      this.emitError(err.message)
+    });
+  }
+  list(dir: string, cb){
+    this.sshClient.list(dir).then((list) => {
+      let newList = list.map((item) => {
+          return {
+              name: item.name,
+              type: item.type,
+              size: item.size,
+              mtime: item.modifyTime,
+              checked: false
+          }
+      })
+      console.log(newList)
+      cb(newList);
+    }, (err) => {
+      console.log(err);
+      this.emitError(err.message)
+    })
+  }
+  upload(localPath, remotePath, fileList, cb){
+    this.sshClient.sftpUpload(localPath, remotePath, fileList).then((result) => {
+        console.log('upload success')
+        cb('100');
+      }, (err) => {
+        console.log(err);
+        cb('0', err);
+      })
+  }
+  download(localPath, remotePath, fileList, cb){
+    this.sshClient.sftpDownload(localPath, remotePath, fileList).then((result) => {
+      console.log('download success')
+      cb('100');
+    }, (err) => {
+      console.log(err);
+      cb('0', err);
+    })
+  }
+  rename(oldname, newname, cb){
+    this.sshClient.rename(oldname, newname).then((result) => {
+      cb();
+    }, (err) => {
+      console.log(err);
+      cb('rename failed');
+    })
+  }
+  
+  resize (cols: number, rows: number): void {
+  }
+
+  write (data: Buffer): void {
+  }
+
+  kill (signal?: string): void {
+    this.sshClient.end();
+  }  
+}
 @Injectable({
   providedIn: 'root'
 })
@@ -145,7 +233,9 @@ export class SessionService {
     let session: BaseSession;
     if (type == 'ssh')
       session = new sshSession(host);
-    else 
+    else if (type == 'sftp')
+      session = new sftpSession(host);
+    else if (type == 'local')
       session = new ptySession();
     session.start();
     return session;

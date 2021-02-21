@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NotifyService } from '../../service/notify.service';
 import { HostConfigService, Host } from '../../service/config.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-hostcfg',
@@ -9,19 +10,20 @@ import { HostConfigService, Host } from '../../service/config.service';
 })
 export class HostcfgComponent implements OnInit {
 
-  constructor(public hostCfg: HostConfigService, private notify: NotifyService) { }
+  constructor(private fb: FormBuilder, public hostCfg: HostConfigService, private notify: NotifyService) { }
 
   hostConfig: Host;
   baseHost: Host;
   hosts: Host[]=[];
   groups: Host[]=[];
   grouplist: Host[]=[];
-  showAllSub = false;
+  showAllSub = true;
   ngOnInit(): void {
     this.hostConfig = this.hostCfg.getHostConfig();
     if (this.hostConfig){
       this.refresh(this.hostConfig);
-    }    
+    }
+    this.formInit();    
   }
   refresh(host: Host){
     this.groups = this.hostCfg.getChildGroups(host);
@@ -69,10 +71,21 @@ export class HostcfgComponent implements OnInit {
     } else if (type == 'delete'){
       this.hostCfg.deleteHost(this.baseHost, host);
       this.refresh(this.baseHost);
-    } else if (type == 'openssh'){
-      this.notify.emitOpenTab({type: 'ssh', host: this.hostCfg.getConnectHost(host)});
-    } else if (type == 'opensftp'){
-      this.notify.emitOpenTab({type: 'sftp', host: this.hostCfg.getConnectHost(host)});
+    } else if (type == 'ssh' || type == 'sftp' || type == 'forward'){
+      this.notify.emitOpenTab({type: type, host: this.hostCfg.getConnectHost(host)});
     }
+  }
+  //Form
+  validateForm!: FormGroup;
+  formInit(){
+    this.validateForm = this.fb.group({
+      title: [this.editHost.title, [Validators.required]],
+      ip: [this.editHost.ip],
+      port: [this.editHost.port],
+      isForward: [this.editHost.forward],
+      user: [this.editHost.user],
+      pass: [this.editHost.pass],
+      localPort:[this.editHost.localPort]
+    });
   }
 }

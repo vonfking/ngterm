@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TermCfgComponent } from './term-cfg.component';
+import { ForwardComponent } from './forward.component';
 
-describe('TermCfgComponent', () => {
-  let component: TermCfgComponent;
-  let fixture: ComponentFixture<TermCfgComponent>;
+describe('ForwardComponent', () => {
+  let component: ForwardComponent;
+  let fixture: ComponentFixture<ForwardComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TermCfgComponent ]
+      declarations: [ ForwardComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TermCfgComponent);
+    fixture = TestBed.createComponent(ForwardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
