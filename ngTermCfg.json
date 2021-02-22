@@ -106,13 +106,13 @@
         },
         {
             "type": "host",
-            "title": "",
-            "forward": false,
-            "ip": "",
+            "title": "1",
+            "forward": true,
+            "ip": "1",
             "port": 22,
             "user": "",
             "pass": "",
-            "localPort": 0
+            "localPort": "111"
         }
     ]
 }

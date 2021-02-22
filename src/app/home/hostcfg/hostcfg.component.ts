@@ -50,12 +50,14 @@ export class HostcfgComponent implements OnInit {
       this.editTitle = "Edit " + (this.hostCfg.isGroup(host)?'Group':'Host');
       this.hostCfg.copyHost(this.editHost, host);
     }
+    this.formReset(this.editHost);
     this.isEditing = true;
   }
   closeEditDrawer(){
     this.isEditing = false;
   }
   saveEditDrawer(){
+    if (!this.formCheck(this.editHost))return;
     this.hostCfg.modifyHost(this.baseHost, this.editHost);
     this.refresh(this.baseHost);
     this.isEditing = false;
@@ -79,13 +81,63 @@ export class HostcfgComponent implements OnInit {
   validateForm!: FormGroup;
   formInit(){
     this.validateForm = this.fb.group({
-      title: [this.editHost.title, [Validators.required]],
-      ip: [this.editHost.ip],
-      port: [this.editHost.port],
-      isForward: [this.editHost.forward],
-      user: [this.editHost.user],
-      pass: [this.editHost.pass],
-      localPort:[this.editHost.localPort]
+      title: [null, [Validators.required]],
+      ip: [null, [Validators.required]],
+      port: [null, [Validators.required]],
+      isForward: [null, [Validators.required]],
+      user: [null, [Validators.required]],
+      pass: [null, [Validators.required]],
+      localPort:[null, [Validators.required]]
     });
+  }
+  formReset(host: Host){
+    this.validateForm.get('title')!.setValue(host.title);
+    this.validateForm.get('ip')!.setValue(host.ip);
+    this.validateForm.get('port')!.setValue(host.port);
+    this.validateForm.get('isForward')!.setValue(host.forward);
+    this.validateForm.get('user')!.setValue(host.user);
+    this.validateForm.get('pass')!.setValue(host.pass);
+    this.validateForm.get('localPort')!.setValue(host.localPort);
+    for (const i in this.validateForm.controls){
+      this.validateForm.controls[i].clearValidators();
+      this.validateForm.controls[i].markAsPristine();
+      this.validateForm.controls[i].updateValueAndValidity();
+    }
+  }
+  formCheck(host: Host):boolean{
+    let check=[], nocheck=[];
+    if (this.hostCfg.isGroup(host)){
+      check = ['title'];
+      nocheck = ['ip', 'port', 'user', 'pass', 'localPort'];
+    }else{
+      if (this.validateForm.get('isForward')!.value){
+        check = ['title', 'ip', 'port', 'localPort'];
+        nocheck = ['user', 'pass'];
+      }else{
+        check = ['title', 'ip', 'port', 'user', 'pass'];
+        nocheck = ['localPort'];
+      }
+    }
+    
+    for (const i in check){
+      this.validateForm.get(check[i])!.setValidators(Validators.required);
+      this.validateForm.get(check[i])!.markAsDirty();
+      this.validateForm.get(check[i])!.updateValueAndValidity();
+    }
+    for (const i in nocheck){
+      this.validateForm.get(nocheck[i])!.clearValidators();
+      this.validateForm.get(nocheck[i])!.markAsPristine();
+      this.validateForm.get(nocheck[i])!.updateValueAndValidity();
+    }
+    if (this.validateForm.valid){
+      host.title = this.validateForm.get('title')!.value;
+      host.ip = this.validateForm.get('ip')!.value;
+      host.port = this.validateForm.get('port')!.value;
+      host.forward = this.validateForm.get('isForward')!.value;
+      host.user = this.validateForm.get('user')!.value;
+      host.pass = this.validateForm.get('pass')!.value;
+      host.localPort = this.validateForm.get('localPort')!.value;
+    }
+    return this.validateForm.valid;
   }
 }

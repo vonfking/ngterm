@@ -46,14 +46,14 @@
             <nz-dropdown-menu #menuSystem="nzDropdownMenu">
                 <ul nz-menu>
                     <li nz-menu-item><i nz-icon nzType="setting" nzTheme="outline"></i>Setting</li>
-                    <li nz-menu-item (click)="windowOper('window-open-devtool ')"><i nz-icon nzType="tool" nzTheme="outline"></i>DevTool</li>
+                    <li nz-menu-item (click)="windowOper('window-open-devtool')"><i nz-icon nzType="tool" nzTheme="outline"></i>DevTool</li>
                     <li nz-menu-item><i nz-icon nzType="question-circle" nzTheme="outline"></i>About</li>
                 </ul>
             </nz-dropdown-menu>
             <ng-container *ngIf='electron.isWindowMax() '>
-                <a class="win-ctrl  size" (click)="windowOper('window-min ')"><i nz-icon><svg t="1612007508172" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1972" width="24" height="12"><path d="M896 704a64 64 0 0 1 7.488 127.552L896 832H128a64 64 0 0 1-7.488-127.552L128 704h768z" p-id="1973"></path></svg></i></a>
-                <a class="win-ctrl  size" (click)="windowOper('window-max ')"><i nz-icon><svg t="1612007300104" class="icon" viewBox="0 0 1241 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5981" width="24" height="12"><path d="M844.8 0H128v128H0v716.8h716.8v-128h128zM640 768H76.8V204.8H640z m128-128h-51.2V128h-512v-51.2H768z" p-id="5982"></path></svg></i></a>
-                <a class="win-ctrl close" (click)="windowOper('window-close ')"><i nz-icon><svg t="1612007565518" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2912" width="24" height="12"><path d="M519.02036023 459.47959989L221.8941505 162.35411435a37.07885742 37.07885742 0 1 0-52.45354772 52.40502656l297.12476134 297.15010821L169.44060278 809.05863314a37.07885742 37.07885742 0 1 0 52.42964924 52.42892505l297.15010821-297.12476136 297.15010822 297.12476136a37.07885742 37.07885742 0 1 0 52.42892504-52.40430237l-297.12476135-297.1740067 297.12476135-297.12548553a37.07885742 37.07885742 0 1 0-52.42892504-52.42964924L519.04498291 459.47959989z" p-id="2913"></path></svg></i></a>
+                <a class="win-ctrl  size" (click)="windowOper('window-min')"><i nz-icon><svg t="1612007508172" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1972" width="24" height="12"><path d="M896 704a64 64 0 0 1 7.488 127.552L896 832H128a64 64 0 0 1-7.488-127.552L128 704h768z" p-id="1973"></path></svg></i></a>
+                <a class="win-ctrl  size" (click)="windowOper('window-max')"><i nz-icon><svg t="1612007300104" class="icon" viewBox="0 0 1241 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5981" width="24" height="12"><path d="M844.8 0H128v128H0v716.8h716.8v-128h128zM640 768H76.8V204.8H640z m128-128h-51.2V128h-512v-51.2H768z" p-id="5982"></path></svg></i></a>
+                <a class="win-ctrl close" (click)="windowOper('window-close')"><i nz-icon><svg t="1612007565518" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2912" width="24" height="12"><path d="M519.02036023 459.47959989L221.8941505 162.35411435a37.07885742 37.07885742 0 1 0-52.45354772 52.40502656l297.12476134 297.15010821L169.44060278 809.05863314a37.07885742 37.07885742 0 1 0 52.42964924 52.42892505l297.15010821-297.12476136 297.15010822 297.12476136a37.07885742 37.07885742 0 1 0 52.42892504-52.40430237l-297.12476135-297.1740067 297.12476135-297.12548553a37.07885742 37.07885742 0 1 0-52.42892504-52.42964924L519.04498291 459.47959989z" p-id="2913"></path></svg></i></a>
             </ng-container>
         </ng-template>
     </nz-content>
