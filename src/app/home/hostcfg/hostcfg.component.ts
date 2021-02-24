@@ -91,6 +91,7 @@ export class HostcfgComponent implements OnInit {
     });
   }
   formReset(host: Host){
+    this.validateForm.reset();
     this.validateForm.get('title')!.setValue(host.title);
     this.validateForm.get('ip')!.setValue(host.ip);
     this.validateForm.get('port')!.setValue(host.port);
@@ -99,7 +100,7 @@ export class HostcfgComponent implements OnInit {
     this.validateForm.get('pass')!.setValue(host.pass);
     this.validateForm.get('localPort')!.setValue(host.localPort);
     for (const i in this.validateForm.controls){
-      this.validateForm.controls[i].clearValidators();
+      this.validateForm.controls[i].setValidators(Validators.required);
       this.validateForm.controls[i].markAsPristine();
       this.validateForm.controls[i].updateValueAndValidity();
     }
@@ -108,7 +109,7 @@ export class HostcfgComponent implements OnInit {
     let check=[], nocheck=[];
     if (this.hostCfg.isGroup(host)){
       check = ['title'];
-      nocheck = ['ip', 'port', 'user', 'pass', 'localPort'];
+      nocheck = ['ip', 'port', 'user', 'pass', 'localPort', 'isForward'];
     }else{
       if (this.validateForm.get('isForward')!.value){
         check = ['title', 'ip', 'port', 'localPort'];

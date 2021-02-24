@@ -36,13 +36,19 @@ export class HostConfigService {
   keynum = 0;
   hostConfig: Host;
   loaded = false;
-  configFile = 'ngTermCfg.json';
+  configFile = 'ngTermCfHostg.json';
   
-  isHost(item: any){
+  isGroup(item: Host){
+    return item.type == 'group' || item.type == 'root';
+  }
+  isHost(item: Host){
     return item.type == 'host';
   }
-  isGroup(item: any){
-    return item.type == 'group';
+  isForward(item: Host){
+    return item.type == 'host' && item.forward;
+  }
+  isNotForward(item: Host){
+    return item.type == 'host' && !item.forward;
   }
   getIconByType(type){
     switch(type){
