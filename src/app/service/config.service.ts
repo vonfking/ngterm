@@ -36,13 +36,13 @@ export class HostConfigService {
   keynum = 0;
   hostConfig: Host;
   loaded = false;
-  configFile = 'ngTermCfHostg.json';
+  configFile = 'ngTermCfg.json';
   
   isGroup(item: Host){
-    return item.type == 'group' || item.type == 'root';
+    return item && (item.type == 'group' || item.type == 'root');
   }
   isHost(item: Host){
-    return item.type == 'host';
+    return item && item.type == 'host';
   }
   isForward(item: Host){
     return item.type == 'host' && item.forward;

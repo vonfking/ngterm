@@ -47,7 +47,7 @@
                 </nz-form-item>
                 <nz-form-item *ngIf="hostCfg.isHost(editHost)">
                     <nz-form-control [nzSpan]="12" [nzOffset]="7">
-                        <label nz-checkbox formControlName="isForward" [nzDisabled]="hostCfg.isGroup(baseHost)">Forwarding</label>
+                        <label nz-checkbox formControlName="isForward" [nzDisabled]="hostCfg.isGroup(parentHost)">Forwarding</label>
                     </nz-form-control>
                 </nz-form-item>
                 <nz-form-item *ngIf="hostCfg.isHost(editHost) && !validateForm.get( 'isForward')?.value">

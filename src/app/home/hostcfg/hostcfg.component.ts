@@ -14,6 +14,7 @@ export class HostcfgComponent implements OnInit {
 
   hostConfig: Host;
   baseHost: Host;
+  parentHost: Host;
   hosts: Host[]=[];
   groups: Host[]=[];
   grouplist: Host[]=[];
@@ -45,10 +46,12 @@ export class HostcfgComponent implements OnInit {
       let type = host;
       this.editTitle = "New " + type;
       this.editHost = this.hostCfg.newHost(type.toLowerCase());
+      this.parentHost = this.baseHost;
     }
     else{
       this.editTitle = "Edit " + (this.hostCfg.isGroup(host)?'Group':'Host');
       this.hostCfg.copyHost(this.editHost, host);
+      this.parentHost = host.parent;
     }
     this.formReset(this.editHost);
     this.isEditing = true;
@@ -58,7 +61,7 @@ export class HostcfgComponent implements OnInit {
   }
   saveEditDrawer(){
     if (!this.formCheck(this.editHost))return;
-    this.hostCfg.modifyHost(this.baseHost, this.editHost);
+    this.hostCfg.modifyHost(this.parentHost, this.editHost);
     this.refresh(this.baseHost);
     this.isEditing = false;
   }
@@ -113,10 +116,10 @@ export class HostcfgComponent implements OnInit {
     }else{
       if (this.validateForm.get('isForward')!.value){
         check = ['title', 'ip', 'port', 'localPort'];
-        nocheck = ['user', 'pass'];
+        nocheck = ['user', 'pass', 'isForward'];
       }else{
         check = ['title', 'ip', 'port', 'user', 'pass'];
-        nocheck = ['localPort'];
+        nocheck = ['localPort', 'isForward'];
       }
     }
     
