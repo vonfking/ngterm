@@ -107,8 +107,10 @@ export class HostConfigService {
             hosts.push(item);
           }
           if (recursive){
-            if (rootGroup == null && this.isGroup(item))rootGroup = item.title;
-            hosts.push.apply(hosts, _getChildHosts(item, rootGroup, recursive, change));
+            if (rootGroup == null && this.isGroup(item))
+              hosts.push.apply(hosts, _getChildHosts(item, item.title, recursive, change));
+            else
+              hosts.push.apply(hosts, _getChildHosts(item, rootGroup, recursive, change));
           }
         })
       }

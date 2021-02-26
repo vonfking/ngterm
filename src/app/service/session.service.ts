@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import * as nodePTY from '@terminus-term/node-pty'
-import { MySSHClient } from 'myssh';
-import { session } from 'electron';
+//import { MySSHClient } from 'myssh';
+declare var MySSHClient: any; 
+
 export abstract class BaseSession {
   isOpen: boolean
 
@@ -107,16 +108,17 @@ export class ptySession extends BaseSession {
 }
 export class sshSession extends BaseSession {
   private host: any;
-  private MySSHClient: typeof MySSHClient;
+  //private MySSHClient: typeof MySSHClient;
   private sshClient: any;
   private sshStream: any;
   constructor (host:any) {
     super();
-    this.MySSHClient = window.require('myssh');
+    //this.MySSHClient = window.require('myssh');
     this.host = host;
   } 
   start (): void {
-    this.sshClient = new this.MySSHClient();
+    //this.sshClient = new this.MySSHClient();
+    this.sshClient = new MySSHClient();
     this.sshClient.sshConnect(this.host).then((stream) => {
       this.sshStream = stream;
       this.open();
@@ -155,11 +157,11 @@ export class sftpSession extends BaseSession {
   private sshStream: any;
   constructor (host:any) {
     super();
-    this.MySSHClient = window.require('myssh');
+    //this.MySSHClient = window.require('myssh');
     this.host = host;
   } 
   start (): void {
-    this.sshClient = new this.MySSHClient();
+    this.sshClient = new MySSHClient();
     this.sshClient.sftpConnect(this.host).then(() => {
       this.sshClient.cwd().then((path) => {
         //console.log("cwd:", path)
