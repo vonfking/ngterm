@@ -1,9 +1,10 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
+import { Component, EventEmitter, Injector, Input, OnDestroy, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { Subscription } from 'rxjs';
 import { ElectronService } from '../../service/electron.service';
 import { NotifyService } from '../../service/notify.service';
 import { BaseSession, SessionService } from '../../service/session.service';
+import { BaseTabComponent } from '../base-tab/base-tab.component';
 import { FilelistComponent } from './filelist/filelist.component';
 
 @Component({
@@ -11,7 +12,7 @@ import { FilelistComponent } from './filelist/filelist.component';
   templateUrl: './sftp.component.html',
   styleUrls: ['./sftp.component.css']
 })
-export class SftpComponent implements OnInit, OnDestroy {
+export class SftpComponent extends BaseTabComponent implements OnInit, OnDestroy {
   localPath  = 'C:\\';
   remotePath = '/';
   localFiles =[]
@@ -20,9 +21,17 @@ export class SftpComponent implements OnInit, OnDestroy {
   isRemoteSpinning = false
   isSpinning = false
   subscription: Subscription;
-  session: BaseSession;
-  constructor(private notify: NotifyService, private sessionService: SessionService, private electonService: ElectronService, private message: NzMessageService) { }
-
+  
+  //constructor(private notify: NotifyService, private sessionService: SessionService, private electon: ElectronService, private message: NzMessageService) { }
+  private notify: NotifyService;
+  private electon: ElectronService;
+  private message: NzMessageService;
+  constructor(protected injector: Injector) { 
+    super(injector.get(SessionService));
+    this.notify = injector.get(NotifyService);
+    this.electon = injector.get(ElectronService);
+    this.message = injector.get(NzMessageService);
+  }
   prefix(n){
     const str = '' + n;
     if (str.length < 2) {
@@ -48,10 +57,10 @@ export class SftpComponent implements OnInit, OnDestroy {
   getLocalFiles(dir){
     this.isLocalSpinning = true;
     var filelist = []
-    var files = this.electonService.fs.readdirSync(dir, {withFileTypes: true});
+    var files = this.electon.fs.readdirSync(dir, {withFileTypes: true});
     files.forEach(file=>{
       try{
-        var states = this.electonService.fs.statSync(this.electonService.path.join(dir, file.name));
+        var states = this.electon.fs.statSync(this.electon.path.join(dir, file.name));
         filelist.push({
           name: file.name,
           type: states.isDirectory()?'d':'-',
@@ -75,43 +84,22 @@ export class SftpComponent implements OnInit, OnDestroy {
       this.isRemoteSpinning = false;
     });
   }
-  //socket: Socket;
-  host:any;
-  @Input('hostInfo')
-  set _hostInfo(hostinfo: any){
-    this.host = hostinfo;
-  }
-  @Input() tabIndex: number;
-  @Output() onStateChange = new EventEmitter<string>();
   @ViewChildren(FilelistComponent) componentChildList: QueryList<FilelistComponent>
-  state:"CONNECTING"| "CONNECTED" | "ERROR";
-  newSession(){
-    this.state = "CONNECTING";
-    this.onStateChange.emit('CONNECTING');
-    this.session = this.sessionService.newSession('sftp', this.host);
-    this.session.error$.subscribe(data=>{
-      console.log("recv ERROR")
-      this.session.kill();
-      this.state = "ERROR"
-      this.isRemoteSpinning = false;
-      this.onStateChange.emit('ERROR');
-    })
-    this.session.opened$.subscribe((path:any)=>{
-      console.log("recv CONNECTED")
-      this.state = "CONNECTED";
-      this.onStateChange.emit('CONNECTED');
-      this.remotePath = path;
-      this.getRemoteFiles(path);
-    })
+  newSftpSession(){
+    this.newSession(
+      (path) => { this.remotePath = path; this.getRemoteFiles(path); },
+      (data) => { },
+      (error) => {this.isRemoteSpinning = false; }
+    );
   }
   onSplitterChange(e: any){
     //this.componentChildList.forEach(elementRef => elementRef.setTableSize());
     this.notify.emitSftpWindowChange();
   }
   ngOnInit(): void {
-    this.localPath = this.electonService.app.getAppPath();
+    this.localPath = this.electon.app.getAppPath();
     this.getLocalFiles(this.localPath);
-    this.newSession();
+    this.newSftpSession();
     this.subscription = this.notify.onMainTabIndexChange((index) => {
       if (index == this.tabIndex) {
         this.notify.emitSftpWindowChange();
@@ -132,9 +120,9 @@ export class SftpComponent implements OnInit, OnDestroy {
     this.getLocalFiles(this.localPath);
   }
   getRealPath(path, name, type='win'){
-    let _path = this.electonService.path.join(path, name);
+    let _path = this.electon.path.join(path, name);
     if (type == 'linux'){
-      return _path.split(this.electonService.path.sep).join('/'); 
+      return _path.split(this.electon.path.sep).join('/'); 
     }
     return _path;
   }
@@ -149,7 +137,7 @@ export class SftpComponent implements OnInit, OnDestroy {
       this.getRemoteFiles(this.remotePath);
     }
     if (this.state == "ERROR" && e.type == 'absolute'){
-      this.newSession();
+      this.newSftpSession();
     }
   }
   onLocalFileOperation(e){
@@ -167,7 +155,7 @@ export class SftpComponent implements OnInit, OnDestroy {
     }else if (e.type == 'rename'){
       let oldname = this.getRealPath(this.localPath, e.oldname);
       let newname = this.getRealPath(this.localPath, e.newname);
-      this.electonService.fs.renameSync(oldname, newname);
+      this.electon.fs.renameSync(oldname, newname);
       this.isSpinning = false;
     }
   }

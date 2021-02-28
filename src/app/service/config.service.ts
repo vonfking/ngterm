@@ -154,7 +154,7 @@ export class HostConfigService {
         port: 22,
         user: '',
         pass: '',
-        localPort: 0
+        localPort: null
       }
     }
   }

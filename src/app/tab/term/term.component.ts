@@ -1,10 +1,10 @@
-import { AfterViewChecked, AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, Output, ViewChild, EventEmitter } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, Injector } from '@angular/core';
 import { Terminal, ITheme } from "xterm";
-import { ElectronService } from '../../service/electron.service';
 import { FitAddon } from 'xterm-addon-fit';
 import { interval, Subscription } from 'rxjs';
 import { NotifyService } from '../../service/notify.service';
 import { BaseSession, SessionService } from '../../service/session.service';
+import { BaseTabComponent } from '../base-tab/base-tab.component';
 
 
 @Component({
@@ -12,8 +12,9 @@ import { BaseSession, SessionService } from '../../service/session.service';
   templateUrl: './term.component.html',
   styleUrls: ['./term.component.css']
 })
-export class TermComponent implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy {
-  host: any;
+export class TermComponent extends BaseTabComponent implements OnInit, AfterViewInit, OnDestroy {
+  private notify: NotifyService;
+
   fitAddon: any;
   xterm: any;
   xtermCore: any;
@@ -21,45 +22,29 @@ export class TermComponent implements OnInit, AfterViewInit, AfterViewChecked, O
   cols:any;
   recvNewData = false;
   subscription: Subscription;
-  session: BaseSession;
-  state: "CONNECTING"| "CONNECTED" | "ERROR";
-  
-  @Input('hostInfo')
-  set _hostInfo(hostinfo: any){
-    this.host = hostinfo;
-  }
-  @Input() tabIndex: number;
-  @Input() termType: string;
-  @Output() onStateChange = new EventEmitter<string>();
-  constructor(private notify: NotifyService, private sessionService: SessionService, private electron: ElectronService) { 
+
+  constructor(protected injector: Injector) { 
+    super(injector.get(SessionService));
+    this.notify = injector.get(NotifyService);
   }
 
   @ViewChild('terminal', {static: true}) terminalDiv:ElementRef;
   
-  newSession(){
-    this.state = "CONNECTING";
-    this.onStateChange.emit('CONNECTING');
-    this.session = this.sessionService.newSession(this.termType, this.host);
-    this.session.error$.subscribe(data=>{
-      console.log("recv ERROR")
-      this.session.kill();
-      this.xterm.write("\r\n\r\n");
-      this.xterm.writeln("\x1b[1;1;31mError:"+data+"\x1b[0m");
-      this.xterm.writeln("Press CTRL + ENTER to reconnect!!");
-      this.state = "ERROR"
-      this.onStateChange.emit('ERROR');
-    })
-    this.session.output$.subscribe(data=>{
-      console.log("recv data")
-      this.recvNewData = true;
-      this.xterm.write(data);
-    })
-    this.session.opened$.subscribe(()=>{
-      console.log("recv CONNECTED")
-      this.state = "CONNECTED";
-      this.onStateChange.emit('CONNECTED');
-      this.resizeHandler();
-    })
+  newTermSession(){
+    this.newSession(
+      (path) => {
+        this.resizeHandler();
+      },
+      (data) => {
+        this.recvNewData = true;
+        this.xterm.write(data);
+      },
+      (error) => {
+        this.xterm.write("\r\n\r\n");
+        this.xterm.writeln("\x1b[1;1;31mError:"+error+"\x1b[0m");
+        this.xterm.writeln("Press CTRL + ENTER to reconnect!!");
+      }
+    );
   }
   ngOnInit(): void {
     let timer = interval(100);
@@ -69,7 +54,7 @@ export class TermComponent implements OnInit, AfterViewInit, AfterViewChecked, O
         this.recvNewData = false;
       }
     })
-    this.newSession();
+    this.newTermSession();
   }
   ngAfterViewInit(): void {
     const theme: ITheme = {
@@ -92,7 +77,7 @@ export class TermComponent implements OnInit, AfterViewInit, AfterViewChecked, O
     this.xterm.onKey((key) => {
       if (this.state == "ERROR"){
         if (key.domEvent.ctrlKey && key.domEvent.keyCode == '13'){
-          this.newSession();
+          this.newTermSession();
           this.xterm.clear();
         }
       }
@@ -129,25 +114,6 @@ export class TermComponent implements OnInit, AfterViewInit, AfterViewChecked, O
         // tends to throw when element wasn't shown yet
         console.warn('Could not resize xterm', e)
     }
-  }
-  ngAfterViewChecked(): void {
-    //let dims = this.fitAddon.proposeDimensions();
-    /*
-    if (isNaN(dims.rows) || dims.rows == Infinity || isNaN(dims.cols) || dims.cols == Infinity) {
-        this.xterm.resize(10, 10);
-    }
-    else {
-        this.fitAddon.fit();
-    }
-    //this.fitAddon.fit();
-    if (this.rows != this.xterm.rows || this.cols != this.xterm.cols){
-      this.rows = this.xterm.rows;
-      this.cols = this.xterm.cols;
-      this.socket.resize(this.rows, this.cols);
-    }
-    this.xterm.focus();*/
-    //let a = this.terminalDiv.nativeElement;
-    //console.log(a.style.zIndex)
   }
   ngOnDestroy(): void{
     this.session.kill();

@@ -46,6 +46,7 @@ import { HistoryComponent } from './home/history/history.component';
 import { HostcfgComponent } from './home/hostcfg/hostcfg.component';
 import { HostcardComponent } from './home/hostcfg/hostcard/hostcard.component';
 import { ForwardComponent } from './tab/forward/forward.component';
+import { BaseTabComponent } from './tab/base-tab/base-tab.component';
 registerLocaleData(en);
 
 @NgModule({
@@ -60,7 +61,8 @@ registerLocaleData(en);
     HomeComponent,
     SettingComponent,
     HostcardComponent,
-    ForwardComponent
+    ForwardComponent,
+    BaseTabComponent
   ],
   imports: [
     BrowserModule,

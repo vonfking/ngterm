@@ -226,6 +226,32 @@ export class sftpSession extends BaseSession {
     this.sshClient.end();
   }  
 }
+export class forwardSession extends BaseSession {
+  private host: any;
+  private sshClient: any;
+  constructor (host:any) {
+    super();
+    this.host = host;
+  } 
+  start (): void {
+    this.sshClient = new MySSHClient();
+    this.sshClient.forwardConnect(this.host).then(() => {
+      this.open();
+    }).catch((err: Error) => {
+      this.emitError(err.message);
+    });
+  }
+
+  resize (cols: number, rows: number): void {
+  }
+
+  write (data: Buffer): void {
+  }
+
+  kill (signal?: string): void {
+    this.sshClient.end();
+  }  
+}
 @Injectable({
   providedIn: 'root'
 })
@@ -237,6 +263,8 @@ export class SessionService {
       session = new sshSession(host);
     else if (type == 'sftp')
       session = new sftpSession(host);
+    else if (type == 'forward')
+      session = new forwardSession(host);
     else if (type == 'local')
       session = new ptySession();
     session.start();

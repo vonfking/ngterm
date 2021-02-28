@@ -20,7 +20,7 @@
                     "port": 22,
                     "user": "ubuntu",
                     "pass": "vonf99",
-                    "localPort": "22"
+                    "localPort": "1022"
                 },
                 {
                     "type": "host",

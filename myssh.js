@@ -4,11 +4,13 @@ var utils = require('ssh2-sftp-client/src/utils');
 var fs = require('fs');
 var path = require('path');
 var events = require('events');
+var net = require("net");
 
 class MySSHClient extends SFTPClient {
     constructor() {
         super();
         this.firstClient = undefined;
+        this.server = undefined;
         this.eventEmitter = new events.EventEmitter();
     }
     on(eventType, callback) {
@@ -64,8 +66,8 @@ class MySSHClient extends SFTPClient {
     }
     async _sshConnect(host, stream) {
         let stream2 = await this._sshConnectDirect(host, stream);
-        if (!host.child) {
-            return stream2;
+        if (!host.child || host.child.forward) {
+            return host.child;
         }
         return this._sshConnect(host.child, stream2);
     }
@@ -105,7 +107,7 @@ class MySSHClient extends SFTPClient {
     }
     sftpConnect(config) {
         return new Promise((resolve, reject) => {
-            this._sshConnect(config).then((client) => {
+            this._sshConnect(config).then(() => {
                 this.client.sftp((err, sftp) => {
                     if (err) {
                         //reject(new Error('SFTP Connect Error'));
@@ -122,7 +124,7 @@ class MySSHClient extends SFTPClient {
     }
     sshConnect(config) {
         return new Promise((resolve, reject) => {
-            this._sshConnect(config).then((client) => {
+            this._sshConnect(config).then(() => {
                 this.client.shell({ term: 'xterm-color' }, (err, stream) => {
                     if (err) {
                         reject(err)
@@ -135,7 +137,34 @@ class MySSHClient extends SFTPClient {
             })
         })
     }
+    forwardConnect(config) {
+        return new Promise((resolve, reject) => {
+            this._sshConnect(config).then((host) => {
+                if (!host) { reject("invaild host") }
+                this.server = net.createServer((socket) => {
+                    this.client.forwardOut(socket.remoteAddress, socket.remotePort, host.ip, host.port, (err, stream) => {
+                        if (err) {
+                            socket.destroy();
+                            reject(err);
+                        }
+                        if (stream) {
+                            stream.pipe(socket);
+                            socket.pipe(stream);
+                            stream.on('close', () => socket.destroy())
+                            socket.on('close', () => stream.close())
+                        }
+                    })
+                })
+                this.server.listen(host.localPort, '0.0.0.0');
+                resolve();
+            }).catch((err) => {
+                reject(err);
+            })
+        })
+    }
     end() {
+        if (this.server)
+            this.server.close();
         if (this.firstClient)
             this.firstClient.end();
         else

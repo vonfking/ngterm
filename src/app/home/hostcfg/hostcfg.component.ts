@@ -68,7 +68,12 @@ export class HostcfgComponent implements OnInit {
   onOperation(type: string, host: Host){
     if (type == "dblclick"){
       if (this.hostCfg.isGroup(host))this.refresh(host);
-      else this.notify.emitOpenTab({type: 'ssh', host: this.hostCfg.getConnectHost(host)});
+      else {
+        if (this.hostCfg.isNotForward(host))
+          this.notify.emitOpenTab({type: 'ssh', host: this.hostCfg.getConnectHost(host)});
+        else
+          this.notify.emitOpenTab({type: 'forward', host: this.hostCfg.getConnectHost(host)});
+      }
     } else if (type == 'edit'){
       this.openEditDrawer(host);
     } else if (type == 'editchild'){

@@ -36,9 +36,9 @@
                         <li nz-menu-item (click)="closeTab({index: i+1})"><i nz-icon nzType="close" nzTheme="outline"></i>Close</li>
                     </ul>
                 </nz-dropdown-menu>
-                <app-term *ngIf="tab.type=='ssh' || tab.type=='local'" [termType]='tab.type' [tabIndex]='i' [hostInfo]='tab.host' (onStateChange)='onTabStateChange(i, $event)'></app-term>
-                <app-sftp *ngIf="tab.type=='sftp'" [tabIndex]='i' [hostInfo]='tab.host' (onStateChange)='onTabStateChange(i, $event)'></app-sftp>
-                <app-forward *ngIf="tab.type=='forward'" [tabIndex]='i ' [hostInfo]='tab.host ' (onStateChange)='onTabStateChange(i, $event) '></app-forward>
+                <app-term *ngIf="tab.type=='ssh' || tab.type=='local'" [type]='tab.type' [tabIndex]='i' [host]='tab.host' (onStateChange)='onTabStateChange(i, $event)'></app-term>
+                <app-sftp *ngIf="tab.type=='sftp'" [type]='tab.type' [tabIndex]='i' [host]='tab.host' (onStateChange)='onTabStateChange(i, $event)'></app-sftp>
+                <app-forward *ngIf="tab.type=='forward'" [type]='tab.type' [tabIndex]='i' [host]='tab.host' (onStateChange)='onTabStateChange(i, $event)'></app-forward>
             </nz-tab>
         </nz-tabset>
         <ng-template #extraTemplate>

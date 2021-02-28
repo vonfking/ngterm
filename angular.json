@@ -33,7 +33,7 @@
                             "src/styles.css"
                         ],
                         "scripts": [
-                            "src/app/service/myssh.js"
+                            "./myssh.js"
                         ]
                     },
                     "configurations": {
