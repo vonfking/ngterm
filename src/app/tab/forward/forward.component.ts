@@ -1,30 +1,35 @@
-import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
-import { SessionService } from '../../service/session.service';
-import { BaseTabComponent } from '../base-tab/base-tab.component';
+import { Component, Injector, OnInit } from '@angular/core';
+import { BaseTermTabComponent } from '../base-term-tab/base-term-tab.component';
 
 @Component({
   selector: 'app-forward',
   templateUrl: './forward.component.html',
   styleUrls: ['./forward.component.css']
 })
-export class ForwardComponent extends BaseTabComponent implements OnInit, OnDestroy {
+export class ForwardComponent extends BaseTermTabComponent implements OnInit {
 
   constructor(protected injector: Injector) { 
-    super(injector.get(SessionService));
+    super(injector);
   }
 
-  message:string;
   newForwardSession(){
     this.newSession(
-      (path) => { },
-      (data) => { },
-      (error) => { this.message = error; }
+      (host) => {
+        this.xterm.writeln(`Forwording is working.`);
+        this.xterm.writeln(`IP:${host.ip}, Port:${host.port}, LocalPort: ${host.localPort}\r\n`);
+      },
+      (data) => {
+        this.recvNewData = true;
+        this.xterm.writeln(`new connection,  IP:${data.ip}, Port:${data.port}`);
+      },
+      (error) => { 
+        this.xterm.write("\r\n\r\n");
+        this.xterm.writeln("\x1b[1;1;31mError:"+error+"\x1b[0m");
+      }
     );
   }
   ngOnInit(): void {
     this.newForwardSession();
   }
-  ngOnDestroy(): void{
-    this.session.kill();
-  }
+  
 }

@@ -196,6 +196,7 @@ export class HostConfigService {
   }
   modifyHost(baseHost: Host, host: Host){
     let isModify = false;
+    if (!baseHost.children)baseHost.children = [];
     for (let h of baseHost.children){
       if (h.key == host.key){
         this.copyHost(h, host);

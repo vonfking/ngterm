@@ -14,7 +14,7 @@ class MySSHClient extends SFTPClient {
         this.eventEmitter = new events.EventEmitter();
     }
     on(eventType, callback) {
-        if (eventType === 'progress') this.eventEmitter.on('progress', callback);
+        if (eventType === 'progress' || eventType === 'forward') this.eventEmitter.on(eventType, callback);
         else this.client.on(eventType, callback);
     }
     _sshConnectDirect(host, stream) {
@@ -22,7 +22,7 @@ class MySSHClient extends SFTPClient {
         let client = this.client;
         return new Promise((resolve, reject) => {
             console.log('connecting:', host.ip)
-            if (!host.child) {
+            if (!host.child || host.child.forward) {
                 client.on('banner', (data) => {
                     console.log('banner:', data);
                     _eventEmmitter.emit('ssh-data', data.replace(/\r?\n/g, '\r\n').toString('utf-8'))
@@ -32,17 +32,17 @@ class MySSHClient extends SFTPClient {
             }
             client.removeAllListeners('error');
             client.on('error', err => reject(err));
-            client.on('keyboard-interactive', (name, instructions, lang, prompts, finish) => { finish([host.pass]) })
-                .on('ready', () => {
-                    console.log('connected:', host.ip)
-                    if (host.child) {
-                        client.forwardOut('127.0.0.1', 0, host.child.ip, 22, (err, stream) => {
-                            resolve(stream);
-                        })
-                    } else {
-                        resolve(client);
-                    }
-                })
+            client.on('keyboard-interactive', (name, instructions, lang, prompts, finish) => { finish([host.pass]) });
+            client.on('ready', () => {
+                console.log('connected:', host.ip)
+                if (host.child) {
+                    client.forwardOut('127.0.0.1', 0, host.child.ip, 22, (err, stream) => {
+                        resolve(stream);
+                    })
+                } else {
+                    resolve(client);
+                }
+            })
             if (stream) {
                 client.connect({
                     sock: stream,
@@ -145,18 +145,26 @@ class MySSHClient extends SFTPClient {
                     this.client.forwardOut(socket.remoteAddress, socket.remotePort, host.ip, host.port, (err, stream) => {
                         if (err) {
                             socket.destroy();
-                            reject(err);
+                            return;
                         }
+                        let emitMsg = (type) => { this.eventEmitter.emit('forward', { type: type, ip: socket.remoteAddress, port: socket.remotePort }); }
+                        emitMsg('connect');
                         if (stream) {
                             stream.pipe(socket);
                             socket.pipe(stream);
-                            stream.on('close', () => socket.destroy())
-                            socket.on('close', () => stream.close())
+                            stream.on('close', () => {
+                                emitMsg('disconnect');
+                                socket.destroy();
+                            })
+                            socket.on('close', () => {
+                                emitMsg('disconnect');
+                                stream.close();
+                            })
                         }
                     })
                 })
                 this.server.listen(host.localPort, '0.0.0.0');
-                resolve();
+                resolve(host);
             }).catch((err) => {
                 reject(err);
             })

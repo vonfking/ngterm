@@ -8,19 +8,19 @@ export abstract class BaseSession {
   isOpen: boolean
 
   protected error = new Subject<string>()
-  protected output = new Subject<string>()
+  protected output = new Subject<any>()
   protected opened = new Subject<void>()
   protected closed = new Subject<void>()
   protected destroyed = new Subject<void>()
 
   get error$ (): Observable<string> { return this.error }
-  get output$ (): Observable<string> { return this.output }
+  get output$ (): Observable<any> { return this.output }
   get opened$ (): Observable<void> { return this.opened }
   get closed$ (): Observable<void> { return this.closed }
   get destroyed$ (): Observable<void> { return this.destroyed }
 
   emitOutput (data: Buffer): void {
-    this.output.next(data.toString())
+    this.output.next(data)
   }
   emitError (error: string): void {
     this.error.next(error)
@@ -235,8 +235,12 @@ export class forwardSession extends BaseSession {
   } 
   start (): void {
     this.sshClient = new MySSHClient();
-    this.sshClient.forwardConnect(this.host).then(() => {
-      this.open();
+    this.sshClient.forwardConnect(this.host).then((host) => {
+      this.open(host);
+      this.sshClient.on('forward', (data) => {
+        console.log("session", data)
+        this.emitOutput(data);
+      })
     }).catch((err: Error) => {
       this.emitError(err.message);
     });
