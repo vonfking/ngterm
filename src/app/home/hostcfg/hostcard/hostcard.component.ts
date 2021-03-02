@@ -1,4 +1,5 @@
 import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown';
 import { HostConfigService } from '../../../service/config.service';
 
 @Component({
@@ -8,7 +9,10 @@ import { HostConfigService } from '../../../service/config.service';
 })
 export class HostcardComponent implements OnInit {
 
-  constructor(public hostCfg: HostConfigService) { }
+  constructor(public hostCfg: HostConfigService, private nzContexMenuService: NzContextMenuService) { }
+  contextMenu($event: MouseEvent, menu: NzDropdownMenuComponent): void {
+    this.nzContexMenuService.create($event, menu);
+  }
   @Input() host: any;
   ngOnInit(): void {
   }

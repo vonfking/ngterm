@@ -45,10 +45,10 @@ export class HostConfigService {
     return item && item.type == 'host';
   }
   isForward(item: Host){
-    return item.type == 'host' && item.forward;
+    return item && (item.type == 'host' && item.forward);
   }
   isNotForward(item: Host){
-    return item.type == 'host' && !item.forward;
+    return item && (item.type == 'host' && !item.forward);
   }
   getIconByType(type){
     switch(type){

@@ -40,7 +40,8 @@ export class HostcfgComponent implements OnInit {
   }
   public isEditing = false;
   public editTitle = "";
-  public editHost: Host = this.hostCfg.newHost('host');
+  public tempHost: Host = this.hostCfg.newHost('host');
+  public editHost: Host = this.tempHost;
   openEditDrawer(host: string | Host){
     if (typeof host === 'string'){
       let type = host;
@@ -50,6 +51,7 @@ export class HostcfgComponent implements OnInit {
     }
     else{
       this.editTitle = "Edit " + (this.hostCfg.isGroup(host)?'Group':'Host');
+      this.editHost = this.tempHost;
       this.hostCfg.copyHost(this.editHost, host);
       this.parentHost = host.parent;
     }

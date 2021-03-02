@@ -238,7 +238,6 @@ export class forwardSession extends BaseSession {
     this.sshClient.forwardConnect(this.host).then((host) => {
       this.open(host);
       this.sshClient.on('forward', (data) => {
-        console.log("session", data)
         this.emitOutput(data);
       })
     }).catch((err: Error) => {

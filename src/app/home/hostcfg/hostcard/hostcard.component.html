@@ -1,7 +1,7 @@
-<div class='card'>
-    <nz-avatar *ngIf="hostCfg.isGroup(host)" nzText="G" style="color:#f56a00; background-color: #fde3cf;"></nz-avatar>
+<div class='card' (contextmenu)="contextMenu($event, menuSystem)">
+    <nz-avatar *ngIf="hostCfg.isGroup(host)" nzText="G" style="color:#f56a00; background-color: #74cbee;"></nz-avatar>
     <nz-avatar *ngIf="hostCfg.isNotForward(host)" nzText="H" style="color:#f56a00; background-color: #fde3cf;"></nz-avatar>
-    <nz-avatar *ngIf="hostCfg.isForward(host)" nzText="F" style="color:#f56a00; background-color: #fde3cf;"></nz-avatar>
+    <nz-avatar *ngIf="hostCfg.isForward(host)" nzText="F" style="color:#f56a00; background-color: #c9eb51;"></nz-avatar>
     <div>
         <div class='title'>{{host.title}}</div>
         <span #popConfirm nz-popconfirm nzPopconfirmPlacement="bottom" nzPopconfirmTitle="Are you sure to delete?" (nzOnConfirm)="confirmDelete()"></span>
@@ -12,14 +12,14 @@
 </div>
 <div *ngIf="showOperBtn || isVisible" class="oper">
     <a nz-dropdown [nzDropdownMenu]="menuSystem" nzTrigger="click" (nzVisibleChange)="visibleChange($event)"><i nz-icon nzType="more"></i></a>
-    <nz-dropdown-menu #menuSystem="nzDropdownMenu">
-        <ul nz-menu>
-            <li nz-menu-item (click)="onClickOper('edit')"><i nz-icon nzType="edit"></i>Edit</li>
-            <li nz-menu-item (click)="onClickOper('editchild')" *ngIf="hostCfg.isNotForward(host)"><i nz-icon nzType="edit"></i>Edit Child Node</li>
-            <li nz-menu-item (click)="clickDelete()"><i nz-icon nzType="delete"></i>Delete</li>
-            <li nz-menu-item (click)="onClickOper('ssh')" *ngIf="hostCfg.isNotForward(host)"><i nz-icon [nzType]="hostCfg.getIconByType('ssh') "></i>Open SSH</li>
-            <li nz-menu-item (click)="onClickOper('sftp')" *ngIf="hostCfg.isNotForward(host)"><i nz-icon [nzType]="hostCfg.getIconByType('sftp') "></i>Open SFTP</li>
-            <li nz-menu-item (click)="onClickOper('forward')" *ngIf="hostCfg.isForward(host)"><i nz-icon [nzType]="hostCfg.getIconByType('forward') "></i>Forwarding</li>
-        </ul>
-    </nz-dropdown-menu>
 </div>
+<nz-dropdown-menu #menuSystem="nzDropdownMenu">
+    <ul nz-menu>
+        <li nz-menu-item (click)="onClickOper('edit')"><i nz-icon nzType="edit"></i>Edit</li>
+        <li nz-menu-item (click)="onClickOper('editchild')" *ngIf="hostCfg.isNotForward(host)"><i nz-icon nzType="edit"></i>Edit Child Node</li>
+        <li nz-menu-item (click)="clickDelete()"><i nz-icon nzType="delete"></i>Delete</li>
+        <li nz-menu-item (click)="onClickOper('ssh')" *ngIf="hostCfg.isNotForward(host)"><i nz-icon [nzType]="hostCfg.getIconByType('ssh') "></i>Open SSH</li>
+        <li nz-menu-item (click)="onClickOper('sftp')" *ngIf="hostCfg.isNotForward(host)"><i nz-icon [nzType]="hostCfg.getIconByType('sftp') "></i>Open SFTP</li>
+        <li nz-menu-item (click)="onClickOper('forward')" *ngIf="hostCfg.isForward(host)"><i nz-icon [nzType]="hostCfg.getIconByType('forward') "></i>Forwarding</li>
+    </ul>
+</nz-dropdown-menu>

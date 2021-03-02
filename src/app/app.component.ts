@@ -178,7 +178,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit{
 
   /* tree view */
   isTreeViewOpened = false;
-  isGroupSelected = true;
   selectedHost: Host;
   private transformer = (host: Host, level: number) => {
     return {
@@ -213,7 +212,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit{
   clickTreeNode(node){
     let nodes = this.dataSource._flattenedData.value;
     this.selectedHost = node.host;
-    this.isGroupSelected = this.hostCfg.isGroup(node.host);
     for (let i=0; i<nodes.length; i++){
       if (nodes[i] == node){
         if (!this.selectListSelection.isSelected(nodes[i]))this.selectListSelection.toggle(nodes[i]);
@@ -228,6 +226,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit{
     this.notify.emitOpenTab({type: type, host: this.hostCfg.getConnectHost(this.selectedHost)});
     //this.addTab({type:type, host:this.selectedHost});
   }
-  isHost = (_: number, node: any) => this.hostCfg.isHost(node.host) && node.host.children && node.host.children.length > 0;
+  isHostWithChild = (_: number, node: any) => this.hostCfg.isHost(node.host) && node.host.children && node.host.children.length > 0;
+  isForward = (_: number, node: any) => this.hostCfg.isForward(node.host);
   isGroup= (_: number, node: any) => this.hostCfg.isGroup(node.host);
+  isHostSelected = () => {return this.hostCfg.isNotForward(this.selectedHost);}
+  isForwardSelected = () => {return this.hostCfg.isForward(this.selectedHost);}
 }

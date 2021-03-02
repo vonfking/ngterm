@@ -22,10 +22,10 @@
         <thead>
             <tr>
                 <th [(nzChecked)]="allChecked" [nzIndeterminate]="indeterminate" [nzWidth]="'30px'" (nzCheckedChange)='checkAll($event)'></th>
-                <th [nzSortFn]="typeSortFn" [nzWidth]="'30px'"></th>
-                <th [nzSortFn]="nameSortFn" [nzWidth]="nameWidth">Name</th>
-                <th [nzSortFn]="sizeSortFn" [nzWidth]="'100px'">Size</th>
-                <th [nzSortFn]="timeSortFn" [nzWidth]="'160px'">Modify</th>
+                <th [nzSortFn]="typeSortFn" nzSortPriority=4 nzWidth]="'30px'"></th>
+                <th [nzSortFn]="nameSortFn" nzSortPriority=3 [nzWidth]="nameWidth">Name</th>
+                <th [nzSortFn]="sizeSortFn" nzSortPriority=2 [nzWidth]="'100px'">Size</th>
+                <th [nzSortFn]="timeSortFn" nzSortPriority=1 [nzWidth]="'160px'">Modify</th>
             </tr>
         </thead>
         <tbody>
@@ -33,8 +33,8 @@
                 <td [(nzChecked)]="file.checked" (nzCheckedChange)="checkOne(file, $event)"></td>
                 <td>
                     <span (dblclick)='dblClick(file.type, file.name)'>
-                    <i *ngIf="file.type=='d'"  nz-icon nzType="folder"></i>
-                    <i *ngIf="file.type=='-'" nz-icon nzType="file"></i>
+                    <i *ngIf="file.type=='d'"  nz-icon nzType="folder" nzTheme="fill"></i>
+                    <i *ngIf="file.type=='-'" nz-icon nzType="file" nzTheme="outline"></i>
                     <i *ngIf="file.type=='l'" nz-icon nzType="link" nzTheme="outline"></i>
                 </span>
                 </td>

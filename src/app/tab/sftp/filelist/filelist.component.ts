@@ -105,8 +105,15 @@ export class FilelistComponent implements OnInit, OnDestroy,AfterViewChecked, Af
       this.onRefresh();
     }
   }
-  
-  typeSortFn = (a:any, b:any) => a.type.localeCompare(b.type);
+  typeConvert(type){
+    switch(type){
+      case 'd': return 2;
+      case 'l': return 1;
+      case '-': return 0;
+      default: return -1;
+    }
+  }
+  typeSortFn = (a:any, b:any) => this.typeConvert(a.type) - this.typeConvert(b.type);
   nameSortFn = (a:any, b:any) => a.name.localeCompare(b.name);
   sizeSortFn = (a:any, b:any) => a.size - b.size;
   timeSortFn = (a:any, b:any) => a.mtime.localeCompare(b.mtime);
